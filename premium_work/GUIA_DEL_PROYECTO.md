@@ -1,93 +1,71 @@
-# Guía sencilla del proyecto PREMIUM WORK
+# Guía del proyecto PREMIUM WORK
 
-Esta carpeta contiene la web de PREMIUM WORK. Está construida con **Next.js**, **React** y **Tailwind CSS**. No necesitas entender todo a la vez: para cambiar algo, localiza la sección correspondiente en la tabla de abajo y modifica solo ese archivo.
+Web corporativa construida con Next.js, React, Tailwind CSS y Framer Motion. La página está compuesta por componentes independientes para que cada sección pueda modificarse sin afectar al resto.
 
-## Arrancar la web
+## Ejecutar y comprobar
 
-Abre una terminal dentro de la carpeta `premium_work` y escribe:
+Desde la carpeta `premium_work`:
 
 ```powershell
 npm.cmd run dev
 ```
 
-Después abre la dirección que aparezca en la terminal, normalmente `http://localhost:3000`.
+La web se abre normalmente en `http://localhost:3000`. Antes de publicar, validar la versión final con `npm.cmd run build`.
 
-Para parar el servidor: pulsa `Ctrl + C` en esa terminal.
+## Mapa de componentes
 
-Para comprobar que la versión final se puede publicar:
-
-```powershell
-npm.cmd run build
-```
-
-## Mapa rápido: dónde cambiar cada cosa
-
-| Quiero cambiar... | Archivo que debes abrir |
+| Elemento | Archivo |
 | --- | --- |
-| El título del navegador, Google y al compartir | `app/layout.tsx` |
-| Colores globales, tipografías y estilos comunes | `app/globals.css` |
-| El orden de las secciones de la página | `app/page.tsx` |
-| Menú superior y botones del menú | `components/Navbar.tsx` |
-| Pantalla principal grande | `components/Hero.tsx` |
-| El texto “No somos una agencia más” | `components/Problem.tsx` |
-| Misión y valores | `components/Solution.tsx` |
-| Tarjetas de servicios | `components/Features.tsx` |
-| Pasos del proceso | `components/Timeline.tsx` |
-| Maqueta de tecnología / perfil | `components/Dashboard.tsx` |
-| Comparativa y diferencial | `components/Differences.tsx` |
-| Testimonios de ejemplo | `components/Testimonials.tsx` |
-| Bloque final y botones de contacto | `components/CTA.tsx` |
-| Pie de página, enlaces y redes | `components/Footer.tsx` |
-| Animaciones suaves al aparecer | `components/Reveal.tsx` |
+| Estructura y orden de la página | `app/page.tsx` |
+| Metadatos, título e idioma | `app/layout.tsx` |
+| Tipografías, colores y estilos globales | `app/globals.css` |
+| Menú superior y menú móvil | `components/Navbar.tsx` |
+| Hero y carrusel principal | `components/Hero.tsx` |
+| Beneficios | `components/WhyUs.tsx` |
+| Servicios | `components/Features.tsx` |
+| Problema, solución y diferenciadores | `components/Problem.tsx`, `Solution.tsx`, `Differences.tsx` |
+| Proceso | `components/Timeline.tsx` |
+| Clientes y testimonios | `components/ClientsCarousel.tsx`, `Testimonials.tsx` |
+| CTA y pie de página | `components/CTA.tsx`, `Footer.tsx` |
 
-## Cambiar el logo
+## Hero: imágenes, calidad y móvil
 
-El logo que usa la web está aquí:
+El hero se controla desde `components/Hero.tsx` y contiene cinco diapositivas.
 
-```text
-public/brand/premium-work-logo.png
-```
+- Las fotos originales de escritorio están en `public/images/hero-1.webp` hasta `hero-5.webp`.
+- Las fotos móviles correspondientes están en `public/images/hero-1-mobile.webp` hasta `hero-5-mobile.webp`.
+- Las versiones móviles tienen 3.200 px de ancho y WebP de calidad alta. Son nítidas en pantallas retina y mucho más ligeras que los originales, que miden entre 5.264 y 7.900 px.
+- Bajo 768 px, el navegador descarga solo la versión móvil; en escritorio utiliza el original.
+- Cada slide tiene `mobilePosition`, que controla el encuadre. Ajusta el porcentaje horizontal si un sujeto queda demasiado cerca del borde.
+- Las capas oscuras sobre la foto garantizan que el texto conserve contraste. Mantenerlas al cambiar imágenes.
 
-Es un PNG con transparencia. Para reemplazarlo en el futuro:
+El título consta de `¿Servicio perfecto?` y `Equipo correcto.`. Su separación se controla mediante `mt-3` en el elemento `<em>`; en pantallas mayores se usa `sm:mt-5`.
 
-1. Conserva el formato PNG con fondo transparente.
-2. Pon el nuevo archivo en `public/brand/`.
-3. Si mantienes el mismo nombre (`premium-work-logo.png`), no hace falta cambiar código.
-4. Si cambias el nombre, busca `premium-work-logo.png` en los archivos de `components/` y cambia las tres referencias.
+Al sustituir una foto, preparar también su equivalente `-mobile.webp` a 3.200 px de ancho, formato WebP y calidad alta. Mantener el mismo número evita cambios de código.
 
-El logo aparece en tres lugares: menú superior (`Navbar.tsx`), bloque final (`CTA.tsx`) y pie de página (`Footer.tsx`). Su tamaño se controla con las clases `h-20`, `h-40` y `h-24`. Un número mayor significa logo más grande.
+## Navegación y menú desplegable
 
-## Cambiar textos
+`components/Navbar.tsx` adapta su aspecto al fondo:
 
-Abre el componente indicado en el mapa, busca el texto que ves en la pantalla y sustitúyelo entre las comillas o entre las etiquetas `>` y `<`.
+- Sobre el hero usa azul marino translúcido, texto blanco y bordes claros.
+- Después de hacer scroll pasa a fondo crema y texto azul marino.
+- El desplegable de Servicios y el menú móvil siguen el mismo criterio visual que el navbar.
 
-Ejemplo: para cambiar el título principal, abre `components/Hero.tsx` y sustituye:
+Los enlaces y servicios se modifican en las constantes `links` y `services` al inicio de `Navbar.tsx`.
 
-```tsx
-Profesionales que <em>representan</em> tu imagen.
-```
+## Beneficios en móvil
 
-No borres las etiquetas como `<em>`, `<p>` o `<h2>` si no sabes qué hacen: cambia solamente las palabras que hay dentro.
+`components/WhyUs.tsx` funciona como carrusel horizontal táctil en móviles:
 
-## Cambiar servicios, pasos o testimonios
+- Cada beneficio ocupa el ancho completo y se alinea mediante *scroll snap*.
+- Se puede deslizar con el dedo o usar las flechas.
+- Las flechas avanzan exactamente el ancho visible, mostrando una tarjeta completa.
 
-Estas secciones usan listas. Cada elemento entre corchetes corresponde a una tarjeta o paso visible.
+En escritorio las tarjetas se muestran como una fila flexible.
 
-- Servicios: en `components/Features.tsx`, modifica la lista llamada `services`.
-- Proceso: en `components/Timeline.tsx`, modifica la lista llamada `steps`.
-- Testimonios: en `components/Testimonials.tsx`, modifica la lista llamada `quotes`.
+## Identidad visual
 
-Puedes cambiar el texto sin problema. Si quieres añadir una tarjeta, copia una línea completa de la lista existente y cambia su contenido. Los testimonios actuales son texto de ejemplo; deben sustituirse por testimonios reales antes de publicar.
-
-## Cambiar enlaces y contactos
-
-- Los botones de contacto final están en `components/CTA.tsx`.
-- El correo actual es `hola@premiumwork.es`. Busca ese texto para reemplazarlo por el correo definitivo.
-- Los enlaces de LinkedIn e Instagram están en `components/Footer.tsx`. Ahora tienen `href="#"`, que es un enlace vacío. Sustituye `#` por la URL completa de cada perfil, por ejemplo `https://www.linkedin.com/company/tuempresa`.
-
-## Cambiar colores
-
-Los colores principales están al principio de `app/globals.css`:
+Los colores principales están en `app/globals.css`:
 
 ```css
 --navy: #0B1F3A;
@@ -95,38 +73,15 @@ Los colores principales están al principio de `app/globals.css`:
 --cream: #F8F7F4;
 ```
 
-En los componentes también verás estos valores en clases como `bg-[#0B1F3A]` (fondo azul marino) y `text-[#C9A227]` (texto dorado). Si cambias la identidad de color, modifica primero `globals.css` y después busca esos códigos en `components/`.
+Los titulares usan Playfair Display (`.display`) y el texto general usa DM Sans. Los logos se encuentran en `public/brand/`.
 
-## Cambiar la imagen del hero
+## Cambiar textos, enlaces y contactos
 
-Por ahora la primera pantalla usa un fondo visual creado con CSS en `app/globals.css`, con el nombre `.hero-photo-placeholder`. Cuando tengas una foto:
+Abre el componente correspondiente, busca el texto visible y reemplázalo sin eliminar sus etiquetas HTML o JSX. Los botones y datos de contacto se encuentran principalmente en `CTA.tsx`, `Navbar.tsx` y `Footer.tsx`.
 
-1. Guarda la fotografía en `public/images/`, por ejemplo `public/images/hero-hospitality.jpg`.
-2. En `components/Hero.tsx`, añade la imagen como fondo o pide ayuda para integrarla bien.
-3. Mantén una capa oscura por encima para que el texto blanco se lea bien.
+## Antes de publicar
 
-## Cómo están organizadas las carpetas
-
-```text
-app/                 La base de la página y los estilos globales
-components/          Cada bloque visible de la landing
-public/brand/        Logos e imágenes de marca que se muestran en la web
-public/images/       Lugar recomendado para futuras fotografías
-package.json         Comandos y librerías del proyecto
-```
-
-## Antes de publicar cambios
-
-1. Guarda los archivos.
-2. Mira la web en ordenador y móvil usando el navegador.
+1. Comprueba hero y menú tanto en móvil como en escritorio.
+2. Desliza la sección de beneficios en un móvil real.
 3. Ejecuta `npm.cmd run build`.
-4. Si el comando termina con éxito, la web está lista para desplegarse.
-
-## Pequeño diccionario
-
-- **Componente:** una pieza de la web, por ejemplo el menú o el footer.
-- **CTA:** un botón que invita a hacer algo, como “Busco personal”.
-- **`className`:** estilos de un elemento. No es texto visible.
-- **`href`:** la dirección a la que lleva un enlace.
-- **`public/`:** archivos públicos, como logos e imágenes. Se usan en la web escribiendo una ruta que comienza por `/`.
-
+4. Tras publicar cambios de imágenes, realiza una recarga sin caché para no ver archivos anteriores.
