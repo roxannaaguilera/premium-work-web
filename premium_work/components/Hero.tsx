@@ -25,7 +25,7 @@ export function Hero() {
   return <section id="inicio" className="relative isolate min-h-[min(760px,100svh)] overflow-hidden bg-[#0B1F3A] text-white md:min-h-screen">
     <AnimatePresence mode="sync">
       <motion.div key={current} initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: .8 }} className="absolute inset-0">
-        <Image src={slides[current].src} alt="Servicio Premium Work" fill priority={current === 0} quality={90} sizes="100vw" className={`object-cover ${slides[current].mobilePosition} md:object-right md:object-top`} />
+        <Image src={slides[current].src} alt="Servicio Premium Work" fill priority={current === 0} unoptimized sizes="100vw" className={`object-cover ${slides[current].mobilePosition} md:object-right md:object-top`} />
         <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(11,31,58,.18)_0%,rgba(11,31,58,.3)_35%,rgba(11,31,58,.75)_100%)]md:bg-[linear-gradient(180deg,rgba(11,31,58,.18)_0%,rgba(11,31,58,.3)_42%,rgba(11,31,58,.94)_100%)]" />
         <div className="absolute inset-y-0 left-0 w-[78%] bg-[linear-gradient(90deg,rgba(11,31,58,.72),transparent)] md:w-2/3" />
       </motion.div>
