@@ -14,7 +14,7 @@ const services = [
 ];
 
 const links = [
-  ["Home", "#inicio"],
+  ["Inicio", "#inicio"],
   ["Acerca de nosotros", "#nosotros"],
   ["Contacto", "#contacto"]
 ];
@@ -207,7 +207,7 @@ export function Navbar() {
                   className="block py-2"
                   target="_blank"
                 >
-                  WhatsApp: +34 604 858 113
+                  WhatsApp
                 </a>
 
                 <a
@@ -215,7 +215,7 @@ export function Navbar() {
                   className="block py-2"
                   target="_blank"
                 >
-                  Email: info@premiumwork.es
+                  Email: hola@premiumwork.es
                 </a>
 
                 <p className="mt-6 text-xs opacity-70">

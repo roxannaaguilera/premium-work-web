@@ -35,7 +35,7 @@ export function Hero() {
     <div className="relative mx-auto flex min-h-[min(760px,100svh)] max-w-[1600px] items-end px-5 pb-24 pt-28 md:min-h-screen md:px-8 md:pb-28">
       <motion.div initial={{ opacity: 0, y: 28 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: .7 }} className="max-w-5xl">
         <p className="mb-4 text-[10px] font-bold uppercase leading-4 tracking-[.14em] text-[#e5c65a] sm:mb-5 sm:text-xs sm:tracking-[.18em]">Hospitality · eventos · excelencia</p>
-        <h1 className="display max-w-[15ch] text-[clamp(2.2rem,10vw,3.4rem)] leading-[1.05] sm:text-7xl lg:text-8xl">¿Servicio perfecto?<em className="mt-3 block font-normal text-[#e5c65a] sm:mt-5">Equipo correcto.</em></h1>
+        <h1 className="display max-w-[15ch] text-[clamp(2.2rem,10vw,3.4rem)] leading-[1.05] sm:text-7xl lg:text-8xl">¿Servicio perfecto?<em className="mt-2 block font-normal text-[#e5c65a] sm:mt-2">Equipo correcto.</em></h1>
         <p className="mt-6 max-w-[32rem] text-[15px] leading-6 text-white/85 sm:mt-7 sm:text-base sm:leading-7">Seleccionado, formado y supervisado a la medida de su marca</p>
         <a href="#contacto" className="mt-7 inline-flex rounded-sm bg-[#C9A227] px-5 py-3.5 text-sm font-bold text-[#0B1F3A] transition hover:scale-[1.03] active:scale-[.98] sm:mt-8 sm:px-6">EMPRESAS / Solicitar servicio</a>
       </motion.div>

@@ -43,6 +43,17 @@ El título consta de `¿Servicio perfecto?` y `Equipo correcto.`. Su separación
 
 Al sustituir una foto, preparar también su equivalente `-mobile.webp` a 3.200 px de ancho, formato WebP y calidad alta. Mantener el mismo número evita cambios de código.
 
+## Fotos de servicios: calidad y tratamiento visual
+
+Las tarjetas de servicios se gestionan en `components/Features.tsx`.
+
+- Los originales de escritorio son `public/images/serv-1.webp` hasta `serv-6.webp`.
+- Las versiones móviles son `public/images/serv-1-mobile.webp` hasta `serv-6-mobile.webp`, en WebP de alta calidad y hasta 2.560 px de ancho.
+- El navegador escoge la imagen móvil por debajo de 768 px y el original en escritorio. Este patrón es el mismo que utiliza el hero: máxima nitidez disponible sin obligar al móvil a descargar la fuente completa.
+- Cada tarjeta mantiene una foto central nítida. Detrás usa una copia ampliada y desenfocada de la misma fotografía, junto a un degradado azul marino y dorado; el blur solo crea profundidad en el marco y nunca se aplica sobre el sujeto.
+
+Al cambiar una imagen de servicio, crear su pareja móvil usando el mismo número y el sufijo `-mobile.webp`. Conservar ambos archivos permite que el código continúe seleccionando la versión correcta automáticamente.
+
 ## Navegación y menú desplegable
 
 `components/Navbar.tsx` adapta su aspecto al fondo:
