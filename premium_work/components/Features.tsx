@@ -4,7 +4,7 @@ import { ArrowUpRight } from "lucide-react";
 const services = [
   ["Camareros", "Profesionales de sala atentos, ágiles y alineados con la atmósfera de cada servicio.", "camareros"],
   ["Maîtres", "Dirección de sala con criterio, presencia y la serenidad que requieren los momentos importantes.", "maitres"],
-  ["Bartenders", "Técnica, hospitalidad y ritmo detrás de cada barra, desde un cóctel privado a un gran evento.", "bartenders"],
+  ["Office y Housekeeping", "“Orden, precisión y cuidado en cada detalle, asegurando que cada espacio funcione con armonía y excelencia durante todo el evento.", "office-y-housekeeping"],
   ["Hostess", "Una bienvenida cuidada y una atención impecable para invitados, asistentes y equipos.", "hostess"],
   ["Personal de cocina", "Apoyo especializado para que la operación fluya con orden, precisión y excelencia.", "personal-de-cocina"],
   ["Supervisores", "Coordinación en terreno para que cada detalle esté donde debe estar, en el momento adecuado.", "supervisores"],

@@ -50,6 +50,7 @@ Al sustituir una foto, preparar también su equivalente `-mobile.webp` a 3.200 p
 - Sobre el hero usa azul marino translúcido, texto blanco y bordes claros.
 - Después de hacer scroll pasa a fondo crema y texto azul marino.
 - El desplegable de Servicios y el menú móvil siguen el mismo criterio visual que el navbar.
+- En escritorio, el espacio entre el botón “Servicios” y su panel forma parte del área interactiva. Esto evita que el desplegable se cierre al mover el cursor hacia un enlace. Si se modifica su distancia visual, conservar el contenedor exterior con `pt-4`; no sustituirlo por un margen (`mt-*`) aplicado directamente al panel.
 
 Los enlaces y servicios se modifican en las constantes `links` y `services` al inicio de `Navbar.tsx`.
 
