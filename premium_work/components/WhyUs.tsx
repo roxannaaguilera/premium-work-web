@@ -12,7 +12,7 @@ export function WhyUs() {
 
   return <section id="nosotros" className="section-pad bg-[#e9e3d6]"><div className="mx-auto max-w-[1600px]">
     <motion.div initial={{ opacity: 0, y: 24 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, margin: "-100px" }} className="grid gap-8 lg:grid-cols-2">
-      <div><p className="eyebrow">◆ Nuestros beneficios</p><a href="#contacto" className="mt-8 inline-flex rounded-sm border border-[#0B1F3A] px-5 py-3 text-sm font-bold transition hover:scale-[1.03] active:scale-[.98] md:mt-10">Contactar <ArrowRight className="ml-2" size={16} /></a></div>
+      <div><p className="eyebrow">◆ Nuestros beneficios</p><a href="#contacto" className="mt-8 hidden rounded-sm border border-[#0B1F3A] px-5 py-3 text-sm font-bold transition hover:scale-[1.03] active:scale-[.98] md:mt-10 md:inline-flex">Contactar <ArrowRight className="ml-2" size={16} /></a></div>
       <h2 className="display max-w-3xl text-[clamp(2.8rem,13vw,4.25rem)] leading-[.93] md:text-7xl">La tranquilidad de un servicio a la altura de su marca.</h2>
     </motion.div>
     <motion.div ref={scroller} initial="hidden" whileInView="visible" viewport={{ once: true, margin: "-100px" }} variants={{ visible: { transition: { staggerChildren: .08 } } }} className="hide-scrollbar mt-12 flex snap-x snap-mandatory overflow-x-auto border-y border-[#0B1F3A]/15 md:mt-16">
