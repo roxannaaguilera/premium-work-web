@@ -1,3 +1,28 @@
-"use client";
-import { motion } from "framer-motion";
-export function ServicesIntro() { return <section className="section-pad bg-[#F8F7F4] text-center"><motion.div initial={{opacity:0,y:24}} whileInView={{opacity:1,y:0}} viewport={{once:true,margin:"-100px"}}><p className="eyebrow">◆ Nuestros servicios incluyen</p><h2 className="display mx-auto mt-7 max-w-6xl text-4xl leading-[1.15] sm:text-6xl lg:text-7xl">Camareros <span className="text-[#C9A227]">|</span> Maîtres <span className="text-[#C9A227]">|</span> Office y Housekeeping <span className="text-[#C9A227]">|</span> Hostess <span className="text-[#C9A227]">|</span> Personal de cocina <span className="text-[#C9A227]">|</span> Supervisores</h2></motion.div></section>; }
+const services = ["Camareros/as", "Maîtres", "Office y Housekeeping", "Hostess", "Personal de cocina", "Supervisores"];
+
+export function ServicesIntro() {
+  const loop = [...services, ...services];
+
+  return (
+    <section className="relative flex min-h-[50svh] justify-center overflow-hidden bg-[#F8F7F4] px-5 pb-20 pt-32 text-center md:px-8 md:pt-36">
+      <div className="group absolute inset-x-0 top-0 overflow-hidden border-y border-[#0B1F3A]/15 py-5">
+        <div className="marquee-track flex w-max group-hover:[animation-play-state:paused]">
+          {loop.map((service, index) => (
+            <div key={`${service}-${index}`} className="flex h-16 w-56 shrink-0 items-center justify-center border-r border-[#0B1F3A]/15 px-6 text-center text-xs font-bold uppercase tracking-[.14em] text-[#0B1F3A]/70">
+              {service}
+            </div>
+          ))}
+        </div>
+      </div>
+      <div className="relative mx-auto max-w-5xl">
+        <div className="flex items-center justify-center gap-3 text-[#C9A227]" aria-hidden="true">
+          <span className="h-px w-12 bg-current/60 md:w-20" />
+          <span className="text-base">◆</span>
+          <span className="h-px w-12 bg-current/60 md:w-20" />
+        </div>
+        <p className="eyebrow mt-6 text-[#0B1F3A]/70">Cuidamos cada detalle</p>
+        <h2 className="display mx-auto mt-7 max-w-5xl text-[clamp(3.4rem,13vw,6.8rem)] leading-[.9] text-[#0B1F3A]">Mucho más que personal: <em className="font-normal text-[#C9A227]">un servicio completo.</em></h2>
+      </div>
+    </section>
+  );
+}
