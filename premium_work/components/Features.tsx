@@ -70,8 +70,8 @@ export function Features() {
       className="w-full overflow-hidden bg-[#F8F7F4]"
     >
       {/* MOBILE */}
-      <div className="py-20 md:hidden">
-        <h2 className="display px-5 text-[2.6rem] leading-none text-[#0B1F3A]">
+      <div className="py-20 lg:hidden">
+        <h2 id="que-necesitas" className="display scroll-mt-20 px-5 text-[2.6rem] leading-none text-[#0B1F3A]">
           ¿Qué necesitas?
         </h2>
 
@@ -110,7 +110,7 @@ export function Features() {
       </div>
 
       {/* DESKTOP - ANCHO COMPLETO SIN MÁRGENES LATERALES */}
-      <div className="hidden w-full md:block">
+      <div className="hidden w-full lg:block">
         {services.map((service, index) => {
           const imageFirst = index % 2 === 1;
 
