@@ -1,5 +1,79 @@
+"use client";
+
 import Image from "next/image";
-import { ArrowRight } from "lucide-react";
+import { ArrowUpRight, Mail } from "lucide-react";
+
 const WHATSAPP_NUMBER = "34604858113";
-const services = ["Camareros", "Hostess", "Maîtres", "Office y Housekeeping", "Personal de cocina", "Supervisores"];
-export function Footer() { return <footer id="contacto" className="bg-[#0B1F3A] px-5 py-14 text-[#F8F7F4] md:px-8 md:py-20"><div className="mx-auto max-w-[1600px]"><div className="grid gap-12 lg:grid-cols-[1.25fr_1fr]"><div className="relative h-44 max-w-md"><Image src="/brand/premium-work-logo.png" alt="Premium Work" fill sizes="(max-width: 768px) 320px, 450px" className="object-contain object-left" /></div><div className="grid grid-cols-2 gap-8 sm:grid-cols-3"><div><h2 className="text-xs font-bold uppercase tracking-[.14em] text-[#C9A227]">Navegación</h2>{[["Home","#inicio"],["Acerca de nosotros","#nosotros"],["Contacto","#contacto"]].map(([x,h])=><a className="mt-4 block text-sm hover:text-[#C9A227]" href={h} key={x}>{x}</a>)}</div><div><h2 className="text-xs font-bold uppercase tracking-[.14em] text-[#C9A227]">Servicios</h2>{services.map(x=><a className="mt-4 block text-sm hover:text-[#C9A227]" href="#servicios" key={x}>{x}</a>)}</div><div><h2 className="text-xs font-bold uppercase tracking-[.14em] text-[#C9A227]">Síguenos</h2>{["Instagram","LinkedIn","Facebook"].map(x=><a className="mt-4 block text-sm hover:text-[#C9A227]" href="#" key={x}>{x}</a>)}</div></div></div><div className="my-16 text-center"><a href="#contacto" className="inline-flex items-center rounded-sm border border-[#C9A227] px-7 py-4 text-sm font-bold transition hover:scale-[1.03] active:scale-[.98]">Contactar <ArrowRight className="ml-2" size={17}/></a></div><div className="grid gap-7 border-y border-white/20 py-8 md:grid-cols-2"><div><p className="text-xs uppercase tracking-[.14em] text-white/55">WhatsApp</p><a href={`https://wa.me/${WHATSAPP_NUMBER}`} target="_blank" rel="noreferrer" className="mt-2 block text-lg font-semibold hover:text-[#C9A227]">TODO · WhatsApp</a></div><div><p className="text-xs uppercase tracking-[.14em] text-white/55">Email</p><a href="mailto:hola@premiumwork.es" className="mt-2 block text-lg font-semibold text-[#e5c65a]">hola@premiumwork.es</a></div></div><div className="flex flex-wrap justify-between gap-4 pt-7 text-xs text-white/60"><p>© {new Date().getFullYear()} PREMIUM WORK. Todos los derechos reservados.</p><div className="flex gap-5"><a href="#">Aviso legal</a><a href="#">Política de privacidad</a></div></div></div></footer>; }
+
+const navigation = [
+  { label: "Inicio", href: "#inicio" },
+  { label: "Servicios", href: "#servicios" },
+  { label: "Nosotros", href: "#nosotros" },
+  { label: "Contacto", href: "#contacto" },
+];
+
+const services = ["Camareros/as", "Maîtres", "Office y Housekeeping", "Hostess", "Personal de cocina", "Supervisores"];
+
+function InstagramIcon() {
+  return <svg className="size-[18px]" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.9" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="5" /><circle cx="12" cy="12" r="4" /><circle cx="17.5" cy="6.5" r=".8" fill="currentColor" stroke="none" /></svg>;
+}
+
+function LinkedInIcon() {
+  return <svg className="size-[18px]" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M6.5 8.7H3.4V20h3.1V8.7ZM5 3.7A1.8 1.8 0 1 0 5 7.3a1.8 1.8 0 0 0 0-3.6ZM20.6 13.5c0-3.4-1.8-5-4.3-5-2 0-2.9 1.1-3.4 1.9V8.7H9.8V20h3.1v-5.6c0-1.5.3-3 2.1-3 1.9 0 1.9 1.8 1.9 3.1V20H20v-6.5h.6Z" /></svg>;
+}
+
+function FacebookIcon() {
+  return <svg className="size-[18px]" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M13.8 20v-7h2.4l.4-2.8h-2.8V8.4c0-.8.2-1.4 1.4-1.4h1.5V4.5c-.3 0-1.2-.1-2.2-.1-2.2 0-3.7 1.3-3.7 3.8v2.1H8.3V13h2.5v7h3Z" /></svg>;
+}
+
+export function Footer() {
+  const year = new Date().getFullYear();
+
+  return (
+    <footer id="contacto" className="h-[calc(100svh-5rem)] overflow-hidden bg-[#0B1F3A] text-[#F8F7F4]">
+      <div className="mx-auto flex h-full max-w-[1600px] flex-col px-5 py-5 md:px-8 md:py-6 lg:px-10">
+        <header className="flex shrink-0 items-center justify-between border-b border-white/15 pb-4">
+          <p className="eyebrow flex items-center gap-2 text-white/60"><span className="text-[#C9A227]" aria-hidden="true">◆</span> Hablemos de su próximo servicio</p>
+          <Image src="/images/logo_nombre_premium_work.png" alt="Premium Work" width={1600} height={1600} className="h-8 w-auto max-w-[42vw] object-contain md:h-10" priority />
+        </header>
+
+        <div className="grid min-h-0 flex-1 gap-8 py-6 md:gap-14 lg:grid-cols-[1.35fr_.65fr] lg:py-7">
+          <div className="flex min-h-0 flex-col justify-center">
+            <p className="hidden max-w-lg text-sm leading-6 text-white/55 md:block">Diseñamos la operativa y cuidamos cada detalle para que su servicio esté a la altura de su marca.</p>
+            <h2 className="display mt-4 text-[clamp(2.8rem,5.2vw,5.8rem)] leading-[.82] tracking-[-.05em] text-[#F8F7F4] md:mt-7">Hagamos que <em className="font-normal text-[#C9A227]">todo funcione.</em></h2>
+            <div className="mt-10 flex flex-wrap gap-3 md:mt-12">
+              <a href="/solicitar-servicio" className="group inline-flex items-center gap-2 rounded-full bg-[#C9A227] px-5 py-3 text-sm font-bold text-[#0B1F3A] transition hover:-translate-y-0.5 hover:bg-[#e2be3d]">Solicitar un servicio <ArrowUpRight size={16} className="transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" /></a>
+              <a href="mailto:hola@premiumwork.es" className="inline-flex items-center gap-2 rounded-full border border-white/25 px-5 py-3 text-sm font-semibold text-white transition hover:-translate-y-0.5 hover:bg-white hover:text-[#0B1F3A] active:translate-y-0"><Mail size={16} /> hola@premiumwork.es</a>
+            </div>
+          </div>
+
+          <div className="flex items-center gap-8 border-t border-white/15 pt-5 sm:gap-14 lg:border-l lg:border-t-0 lg:pl-10 lg:pt-0">
+            <div>
+              <p className="eyebrow text-[#C9A227]">Atención comercial</p>
+              <a href={`https://wa.me/${WHATSAPP_NUMBER}`} target="_blank" rel="noreferrer" className="mt-3 inline-flex items-center gap-2 text-base font-semibold text-white transition hover:text-[#C9A227]">Hablar por WhatsApp <ArrowUpRight size={17} /></a>
+              <a href="mailto:hola@premiumwork.es" className="mt-2 block text-sm text-white/55 transition hover:text-white">hola@premiumwork.es</a>
+            </div>
+            <div>
+              <p className="eyebrow text-[#C9A227]">Síguenos</p>
+              <div className="mt-3 flex gap-2">
+                <a href="#" aria-label="Instagram" className="flex size-10 items-center justify-center rounded-full border border-white/20 transition hover:border-[#C9A227] hover:bg-[#C9A227] hover:text-[#0B1F3A]"><InstagramIcon /></a>
+                <a href="#" aria-label="LinkedIn" className="flex size-10 items-center justify-center rounded-full border border-white/20 transition hover:border-[#C9A227] hover:bg-[#C9A227] hover:text-[#0B1F3A]"><LinkedInIcon /></a>
+                <a href="#" aria-label="Facebook" className="flex size-10 items-center justify-center rounded-full border border-white/20 transition hover:border-[#C9A227] hover:bg-[#C9A227] hover:text-[#0B1F3A]"><FacebookIcon /></a>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div className="grid shrink-0 gap-4 border-y border-white/15 py-4 sm:grid-cols-2 lg:grid-cols-[.65fr_1.35fr]">
+          <nav aria-label="Navegación del pie de página" className="flex flex-wrap gap-x-5 gap-y-1">{navigation.map((item) => <a key={item.label} href={item.href} className="text-sm text-white/65 transition hover:text-[#C9A227]">{item.label}</a>)}</nav>
+          <div className="hidden flex-wrap gap-x-5 gap-y-1 sm:flex">{services.map((service) => <a key={service} href="#servicios" className="text-sm text-white/65 transition hover:text-[#C9A227]">{service}</a>)}</div>
+        </div>
+
+        <div className="flex shrink-0 items-center justify-between pt-4 text-[0.62rem] uppercase tracking-[.12em] text-white/35">
+          <p>© {year} Premium Work</p>
+          <div className="flex gap-4"><a href="/aviso-legal" className="hover:text-white">Aviso legal</a><a href="/politica-de-privacidad" className="hover:text-white">Privacidad</a><a href="/politica-de-cookies" className="hover:text-white">Cookies</a></div>
+        </div>
+      </div>
+    </footer>
+  );
+}

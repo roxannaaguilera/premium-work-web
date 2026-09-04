@@ -119,7 +119,7 @@ export function Navbar() {
         {!menu && (
           <a
             href="/registro"
-            className="hidden rounded-sm bg-[#C9A227] px-5 py-3 text-sm font-bold text-[#0B1F3A] transition hover:scale-[1.03] active:scale-[.98] lg:block"
+            className="hidden rounded-full bg-[#C9A227] px-5 py-3 text-sm font-bold text-[#0B1F3A] transition hover:-translate-y-0.5 hover:bg-[#e2be3d] active:translate-y-0 lg:block"
           >
             CANDIDATO / Registrarse
           </a>
@@ -193,7 +193,7 @@ export function Navbar() {
               <a
                 href="/registro"
                 onClick={() => setMenu(false)}
-                className="mt-6 block rounded-sm bg-[#C9A227] px-5 py-4 text-center text-base font-bold text-[#0B1F3A]"
+                className="mt-6 block rounded-full bg-[#C9A227] px-5 py-4 text-center text-base font-bold text-[#0B1F3A] transition hover:-translate-y-0.5 hover:bg-[#e2be3d] active:translate-y-0"
               >
                 CANDIDATO / Registrarse
               </a>

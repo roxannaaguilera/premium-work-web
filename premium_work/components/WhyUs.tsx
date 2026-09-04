@@ -1,23 +1,63 @@
 "use client";
 
-import { motion } from "framer-motion";
 import { ArrowLeft, ArrowRight } from "lucide-react";
-import { useRef } from "react";
+import { motion } from "framer-motion";
+import { useRef, useState } from "react";
 
-const benefits = [["Servicio gestionado", "Un único equipo responsable, desde la propuesta hasta el cierre."], ["Criterio de selección", "Perfiles elegidos por su oficio, actitud y adecuación a su ocasión."], ["Respuesta ágil", "Atención cercana para resolver con precisión cuando el ritmo importa."], ["Coordinación", "Seguimiento operativo para cuidar el estándar en cada punto de contacto."], ["Flexibilidad", "Soluciones a medida para eventos, hotelería, catering y experiencias privadas."]];
+const benefits = [
+  { title: "Selección con criterio", copy: "El perfil que su marca merece." },
+  { title: "Equipos que encajan", copy: "Preparados para su forma de trabajar." },
+  { title: "Supervisión que responde", copy: "Control cuando más importa." },
+  { title: "Una gestión sin fricción", copy: "Un responsable. Una dirección clara." },
+  { title: "Respuesta sin demoras", copy: "Sustitución ágil ante imprevistos." },
+];
 
 export function WhyUs() {
   const scroller = useRef<HTMLDivElement>(null);
+  const [progress, setProgress] = useState(0);
+
   const scroll = (direction: number) => scroller.current?.scrollBy({ left: direction * (scroller.current?.clientWidth ?? 360), behavior: "smooth" });
 
-  return <section id="nosotros" className="section-pad bg-[#e9e3d6]"><div className="mx-auto max-w-[1600px]">
-    <motion.div initial={{ opacity: 0, y: 24 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, margin: "-100px" }} className="grid gap-8 lg:grid-cols-2">
-      <div><p className="eyebrow">◆ Nuestros beneficios</p><a href="#contacto" className="mt-8 hidden rounded-sm border border-[#0B1F3A] px-5 py-3 text-sm font-bold transition hover:scale-[1.03] active:scale-[.98] md:mt-10 md:inline-flex">Contactar <ArrowRight className="ml-2" size={16} /></a></div>
-      <h2 className="display max-w-3xl text-[clamp(2.8rem,13vw,4.25rem)] leading-[.93] md:text-7xl">La tranquilidad de un servicio a la altura de su marca.</h2>
-    </motion.div>
-    <motion.div ref={scroller} initial="hidden" whileInView="visible" viewport={{ once: true, margin: "-100px" }} variants={{ visible: { transition: { staggerChildren: .08 } } }} className="hide-scrollbar mt-12 flex snap-x snap-mandatory overflow-x-auto border-y border-[#0B1F3A]/15 md:mt-16">
-      {benefits.map(([title, copy], index) => <motion.article variants={{ hidden: { opacity: 0, y: 24 }, visible: { opacity: 1, y: 0 } }} className="min-h-[22rem] w-full flex-none snap-start border-r border-[#0B1F3A]/15 p-6 last:border-0 md:min-h-72 md:w-[320px] lg:flex-1" key={title}><p className="display text-4xl">/{String(index + 1).padStart(2, "0")}</p><h3 className="mt-12 text-xl font-bold leading-tight">{title}</h3><p className="mt-4 max-w-xs text-sm leading-6 text-[#0B1F3A]/70">{copy}</p></motion.article>)}
-    </motion.div>
-    <div className="mt-0 flex"><button aria-label="Beneficio anterior" onClick={() => scroll(-1)} className="border border-t-0 border-[#0B1F3A]/30 p-4"><ArrowLeft size={18} /></button><button aria-label="Siguiente beneficio" onClick={() => scroll(1)} className="border border-l-0 border-t-0 border-[#0B1F3A]/30 p-4"><ArrowRight size={18} /></button></div>
-  </div></section>;
+  const handleScroll = () => {
+    const element = scroller.current;
+    if (!element) return;
+    const max = element.scrollWidth - element.clientWidth;
+    setProgress(max > 0 ? element.scrollLeft / max : 0);
+  };
+
+  return (
+    <section id="nosotros" className="flex h-[calc(100svh-5rem)] flex-col overflow-hidden bg-[#F8F7F4]">
+      <motion.header initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, margin: "-100px" }} transition={{ duration: 0.5 }} className="mx-auto grid w-full max-w-[1600px] shrink-0 gap-4 px-5 py-8 md:grid-cols-[.65fr_1.35fr] md:items-end md:gap-12 md:px-8 md:py-10 lg:px-10">
+        <p className="eyebrow flex items-center gap-2 text-[#0B1F3A]/65"><span className="text-[#C9A227]" aria-hidden="true">◆</span> La diferencia Premium Work</p>
+        <h2 className="display max-w-4xl text-[clamp(2.5rem,5.4vw,5.4rem)] leading-[.9] tracking-[-.035em] text-[#0B1F3A]">La diferencia está en <em className="font-normal text-[#C9A227]">cómo lo hacemos.</em></h2>
+      </motion.header>
+
+      <div className="min-h-0 flex-1 overflow-hidden bg-[#e9e3d6]">
+        <div className="mx-auto flex h-full w-full max-w-[1600px] flex-col px-5 py-7 md:px-8 md:py-9 lg:px-10">
+          <motion.div ref={scroller} onScroll={handleScroll} initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, margin: "-100px" }} transition={{ duration: 0.5, delay: 0.08 }} className="hide-scrollbar flex min-h-0 flex-1 snap-x snap-mandatory overflow-x-auto border-y border-[#0B1F3A]/15">
+            {benefits.map((benefit, index) => (
+              <article key={benefit.title} className="group flex h-full min-w-[84vw] snap-start flex-col border-r border-[#0B1F3A]/15 p-5 last:border-r-0 text-right sm:min-w-[48vw] md:p-7 lg:min-w-0 lg:flex-1">
+                <div className="flex items-center justify-between">
+                  <p className="display text-3xl text-[#C9A227]">/{String(index + 1).padStart(2, "0")}</p>
+                  <span className="size-2 rounded-full bg-[#C9A227] transition-transform duration-300 group-hover:scale-[2]" aria-hidden="true" />
+                </div>
+                <div className="flex flex-1 flex-col items-end justify-center pt-6">
+                  <h3 className="max-w-[14ch] text-xl font-bold leading-[1.05] tracking-[-.02em] text-[#0B1F3A] md:text-2xl">{benefit.title}</h3>
+                  <p className="mt-3 max-w-[20ch] text-sm leading-5 text-[#0B1F3A]/65">{benefit.copy}</p>
+                </div>
+              </article>
+            ))}
+          </motion.div>
+
+          <div className="mt-4 flex shrink-0 items-center justify-between gap-5">
+            <div className="h-px flex-1 bg-[#0B1F3A]/15"><div className="h-full bg-[#C9A227] transition-[width] duration-300" style={{ width: `${Math.max(8, progress * 100)}%` }} /></div>
+            <div className="flex border border-[#0B1F3A]/30 lg:hidden">
+              <button type="button" aria-label="Ventaja anterior" onClick={() => scroll(-1)} className="p-3 text-[#0B1F3A] transition hover:bg-[#0B1F3A] hover:text-white"><ArrowLeft size={18} /></button>
+              <button type="button" aria-label="Siguiente ventaja" onClick={() => scroll(1)} className="border-l border-[#0B1F3A]/30 p-3 text-[#0B1F3A] transition hover:bg-[#0B1F3A] hover:text-white"><ArrowRight size={18} /></button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  );
 }
