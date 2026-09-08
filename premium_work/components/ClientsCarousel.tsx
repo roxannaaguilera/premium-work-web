@@ -1,6 +1,6 @@
 "use client";
 
-import { ArrowLeft, ArrowRight } from "lucide-react";
+import { ChevronLeft, ChevronRight } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 
 const sectors = [
@@ -18,56 +18,68 @@ const sectors = [
   { title: "Experiencias privadas", slug: "experiencias-privadas", src: "/images/serv-1-display.webp", position: "object-[50%_center]" },
 ];
 
+const slides = [...sectors, ...sectors, ...sectors];
+
 export function ClientsCarousel() {
-  const [active, setActive] = useState(0);
+  const [position, setPosition] = useState(sectors.length);
+  const [animated, setAnimated] = useState(true);
   const [paused, setPaused] = useState(false);
-  const railRef = useRef<HTMLDivElement>(null);
-  const cardsRef = useRef<(HTMLAnchorElement | null)[]>([]);
+  const touchStart = useRef<number | null>(null);
+  const active = ((position % sectors.length) + sectors.length) % sectors.length;
+
+  const move = (direction: number) => {
+    setAnimated(true);
+    setPosition((current) => Math.max(0, Math.min(slides.length - 1, current + direction)));
+  };
 
   useEffect(() => {
     if (paused) return;
-    const interval = window.setInterval(() => setActive((current) => (current + 1) % sectors.length), 3800);
+    const interval = window.setInterval(() => {
+      setAnimated(true);
+      setPosition((current) => current + 1);
+    }, 3000);
     return () => window.clearInterval(interval);
   }, [paused]);
 
   useEffect(() => {
-    const rail = railRef.current;
-    const card = cardsRef.current[active];
-    if (!rail || !card) return;
-    rail.scrollTo({ left: card.offsetLeft - (rail.clientWidth - card.clientWidth) / 2, behavior: "smooth" });
-  }, [active]);
-
-  const move = (direction: number) => setActive((current) => (current + direction + sectors.length) % sectors.length);
+    if (position >= sectors.length && position < sectors.length * 2) return;
+    const timeout = window.setTimeout(() => {
+      setAnimated(false);
+      setPosition(sectors.length + active);
+    }, 560);
+    return () => window.clearTimeout(timeout);
+  }, [position, active]);
 
   return (
-    <section className="flex min-h-[calc(100svh-5rem)] flex-col justify-center overflow-hidden bg-[#F8F7F4] py-10 md:py-12">
-      <div className="mx-auto mb-8 flex w-full max-w-[1600px] items-center justify-between gap-5 px-5 md:mb-10 md:px-8 lg:px-10">
-        <div className="flex items-center gap-3 text-[#C9A227]">
-          <span className="text-sm" aria-hidden="true">◆</span>
-          <p className="eyebrow text-[#0B1F3A]/70">Sectores para los que diseñamos nuestros servicios</p>
-        </div>
-        <div className="hidden items-center border border-[#0B1F3A]/20 md:flex">
-          <button type="button" onClick={() => move(-1)} aria-label="Sector anterior" className="p-3 transition hover:bg-[#0B1F3A] hover:text-white"><ArrowLeft size={18} /></button>
-          <button type="button" onClick={() => move(1)} aria-label="Siguiente sector" className="border-l border-[#0B1F3A]/20 p-3 transition hover:bg-[#0B1F3A] hover:text-white"><ArrowRight size={18} /></button>
-        </div>
+    <section aria-label="Sectores para los que trabajamos" aria-roledescription="carrusel" className="sectors-moving-light relative isolate overflow-hidden bg-white py-12 md:py-16">
+      <div className="mx-auto mb-8 flex w-full max-w-[1600px] items-center gap-3 px-5 md:mb-10 md:px-8 lg:px-10">
+        <span className="text-sm text-[#C9A227]" aria-hidden="true">◆</span>
+        <h2 className="eyebrow text-[#0B1F3A]/70">Sectores para los que diseñamos nuestros servicios</h2>
       </div>
-
-      <div ref={railRef} className="hide-scrollbar flex snap-x snap-mandatory gap-4 overflow-x-auto px-[14vw] pb-6 md:gap-6 md:px-[22vw]" onMouseEnter={() => setPaused(true)} onMouseLeave={() => setPaused(false)} onTouchStart={() => setPaused(true)}>
-        {sectors.map((sector, index) => {
-          const isActive = index === active;
-          return (
-            <a key={sector.slug} ref={(element) => { cardsRef.current[index] = element; }} href={`/solicitar-servicio?sector=${sector.slug}`} onFocus={() => setActive(index)} onClick={() => setActive(index)} className={`group relative h-[clamp(22rem,58svh,34rem)] min-w-[72vw] snap-center overflow-hidden bg-[#0B1F3A] transition-all duration-700 ease-out md:min-w-[34vw] ${isActive ? "scale-100 opacity-100 grayscale-0 shadow-2xl" : "scale-[.92] opacity-35 grayscale"}`}>
-              <img src={sector.src} alt={sector.title} loading={index < 3 ? "eager" : "lazy"} decoding="async" className={`h-full w-full object-cover ${sector.position} transition duration-700 group-hover:scale-105`} />
-              <span className="absolute inset-0 bg-[linear-gradient(180deg,rgba(11,31,58,.02)_40%,rgba(11,31,58,.9)_100%)]" />
-              <span className="absolute inset-x-0 bottom-0 p-6 text-xl font-bold uppercase leading-tight tracking-[.1em] text-white md:p-8 md:text-2xl">{sector.title}</span>
-            </a>
-          );
-        })}
+      <div className="relative mx-auto max-w-[1600px] md:px-14" onMouseEnter={() => setPaused(true)} onMouseLeave={() => setPaused(false)} onFocusCapture={() => setPaused(true)} onBlurCapture={(event) => { if (!event.currentTarget.contains(event.relatedTarget)) setPaused(false); }}>
+        <button type="button" onClick={() => move(-1)} aria-label="Sector anterior" className="absolute left-0 top-1/2 z-10 hidden -translate-y-1/2 p-3 text-[#0B1F3A]/50 hover:text-[#0B1F3A] md:block"><ChevronLeft size={28} /></button>
+        <div className="sectors-viewport overflow-hidden py-2" onTouchStart={(event) => { touchStart.current = event.touches[0].clientX; setPaused(true); }} onTouchEnd={(event) => { if (touchStart.current !== null) { const distance = touchStart.current - event.changedTouches[0].clientX; if (Math.abs(distance) > 40) move(distance > 0 ? 1 : -1); } touchStart.current = null; setPaused(false); }} onTouchCancel={() => { touchStart.current = null; setPaused(false); }}>
+          <div className="sectors-track flex" style={{ transform: `translateX(calc(50% - var(--sector-width) / 2 - ${position} * (var(--sector-width) + var(--sector-gap))))`, transition: animated ? "transform 550ms ease" : "none" }}>
+            {slides.map((sector, index) => {
+              const visible = Math.abs(index - position) <= 1;
+              return (
+                <a key={`${sector.slug}-${index}`} href={`/solicitar-servicio?sector=${sector.slug}`} tabIndex={visible ? 0 : -1} aria-hidden={!visible} className="sector-card group relative shrink-0 overflow-hidden rounded-xl bg-[#0B1F3A] shadow-md focus-visible:outline-4 focus-visible:outline-offset-2 focus-visible:outline-[#C9A227]">
+                  <img src={sector.src} alt="" loading={Math.abs(index - sectors.length) <= 2 ? "eager" : "lazy"} decoding="async" className={`h-full w-full object-cover ${sector.position} transition-transform duration-500 group-hover:scale-105`} />
+                  <span className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/10 to-transparent" />
+                  <span className="display absolute inset-x-0 bottom-0 p-5 text-2xl font-semibold leading-tight text-white lg:p-6 lg:text-3xl">{sector.title}</span>
+                </a>
+              );
+            })}
+          </div>
+        </div>
+        <button type="button" onClick={() => move(1)} aria-label="Siguiente sector" className="absolute right-0 top-1/2 z-10 hidden -translate-y-1/2 p-3 text-[#0B1F3A]/50 hover:text-[#0B1F3A] md:block"><ChevronRight size={28} /></button>
       </div>
-
-      <div className="mx-auto flex w-full max-w-[1600px] items-center justify-between px-5 text-xs font-semibold uppercase tracking-[.14em] text-[#0B1F3A]/55 md:px-8">
-        <span>{String(active + 1).padStart(2, "0")} / {String(sectors.length).padStart(2, "0")}</span>
-        <span>Selecciona un sector para solicitar un servicio</span>
+      <div className="mt-5 flex justify-center" aria-label="Seleccionar sector">
+        {sectors.map((sector, index) => (
+          <button key={sector.slug} type="button" aria-label={`Ver ${sector.title}`} aria-current={active === index ? "true" : undefined} onClick={() => { setAnimated(true); setPosition(sectors.length + index); }} className="flex h-8 w-6 items-center justify-center rounded-full focus-visible:outline-2 focus-visible:outline-[#0B1F3A] md:w-7">
+            <span className={`h-2.5 w-2.5 rounded-full transition-colors md:h-3 md:w-3 ${active === index ? "bg-[#0B1F3A]" : "bg-[#cecece]"}`} />
+          </button>
+        ))}
       </div>
     </section>
   );

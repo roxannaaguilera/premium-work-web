@@ -14,9 +14,9 @@ const services = [
 ];
 
 const links = [
-  ["Inicio", "#inicio"],
-  ["Acerca de nosotros", "#nosotros"],
-  ["Contacto", "#contacto"]
+  ["Inicio", "/#inicio"],
+  ["Acerca de nosotros", "/#nosotros"],
+  ["Contacto", "/#contacto"]
 ];
 
 const serviceId = (service: string) =>
@@ -40,17 +40,17 @@ export function Navbar() {
 
   return (
     <header
-      className={`fixed inset-x-0 top-0 z-50 border-b transition-all duration-300 ${
+      className={`brand-navbar fixed inset-x-0 top-0 z-50 border-b text-white transition-all duration-300 ${
         scrolled
-          ? "border-[#0B1F3A]/10 bg-[#F8F7F4]/94 shadow-sm backdrop-blur"
-          : "border-white/20 bg-[#0B1F3A]/20 text-white backdrop-blur-sm"
+          ? "brand-navbar--scrolled border-white/15"
+          : "border-white/15"
       }`}
     >
       <nav className="mx-auto flex h-20 max-w-[1600px] items-center justify-between px-5 md:px-8">
 
         {/* Logo */}
         <a
-          href="#inicio"
+          href="/#inicio"
           aria-label="Premium Work, Inicio"
           className="relative block h-16 w-60 md:h-20 md:w-72"
         >
@@ -60,15 +60,13 @@ export function Navbar() {
             fill
             priority
             sizes="192px"
-            className={`object-contain transition-opacity ${
-              scrolled ? "opacity-100" : "brightness-0 invert"
-            }`}
+            className="object-contain brightness-0 invert transition-opacity"
           />
         </a>
 
         {/* Desktop menu */}
         <div className="hidden items-center gap-7 lg:flex">
-          <a href="#inicio" className="text-sm font-semibold">Inicio</a>
+          <a href="/#inicio" className="text-sm font-semibold transition-colors hover:text-[#e5c65a]">Inicio</a>
 
           <div
             className="relative"
@@ -77,28 +75,20 @@ export function Navbar() {
           >
             <button
             onClick={() => setServicesOpen(!servicesOpen)}
-            className="flex items-center gap-1 text-sm font-semibold"
+            className="flex items-center gap-1 text-sm font-semibold transition-colors hover:text-[#e5c65a]"
           >
             Servicios <ChevronDown size={15} />
           </button>
           
             {servicesOpen && (
               <div className="absolute left-1/2 top-full w-60 -translate-x-1/2 pt-4">
-                <div className={`border p-2 shadow-xl ${
-                  scrolled
-                    ? "border-[#0B1F3A]/10 bg-[#F8F7F4] text-[#0B1F3A]"
-                    : "border-white/20 bg-[#0B1F3A]/95 text-white backdrop-blur"
-                }`}>
+                <div className="border border-white/15 bg-[#0B1F3A]/90 p-2 text-white shadow-xl backdrop-blur-xl">
                   {services.map((s) => (
                     <a
                       key={s}
-                      href={`#${serviceId(s)}`}
+                      href={`/solicitar-servicio?servicio=${serviceId(s)}`}
                       onClick={() => setServicesOpen(false)}
-                      className={`block px-4 py-3 text-sm transition-colors ${
-                        scrolled
-                          ? "hover:bg-[#0B1F3A] hover:text-white"
-                          : "hover:bg-white/10"
-                      }`}
+                      className="block px-4 py-3 text-sm transition-colors hover:bg-white/10 hover:text-[#e5c65a]"
                     >
                       {s}
                     </a>
@@ -109,7 +99,7 @@ export function Navbar() {
           </div>
 
           {links.slice(1).map(([name, href]) => (
-            <a key={name} href={href} className="text-sm font-semibold">
+            <a key={name} href={href} className="text-sm font-semibold transition-colors hover:text-[#e5c65a]">
               {name}
             </a>
           ))}
@@ -138,11 +128,7 @@ export function Navbar() {
       {/* Mobile Fullscreen Menu */}
       {menu && (
         <div
-          className={`fixed inset-0 z-50 h-screen overflow-y-auto px-5 pb-10 pt-6 lg:hidden transition-all ${
-            scrolled
-              ? "bg-[#F8F7F4] text-[#0B1F3A]"
-              : "bg-[#0B1F3A]/95 text-white backdrop-blur"
-          }`}
+          className="brand-navbar fixed inset-0 z-50 h-screen overflow-y-auto px-5 pb-10 pt-6 text-white transition-all lg:hidden"
         >
           <div className="mx-auto max-w-[1600px]">
 
@@ -179,7 +165,7 @@ export function Navbar() {
                   {services.map((s) => (
                     <a
                       onClick={() => setMenu(false)}
-                      href={`#${serviceId(s)}`}
+                      href={`/solicitar-servicio?servicio=${serviceId(s)}`}
                       key={s}
                       className="block text-base"
                     >
@@ -211,7 +197,7 @@ export function Navbar() {
                 </a>
 
                 <a
-                  href="https://mail.google.com/mail/?view=cm&fs=1&to=info@premiumwork.es"
+                  href="mailto:hola@premiumwork.es"
                   className="block py-2"
                   target="_blank"
                 >

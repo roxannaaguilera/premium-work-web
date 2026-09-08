@@ -1,6 +1,6 @@
 "use client";
 
-import { motion } from "framer-motion";
+import { motion, useReducedMotion } from "framer-motion";
 import { ArrowRight } from "lucide-react";
 
 const services = [
@@ -57,30 +57,31 @@ const mobileActions = [
   },
   {
     title: "Soluciones para empresas",
-    href: "#contacto",
+    href: "/solicitar-servicio",
     src: "/images/serv-6-display.webp",
     position: "object-[50%_center]",
   },
 ];
 
 export function Features() {
+  const reducedMotion = useReducedMotion();
   return (
     <section
       id="servicios"
-      className="w-full overflow-hidden bg-[#F8F7F4]"
+      className="brand-surface-soft w-full overflow-hidden"
     >
       {/* MOBILE */}
-      <div className="py-20 lg:hidden">
+      <div className="relative overflow-hidden py-20 lg:hidden">
         <h2 id="que-necesitas" className="display scroll-mt-20 px-5 text-[2.6rem] leading-none text-[#0B1F3A]">
           ¿Qué necesitas?
         </h2>
 
-        <div className="hide-scrollbar mt-9 flex snap-x snap-mandatory gap-4 overflow-x-auto pb-3">
+        <div className="hide-scrollbar mt-9 flex snap-x snap-mandatory gap-3 overflow-x-auto px-[12vw] pb-3">
           {mobileActions.map((action) => (
             <a
               key={action.title}
               href={action.href}
-              className="group relative h-[31rem] min-w-[85vw] snap-start overflow-hidden bg-[#0B1F3A] text-white"
+              className="group relative aspect-[1.08] w-[76vw] shrink-0 snap-center overflow-hidden rounded-xl bg-[#0B1F3A] text-white shadow-md"
             >
               <img
                 src={action.src}
@@ -89,14 +90,14 @@ export function Features() {
                 className={`absolute inset-0 h-full w-full object-cover ${action.position} transition duration-500 group-hover:scale-105`}
               />
 
-              <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(11,31,58,.02)_25%,rgba(11,31,58,.9)_100%)]" />
+              <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/10 to-transparent" />
 
-              <div className="absolute inset-x-0 bottom-0 p-7">
-                <p className="max-w-[11ch] text-[2.2rem] leading-[1.02] tracking-[-.045em]">
+              <div className="absolute inset-x-0 bottom-0 p-5">
+                <motion.p initial={{ opacity: reducedMotion ? 1 : 0, x: reducedMotion ? 0 : -80 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: false, amount: 0.3 }} transition={{ duration: 0.8, ease: "easeOut" }} className="display max-w-[15ch] text-2xl font-semibold leading-tight">
                   {action.title}
-                </p>
+                </motion.p>
 
-                <span className="mt-7 inline-flex size-12 items-center justify-center rounded-full border border-white/50 transition group-hover:bg-white group-hover:text-[#0B1F3A]">
+                <span className="mt-4 inline-flex size-10 items-center justify-center rounded-full border border-white/50 transition group-hover:bg-white group-hover:text-[#0B1F3A]">
                   <ArrowRight size={25} aria-hidden="true" />
                 </span>
               </div>
@@ -115,23 +116,19 @@ export function Features() {
           const imageFirst = index % 2 === 1;
 
           return (
-            <motion.article
+            <article
               id={service.slug}
               key={service.title}
-              initial={{ opacity: 0, y: 24 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, margin: "-100px" }}
-              transition={{ duration: 0.5 }}
               className="grid min-h-[100svh] w-full grid-cols-2"
             >
               {/* TEXTO */}
               <div
-                className={`flex items-center bg-[#F8F7F4] px-[clamp(3rem,8vw,9rem)] py-16 ${
+                className={`feature-soft-panel relative isolate flex items-center overflow-hidden px-[clamp(3rem,8vw,9rem)] py-16 ${
                   imageFirst ? "order-2" : "order-1"
                 }`}
               >
-                <div className="max-w-md">
-                  <p className="eyebrow text-[#C9A227]">
+                <motion.div initial={{ opacity: reducedMotion ? 1 : 0, x: reducedMotion ? 0 : imageFirst ? 120 : -120 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: false, amount: 0.25 }} transition={{ duration: 0.9, ease: "easeOut" }} className="relative max-w-md">
+                  <p className="eyebrow text-[#94751D]">
                     {String(index + 1).padStart(2, "0")}
                   </p>
 
@@ -142,7 +139,7 @@ export function Features() {
                   <p className="mt-8 text-base leading-7 text-[#0B1F3A]/75">
                     {service.copy}
                   </p>
-                </div>
+                </motion.div>
               </div>
 
               {/* FOTO SIN MÁRGENES */}
@@ -161,7 +158,7 @@ export function Features() {
 
                 <div className="pointer-events-none absolute inset-0 bg-[linear-gradient(135deg,rgba(11,31,58,.15),transparent_55%,rgba(11,31,58,.28))]" />
               </div>
-            </motion.article>
+            </article>
           );
         })}
       </div>

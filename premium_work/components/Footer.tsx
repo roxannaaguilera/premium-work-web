@@ -1,6 +1,5 @@
 "use client";
 
-import Image from "next/image";
 import { ArrowUpRight, Mail } from "lucide-react";
 
 const WHATSAPP_NUMBER = "34604858113";
@@ -23,18 +22,18 @@ function LinkedInIcon() {
 }
 
 function FacebookIcon() {
-  return <svg className="size-[18px]" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M13.8 20v-7h2.4l.4-2.8h-2.8V8.4c0-.8.2-1.4 1.4-1.4h1.5V4.5c-.3 0-1.2-.1-2.2-.1-2.2 0-3.7 1.3-3.7 3.8v2.1H8.3V13h2.5v7h3Z" /></svg>;
+  return <svg className="h-5 w-5 shrink-0" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M13.5 21v-8h2.7l.4-3h-3.1V8.1c0-.9.3-1.5 1.6-1.5H16V3.9c-.4-.1-1.3-.1-2.3-.1-2.4 0-4 1.4-4 4.1V10H7v3h2.7v8h3.8Z" /></svg>;
 }
 
 export function Footer() {
   const year = new Date().getFullYear();
 
   return (
-    <footer id="contacto" className="h-[calc(100svh-5rem)] overflow-hidden bg-[#0B1F3A] text-[#F8F7F4]">
+    <footer id="contacto" className="brand-footer h-[calc(100svh-5rem)] overflow-hidden text-[#F8F7F4]">
       <div className="mx-auto flex h-full max-w-[1600px] flex-col px-5 py-5 md:px-8 md:py-6 lg:px-10">
         <header className="flex shrink-0 items-center justify-between border-b border-white/15 pb-4">
           <p className="eyebrow flex items-center gap-2 text-white/60"><span className="text-[#C9A227]" aria-hidden="true">◆</span> Hablemos de su próximo servicio</p>
-          <Image src="/images/logo_nombre_premium_work.png" alt="Premium Work" width={1600} height={1600} className="h-8 w-auto max-w-[42vw] object-contain md:h-10" priority />
+
         </header>
 
         <div className="grid min-h-0 flex-1 gap-8 py-6 md:gap-14 lg:grid-cols-[1.35fr_.65fr] lg:py-7">
@@ -56,9 +55,9 @@ export function Footer() {
             <div>
               <p className="eyebrow text-[#C9A227]">Síguenos</p>
               <div className="mt-3 flex gap-2">
-                <a href="#" aria-label="Instagram" className="flex size-10 items-center justify-center rounded-full border border-white/20 transition hover:border-[#C9A227] hover:bg-[#C9A227] hover:text-[#0B1F3A]"><InstagramIcon /></a>
-                <a href="#" aria-label="LinkedIn" className="flex size-10 items-center justify-center rounded-full border border-white/20 transition hover:border-[#C9A227] hover:bg-[#C9A227] hover:text-[#0B1F3A]"><LinkedInIcon /></a>
-                <a href="#" aria-label="Facebook" className="flex size-10 items-center justify-center rounded-full border border-white/20 transition hover:border-[#C9A227] hover:bg-[#C9A227] hover:text-[#0B1F3A]"><FacebookIcon /></a>
+                <a href="https://www.instagram.com/" target="_blank" rel="noopener noreferrer" aria-label="Instagram" className="flex size-10 items-center justify-center rounded-full border border-white/20 transition hover:border-[#C9A227] hover:bg-[#C9A227] hover:text-[#0B1F3A]"><InstagramIcon /></a>
+                <a href="https://www.linkedin.com/" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn" className="flex size-10 items-center justify-center rounded-full border border-white/20 transition hover:border-[#C9A227] hover:bg-[#C9A227] hover:text-[#0B1F3A]"><LinkedInIcon /></a>
+                <a href="https://www.facebook.com/" target="_blank" rel="noopener noreferrer" aria-label="Facebook" className="flex size-10 items-center justify-center rounded-full border border-white/20 transition hover:border-[#C9A227] hover:bg-[#C9A227] hover:text-[#0B1F3A]"><FacebookIcon /></a>
               </div>
             </div>
           </div>
@@ -66,7 +65,7 @@ export function Footer() {
 
         <div className="grid shrink-0 gap-4 border-y border-white/15 py-4 sm:grid-cols-2 lg:grid-cols-[.65fr_1.35fr]">
           <nav aria-label="Navegación del pie de página" className="flex flex-wrap gap-x-5 gap-y-1">{navigation.map((item) => <a key={item.label} href={item.href} className="text-sm text-white/65 transition hover:text-[#C9A227]">{item.label}</a>)}</nav>
-          <div className="hidden flex-wrap gap-x-5 gap-y-1 sm:flex">{services.map((service) => <a key={service} href="#servicios" className="text-sm text-white/65 transition hover:text-[#C9A227]">{service}</a>)}</div>
+          <div className="hidden flex-wrap gap-x-5 gap-y-1 sm:flex">{services.map((service) => <a key={service} href={`/solicitar-servicio?servicio=${service === "Camareros/as" ? "camareros" : service.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase().replaceAll(" ", "-")}`} className="text-sm text-white/65 transition hover:text-[#C9A227]">{service}</a>)}</div>
         </div>
 
         <div className="flex shrink-0 items-center justify-between pt-4 text-[0.62rem] uppercase tracking-[.12em] text-white/35">
