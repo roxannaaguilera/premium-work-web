@@ -5,9 +5,9 @@ const path = require('node:path');
 const ts = require('typescript');
 function load(file, mocks = {}) {
   const source = fs.readFileSync(path.join(__dirname, '..', file), 'utf8');
-  const code = ts.transpileModule(source, { compilerOptions: { module: ts.ModuleKind.CommonJS, target: ts.ScriptTarget.ES2022 } }).outputText;
+  const code = ts.transpileModule(source, { compilerOptions: { module: ts.ModuleKind.CommonJS, esModuleInterop: true, target: ts.ScriptTarget.ES2022 } }).outputText;
   const module = { exports: {} };
-  new Function('require', 'module', 'exports', code)((name) => mocks[name] || require(name), module, module.exports);
+  new Function('require', 'module', 'exports', code)((name) => { if (mocks[name]) return mocks[name]; if (name.startsWith('@/')) return load(name.slice(2) + '.ts'); if (name.startsWith('.')) { const local = path.join(path.dirname(file), name); return name.endsWith('.json') ? JSON.parse(fs.readFileSync(path.join(__dirname, '..', local), 'utf8')) : load(local + '.ts'); } return require(name); }, module, module.exports);
   return module.exports;
 }
 const prefs = load('lib/cookie-preferences.ts');

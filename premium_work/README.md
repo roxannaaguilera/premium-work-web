@@ -24,6 +24,7 @@ La aplicación estará disponible normalmente en `http://localhost:3000`.
 - Formularios integrados en un fondo de degradado vertical azul con toque dorado y tira separadora luminosa.
 - Botones conectados a formularios, preselección de servicio/sector y enlaces provisionales a las páginas principales de redes sociales.
 - Candidatos con CV privado y filtros profesionales; solicitudes comerciales con filtros y paginación.
+- El registro comienza con la carga del CV y su lectura local para sugerir datos editables. Admite PDF con texto de hasta 5 MB y 20 páginas; los documentos escaneados o protegidos requieren completar los campos manualmente. No se envía el CV hasta presentar la candidatura. Al cambiar de archivo se conservan las correcciones manuales.
 - Scripts SQL, documentación de las integraciones y 16 pruebas con Supabase simulado.
 
 ## Paneles
@@ -43,7 +44,7 @@ Ambos requieren `CANDIDATE_ADMIN_TOKEN` para consultar datos. **La conexión rea
 ## Verificación
 
 ```powershell
-node --test tests/candidates.test.cjs tests/clients.test.cjs tests/privacy.test.cjs
+node --test tests/*.test.cjs
 npx.cmd tsc --noEmit
 npm.cmd run build
 ```

@@ -1,3 +1,5 @@
+import { validateForm } from "@/lib/form-validation";
+import { normalizedPhone, resolveCity } from "@/lib/contact-options";
 import { legalReady, PRIVACY_VERSION } from "@/lib/legal";
 import { randomUUID } from "node:crypto";
 import { authorized, CV_BUCKET, database, privateHeaders } from "@/lib/candidates";
@@ -21,19 +23,23 @@ export async function POST(request: Request) {
       chunks.push(value);
     }
     const data = await new Response(Buffer.concat(chunks), { headers: { "Content-Type": request.headers.get("content-type") || "" } }).formData();
+    const errors = validateForm("candidate", Object.fromEntries(data));
+    if (Object.keys(errors).length) return Response.json({ error: "Revisa los campos señalados.", errors }, { status: 400, headers: privateHeaders });
     const values: Record<string, string> = {};
     for (const key of ["name", "email", "phone", "city", "sector", "companies", "availability"]) {
       const value = data.get(key);
       if (typeof value !== "string" || !value.trim() || value.length > (key === "availability" || key === "companies" ? 3000 : 200)) return Response.json({ error: "Revisa los campos obligatorios y su longitud." }, { status: 400 });
       values[key] = value.trim();
     }
+    values.phone = normalizedPhone(values.phone, data.get("phone_country") ?? "ES")!;
+    values.city = resolveCity(values.city)!;
     const rawYears = data.get("years");
-    const years = Number(rawYears);
+    const years = Number(String(rawYears).replace(",", "."));
     if (typeof rawYears !== "string" || !rawYears.trim() || !Number.isFinite(years) || years < 0 || years > 80 || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(values.email) || data.get("consent") !== "on") return Response.json({ error: "Revisa el email, los años de experiencia y el consentimiento." }, { status: 400 });
     const cv = data.get("cv");
     if (!(cv instanceof File) || cv.size === 0 || cv.size > 5 * 1024 * 1024 || !cv.name.toLowerCase().endsWith(".pdf")) return Response.json({ error: "Adjunta un CV en PDF de hasta 5 MB." }, { status: 400 });
     const bytes = Buffer.from(await cv.arrayBuffer());
-    if (bytes.subarray(0, 5).toString() !== "%PDF-") return Response.json({ error: "El archivo no es un PDF válido." }, { status: 400 });
+    if (bytes.subarray(0, 5).toString() !== "%PDF-") return Response.json({ error: "El archivo no es un PDF válido.", errors: { cv: "El archivo no es un PDF válido." } }, { status: 400, headers: privateHeaders });
     const db = database();
     const id = randomUUID();
     const cvPath = `${id}/cv.pdf`;

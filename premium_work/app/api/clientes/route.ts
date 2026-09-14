@@ -1,3 +1,5 @@
+import { validateForm } from "@/lib/form-validation";
+import { normalizedPhone, resolveCity } from "@/lib/contact-options";
 import { legalReady, PRIVACY_VERSION } from "@/lib/legal";
 import { randomUUID } from "node:crypto";
 import { authorized, database, privateHeaders } from "@/lib/candidates";
@@ -25,6 +27,8 @@ export async function POST(request: Request) {
     data = JSON.parse(Buffer.concat(chunks).toString("utf8"));
     if (!data || typeof data !== "object" || Array.isArray(data)) return error("Datos no válidos.");
   } catch { return error("No se ha podido leer la solicitud."); }
+  const errors = validateForm("client", data);
+  if (Object.keys(errors).length) return Response.json({ error: "Revisa los campos señalados.", errors }, { status: 400, headers: privateHeaders });
   const values: Record<string, string> = {};
   for (const key of ["name", "company", "email", "city", "sector", "service", "message"]) {
     const value = data[key];
@@ -32,7 +36,8 @@ export async function POST(request: Request) {
     values[key] = value.trim();
   }
   if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(values.email) || !Object.hasOwn(sectorLabels, values.sector) || !Object.hasOwn(serviceLabels, values.service) || data.consent !== "on") return error("Revisa el email, el servicio, el sector y el consentimiento.");
-  const phone = data.phone ?? "", eventDate = data.event_date ?? "";
+  values.city = resolveCity(values.city)!;
+  const phone = normalizedPhone(String(data.phone ?? ""), data.phone_country ?? "ES")!, eventDate = data.event_date ?? "";
   if (typeof phone !== "string" || phone.length > 100 || typeof eventDate !== "string" || (eventDate && !validDate(eventDate))) return error("Revisa el teléfono o la fecha del evento.");
   function optionalNumber(value: unknown) {
     if (value === "" || value === undefined || value === null) return null;

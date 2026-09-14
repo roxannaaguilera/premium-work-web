@@ -8,9 +8,9 @@ const ts = require('typescript');
 // No network requests, credentials, or candidate files leave this process.
 function load(file, mocks = {}) {
   const source = fs.readFileSync(path.join(__dirname, '..', file), 'utf8');
-  const compiled = ts.transpileModule(source, { compilerOptions: { module: ts.ModuleKind.CommonJS, target: ts.ScriptTarget.ES2022 } }).outputText;
+  const compiled = ts.transpileModule(source, { compilerOptions: { module: ts.ModuleKind.CommonJS, esModuleInterop: true, target: ts.ScriptTarget.ES2022 } }).outputText;
   const module = { exports: {} };
-  new Function('require', 'module', 'exports', compiled)((name) => mocks[name] || require(name), module, module.exports);
+  new Function('require', 'module', 'exports', compiled)((name) => { if (mocks[name]) return mocks[name]; if (name.startsWith('@/')) return load(name.slice(2) + '.ts'); if (name.startsWith('.')) { const local = path.join(path.dirname(file), name); return name.endsWith('.json') ? JSON.parse(fs.readFileSync(path.join(__dirname, '..', local), 'utf8')) : load(local + '.ts'); } return require(name); }, module, module.exports);
   return module.exports;
 }
 
@@ -51,6 +51,25 @@ function submission(overrides = {}) {
   return new Request('http://localhost/api/candidatos', { method: 'POST', body: data });
 }
 function authenticated(url) { return new Request(url, { headers: { authorization: `Bearer ${process.env.CANDIDATE_ADMIN_TOKEN}` } }); }
+
+test('rejects invalid contact details, sectors and experience before storage', async () => {
+  const { routes, calls } = setup();
+  for (const patch of [{ name: '   ' }, { name: 'Ana' }, { name: 'A B' }, { name: 'Ana 123' }, { city: 'Paris' }, { phone: 'abcdefghi' }, { phone: '123' }, { sector: 'unknown' }, { years: 'abc' }]) {
+    const response = await routes.POST(submission(patch));
+    assert.equal(response.status, 400);
+    assert.ok((await response.json()).errors[Object.keys(patch)[0]]);
+  }
+  assert.equal(calls.length, 0);
+});
+
+test('stores international prefix and manually entered decimal experience', async () => {
+  const { routes, calls } = setup();
+  const response = await routes.POST(submission({ phone: '15123456789', phone_country: 'DE', years: '2,25' }));
+  assert.equal(response.status, 201);
+  const row = calls.find(call => call[0] === 'insert')[1];
+  assert.equal(row.phone, '+4915123456789');
+  assert.equal(row.years, 2.25);
+});
 
 test('stores validated candidate and private PDF, without exposing a file URL', async () => {
   const { routes, calls } = setup();

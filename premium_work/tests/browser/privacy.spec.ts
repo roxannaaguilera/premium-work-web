@@ -23,15 +23,15 @@ test("banner respects rejection and only loads local resources", async ({ page }
 test("preferences can be reopened, changed, and applied without storage on mobile", async ({ page }) => {
   await page.setViewportSize({ width: 390, height: 844 });
   await page.goto("/politica-de-cookies");
-  await page.getByRole("region", { name: "Aviso de cookies y almacenamiento" }).getByRole("button", { name: "Configurar", exact: true }).click();
+  await expect(page.getByRole("region", { name: "Aviso de cookies y almacenamiento" })).toHaveCount(0);
+  await page.getByRole("button", { name: "Preferencias de cookies", exact: true }).click();
   const dialog = page.getByRole("dialog");
   await expect(dialog).toBeVisible();
   await dialog.getByRole("checkbox").uncheck();
   await dialog.getByRole("button", { name: "Guardar preferencias" }).click();
   expect(await page.evaluate(() => localStorage.getItem("pw_cookie_preferences"))).toBeNull();
   await page.reload();
-  await expect(page.getByRole("region", { name: "Aviso de cookies y almacenamiento" })).toBeVisible();
-  await page.getByRole("region", { name: "Aviso de cookies y almacenamiento" }).getByRole("button", { name: "Aceptar", exact: true }).click();
+  await expect(page.getByRole("region", { name: "Aviso de cookies y almacenamiento" })).toHaveCount(0);
   await page.getByRole("button", { name: "Preferencias de cookies", exact: true }).click();
   await expect(dialog).toBeVisible();
   await page.keyboard.press("Escape");
@@ -46,6 +46,9 @@ test("legal routes exist, forms link to privacy, production is blocked while det
   }
   for (const route of ["/registro", "/solicitar-servicio"]) {
     await page.goto(route);
+    await expect(page.getByRole("region", { name: "Aviso de cookies y almacenamiento" })).toHaveCount(0);
+    await page.reload();
+    await expect(page.getByRole("region", { name: "Aviso de cookies y almacenamiento" })).toHaveCount(0);
     await expect(page.locator('form a[href="/politica-de-privacidad"]')).toBeVisible();
   }
   for (const route of ["/api/clientes", "/api/candidatos"]) {

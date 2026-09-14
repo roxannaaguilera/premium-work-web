@@ -6,9 +6,9 @@ const ts = require('typescript');
 
 function load(file, mocks = {}) {
   const source = fs.readFileSync(path.join(__dirname, '..', file), 'utf8');
-  const compiled = ts.transpileModule(source, { compilerOptions: { module: ts.ModuleKind.CommonJS, target: ts.ScriptTarget.ES2022 } }).outputText;
+  const compiled = ts.transpileModule(source, { compilerOptions: { module: ts.ModuleKind.CommonJS, esModuleInterop: true, target: ts.ScriptTarget.ES2022 } }).outputText;
   const module = { exports: {} };
-  new Function('require', 'module', 'exports', compiled)((name) => mocks[name] || require(name), module, module.exports);
+  new Function('require', 'module', 'exports', compiled)((name) => { if (mocks[name]) return mocks[name]; if (name.startsWith('@/')) return load(name.slice(2) + '.ts'); if (name.startsWith('.')) { const local = path.join(path.dirname(file), name); return name.endsWith('.json') ? JSON.parse(fs.readFileSync(path.join(__dirname, '..', local), 'utf8')) : load(local + '.ts'); } return require(name); }, module, module.exports);
   return module.exports;
 }
 function setup(fail = false) {
@@ -56,6 +56,17 @@ test('rejects invalid consent, enum values, dates, staff and monetary amounts', 
   for (const value of [{ consent: '' }, { email: 'invalid' }, { sector: 'unknown' }, { service: '__proto__' }, { event_date: '2027-02-30' }, { staff_count: '1.5' }, { budget: '-1' }, { budget: '12.345' }, { budget: true }, { message: 'a'.repeat(5001) }]) assert.equal((await routes.POST(request(value))).status, 400);
   assert.equal(calls.length, 0);
 });
+test('returns field errors for blank text and invalid phones without writing data', async () => {
+  const { routes, calls } = setup();
+  for (const patch of [{ name: '   ' }, { name: 'Ana' }, { name: 'A B' }, { city: 'Paris' }, { company: '\t' }, { phone: 'call me' }, { phone: '123' }, { phone: '1234567890123456' }]) {
+    const response = await routes.POST(request(patch));
+    assert.equal(response.status, 400);
+    assert.ok((await response.json()).errors[Object.keys(patch)[0]]);
+  }
+  assert.equal(calls.length, 0);
+  assert.equal((await routes.POST(request({ phone: '+34 (600) 123-456' }))).status, 201);
+});
+
 test('rejects malformed, oversized and cross-origin submissions', async () => {
   const { routes, calls } = setup();
   assert.equal((await routes.POST(new Request('http://localhost/api/clientes', { method: 'POST', headers: { 'content-type': 'application/json' }, body: '{' }))).status, 400);

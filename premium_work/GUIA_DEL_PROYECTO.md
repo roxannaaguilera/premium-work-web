@@ -211,7 +211,7 @@ Las solicitudes nuevas registran `privacy_version`. Ejecutar `supabase/privacy-u
 Se añadieron cuatro pruebas de privacidad a las 16 existentes y tres comprobaciones de navegador en `tests/browser/privacy.spec.ts`, ejecutables con `npx.cmd playwright test` después del build. La prueba de bloqueo en producción corresponde a la configuración de borrador y debe adaptarse al activarla.
 
 Documentación completa y tareas del titular: [PUESTA_EN_MARCHA_LEGAL.md](PUESTA_EN_MARCHA_LEGAL.md).
-El aviso de cookies se incluye en el HTML inicial y permanece visible hasta aceptar, rechazar o guardar preferencias. Recuperar una elecci�n anterior no lo cierra autom�ticamente; se vuelve a mostrar al abrir o recargar la web.
+El aviso de cookies se incluye en el HTML inicial y permanece visible hasta aceptar, rechazar o guardar preferencias. Recuperar una elecci�n anterior no lo cierra autom�ticamente; se vuelve a mostrar al abrir o recargar la página de inicio. No aparece en los formularios ni en las demás rutas.
 
 ## Profesiones y footer en m�vil
 
