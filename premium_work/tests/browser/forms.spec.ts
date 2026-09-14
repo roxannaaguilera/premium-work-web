@@ -18,6 +18,9 @@ for (const path of ["/registro", "/solicitar-servicio"]) {
     await form.locator('button[type="submit"]').click();
     await expect(form.locator('[name="name"]')).toBeFocused();
     await expect(form.locator('[name="name"]')).toHaveAttribute("aria-invalid", "true");
+    await expect(form.locator('[name="consent"]')).toBeVisible();
+    await expect(form.locator('[name="consent"]')).toHaveAttribute("aria-invalid", "true");
+    await expect(form.getByText("Marca esta casilla para poder enviar el formulario.", { exact: true })).toBeVisible();
     expect(submissions).toBe(0);
     for (const [name, value] of Object.entries({ name: "Ana", email: "invalid", phone: "abcdef" })) await form.locator(`[name="${name}"]`).fill(value);
     await form.locator('button[type="submit"]').click();

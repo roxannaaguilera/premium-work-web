@@ -1,6 +1,7 @@
 "use client";
 
 import { CityField } from "@/components/CityField";
+import { FormConsent } from "@/components/FormConsent";
 import { PhoneField, usePhoneValue } from "@/components/PhoneField";
 import { useFormValidation } from "@/components/useFormValidation";
 import { useState, type FormEvent } from "react";
@@ -47,6 +48,7 @@ export function ClientForm({ sector = "", service = "" }: { sector?: string; ser
       <label className="text-sm font-bold">Profesionales necesarios (opcional)<input type="number" min="1" max="10000" step="1" name="staff_count" {...validation.props("staff_count")} className={field} />{validation.error("staff_count")}</label>
       <label className="text-sm font-bold">Presupuesto estimado en € (opcional)<input type="number" min="0" max="100000000" step="0.01" name="budget" {...validation.props("budget")} className={field} />{validation.error("budget")}</label>
       <label className="text-sm font-bold sm:col-span-2">¿En qué podemos ayudarte? *<textarea required name="message" {...validation.props("message")} rows={5} maxLength={5000} className={field} />{validation.error("message")}</label>
+      <FormConsent validation={validation} />
       <button type="submit" className="rounded-full bg-[#C9A227] px-6 py-4 text-sm font-bold text-[#0B1F3A] transition hover:bg-[#e2be3d] disabled:opacity-60 sm:col-span-2">{busy ? "GUARDANDO SOLICITUD…" : "ENVIAR SOLICITUD"}</button>
     </fieldset>
     <p role={success ? "status" : "alert"} className="mt-4 text-sm text-white">{status}</p>

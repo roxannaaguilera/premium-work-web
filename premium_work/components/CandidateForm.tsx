@@ -1,6 +1,7 @@
 "use client";
 
 import { candidateSectors } from "@/lib/form-validation";
+import { FormConsent } from "@/components/FormConsent";
 import { resolveCity } from "@/lib/contact-options";
 import { CityField } from "@/components/CityField";
 import { PhoneField, usePhoneValue } from "@/components/PhoneField";
@@ -107,6 +108,7 @@ export function CandidateForm() {
       <label className="text-sm font-bold">Sector en el que trabajas *<select required name="sector" {...validation.props("sector")} defaultValue="" className={field}><option value="">Selecciona un sector</option>{candidateSectors.map((sector) => <option key={sector}>{sector}</option>)}</select>{validation.error("sector")}</label>
       <label className="text-sm font-bold sm:col-span-2">Empresas en las que has trabajado *<textarea required maxLength={3000} name="companies" {...validation.props("companies")} rows={2} placeholder="Una empresa por línea. Si es tu primer empleo, indica «Sin experiencia»." className={field} />{validation.error("companies")}</label>
       <label className="text-sm font-bold sm:col-span-2">Puesto de interés, experiencia y disponibilidad *<textarea required maxLength={3000} name="availability" {...validation.props("availability")} rows={4} className={field} />{validation.error("availability")}</label>
+      <FormConsent candidate validation={validation} />
       <button type="submit" className="rounded-full bg-[#C9A227] px-6 py-4 text-sm font-bold text-[#0B1F3A] transition hover:bg-[#e2be3d] disabled:opacity-60 sm:col-span-2">{reading ? "LEYENDO CV…" : busy ? "GUARDANDO CANDIDATURA…" : "ENVIAR CANDIDATURA"}</button>
     </fieldset>
     <p role={success ? "status" : "alert"} className="mt-4 text-sm text-white">{status}</p>

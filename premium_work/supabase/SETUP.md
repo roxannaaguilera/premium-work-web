@@ -1,15 +1,17 @@
 # Candidaturas en Supabase
 
-1. Crea el proyecto Supabase y ejecuta `supabase/candidates.sql` en su SQL Editor.
+1. Crea el proyecto Supabase y ejecuta `supabase/setup-all.sql` en su SQL Editor. Incluye ambas tablas, la actualización de privacidad y el almacenamiento privado de CV.
 2. En `.env.local` (desarrollo) y en las variables privadas del alojamiento (producción), configura:
 
 ```dotenv
 SUPABASE_URL=https://TU-PROYECTO.supabase.co
-SUPABASE_SERVICE_ROLE_KEY=TU_CLAVE_PRIVADA_DEL_SERVIDOR
+SUPABASE_SECRET_KEY=TU_CLAVE_PRIVADA_DEL_SERVIDOR
 CANDIDATE_ADMIN_TOKEN=UNA_CLAVE_ALEATORIA_DE_AL_MENOS_32_CARACTERES
 ```
 
 No uses el prefijo `NEXT_PUBLIC_` para estas claves. Nunca compartas la clave de servicio en el navegador. Genera una clave administrativa independiente con un gestor de contraseñas. Reinicia el servidor después de configurar las variables.
+
+La variable antigua `SUPABASE_SERVICE_ROLE_KEY` sigue siendo compatible; se prioriza `SUPABASE_SECRET_KEY`. En Vercel, configura `SUPABASE_URL`, `SUPABASE_SECRET_KEY` y `CANDIDATE_ADMIN_TOKEN` como variables privadas del proyecto y vuelve a desplegar. `.env.local` solo configura el entorno local.
 
 3. Envía una candidatura de prueba desde `/registro`, con un PDF de hasta 5 MB. El mensaje de éxito solo aparece después de guardar los datos y el archivo.
 4. Abre `/admin/candidatos` e introduce **CANDIDATE_ADMIN_TOKEN**, no la clave de Supabase. Filtra por experiencia, sector o empresa y descarga el PDF. La clave se conserva solo en memoria hasta cerrar o recargar la página.

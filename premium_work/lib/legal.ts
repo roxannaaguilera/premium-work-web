@@ -8,7 +8,7 @@ export const legal = {
   email: "hola@premiumwork.es",
   candidateRetention: "",
   clientRetention: "",
-  hosting: "",
+  hosting: "Vercel",
   supabaseRegion: "",
   internationalTransfers: "",
   reviewed: false,
