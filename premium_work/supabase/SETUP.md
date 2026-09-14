@@ -13,7 +13,7 @@ No uses el prefijo `NEXT_PUBLIC_` para estas claves. Nunca compartas la clave de
 
 La variable antigua `SUPABASE_SERVICE_ROLE_KEY` sigue siendo compatible; se prioriza `SUPABASE_SECRET_KEY`. En Vercel, configura `SUPABASE_URL`, `SUPABASE_SECRET_KEY` y `CANDIDATE_ADMIN_TOKEN` como variables privadas del proyecto y vuelve a desplegar. `.env.local` solo configura el entorno local.
 
-3. Envía una candidatura de prueba desde `/registro`, con un PDF de hasta 5 MB. El mensaje de éxito solo aparece después de guardar los datos y el archivo.
+3. Envía una candidatura de prueba desde `/registro`, con un PDF de hasta 4 MB. El mensaje de éxito solo aparece después de guardar los datos y el archivo.
 4. Abre `/admin/candidatos` e introduce **CANDIDATE_ADMIN_TOKEN**, no la clave de Supabase. Filtra por experiencia, sector o empresa y descarga el PDF. La clave se conserva solo en memoria hasta cerrar o recargar la página.
 5. Comprueba desde una sesión sin clave que `/api/candidatos` y las descargas devuelven 401. El bucket debe permanecer privado.
 

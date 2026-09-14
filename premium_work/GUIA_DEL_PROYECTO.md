@@ -139,7 +139,7 @@ Entre el navbar y el contenido se añadió una tira de 48 px con degradado horiz
 
 ## Candidatos y CV
 
-El formulario de `/registro` recoge nombre, email, teléfono, ciudad, años de experiencia, sector, empresas anteriores, puesto de interés y disponibilidad, consentimiento y un CV en PDF de hasta 5 MB.
+El formulario de `/registro` recoge nombre, email, teléfono, ciudad, años de experiencia, sector, empresas anteriores, puesto de interés y disponibilidad, consentimiento y un CV en PDF de hasta 4 MB.
 
 `POST /api/candidatos` valida los campos y el archivo, sube el PDF al bucket privado `candidate-cvs` y guarda los datos en `candidates`. La confirmación solo aparece si ambas operaciones terminan correctamente. Ante un fallo de inserción se intenta eliminar el archivo recién subido.
 
@@ -206,9 +206,9 @@ El aviso presenta aceptar, rechazar y configurar con igual visibilidad. Como no 
 
 Las fuentes DM Sans y Playfair Display se descargaron con sus licencias y se sirven desde `public/fonts/`; se eliminó Google Fonts del CSS. Se añadieron cabeceras de seguridad y noindex para API/paneles. El footer puede crecer para que los enlaces legales no queden recortados en móvil.
 
-Las solicitudes nuevas registran `privacy_version`. Ejecutar `supabase/privacy-update.sql` en tablas existentes. La identidad, domicilio, NIF, registro, conservación, proveedores y transferencias deben completarse en `lib/legal.ts`; `reviewed` permanece en `false`. Los envíos de producción están bloqueados mientras falten esos datos, aunque el desarrollo permite seguir probando. Esto no sustituye la revisión jurídica ni los procedimientos de conservación, derechos y seguridad.
+Las solicitudes nuevas registran `privacy_version`. Ejecutar `supabase/privacy-update.sql` en tablas existentes. La identidad, domicilio, NIF, registro, conservación, proveedores y transferencias deben completarse en `lib/legal.ts`; `reviewed` permanece en `false`. Los formularios funcionan en desarrollo y en Vercel sin depender de legal.reviewed.
 
-Se añadieron cuatro pruebas de privacidad a las 16 existentes y tres comprobaciones de navegador en `tests/browser/privacy.spec.ts`, ejecutables con `npx.cmd playwright test` después del build. La prueba de bloqueo en producción corresponde a la configuración de borrador y debe adaptarse al activarla.
+Las pruebas de privacidad comprueban los formularios en modo production. Ver VERCEL_SETUP.md.
 
 Documentación completa y tareas del titular: [PUESTA_EN_MARCHA_LEGAL.md](PUESTA_EN_MARCHA_LEGAL.md).
 El aviso de cookies se incluye en el HTML inicial y permanece visible hasta aceptar, rechazar o guardar preferencias. Recuperar una elecci�n anterior no lo cierra autom�ticamente; se vuelve a mostrar al abrir o recargar la página de inicio. No aparece en los formularios ni en las demás rutas.

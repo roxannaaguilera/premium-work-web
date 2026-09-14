@@ -1,6 +1,6 @@
 import { validateForm } from "@/lib/form-validation";
 import { normalizedPhone, resolveCity } from "@/lib/contact-options";
-import { legalReady, PRIVACY_VERSION } from "@/lib/legal";
+import { PRIVACY_VERSION } from "@/lib/legal";
 import { randomUUID } from "node:crypto";
 import { authorized, database, privateHeaders } from "@/lib/candidates";
 import { sectorLabels, serviceLabels, validDate } from "@/lib/service-options";
@@ -9,7 +9,6 @@ export const runtime = "nodejs";
 const error = (message: string, status = 400) => Response.json({ error: message }, { status, headers: privateHeaders });
 
 export async function POST(request: Request) {
-  if (process.env.NODE_ENV === "production" && !legalReady()) return Response.json({ error: "El formulario no está disponible temporalmente. Vuelve a intentarlo más adelante." }, { status: 503, headers: privateHeaders });
   if (request.headers.get("origin") && request.headers.get("origin") !== new URL(request.url).origin) return error("Origen no permitido.", 403);
   if (!request.headers.get("content-type")?.startsWith("application/json")) return error("Formato de solicitud no válido.", 415);
   let data: Record<string, unknown>;

@@ -38,7 +38,7 @@ test("preferences can be reopened, changed, and applied without storage on mobil
   await expect(dialog).not.toBeVisible();
 });
 
-test("legal routes exist, forms link to privacy, production is blocked while details are missing", async ({ page, request }) => {
+test("legal routes exist, forms link to privacy and production validates submissions", async ({ page, request }) => {
   for (const [route, title] of [["/aviso-legal", "Aviso legal"], ["/politica-de-privacidad", "Política de privacidad"], ["/politica-de-cookies", "Política de cookies"]]) {
     const response = await page.goto(route);
     expect(response?.status()).toBe(200);
@@ -52,7 +52,8 @@ test("legal routes exist, forms link to privacy, production is blocked while det
     await expect(page.locator('form a[href="/politica-de-privacidad"]')).toBeVisible();
   }
   for (const route of ["/api/clientes", "/api/candidatos"]) {
-    expect((await request.post(route, { data: {} })).status()).toBe(503);
+    const response = route.endsWith("candidatos") ? await request.post(route, { multipart: { name: "" } }) : await request.post(route, { data: {} });
+    expect(response.status()).toBe(400);
     expect((await request.get(route)).status()).toBe(401);
   }
 });

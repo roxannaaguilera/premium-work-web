@@ -24,7 +24,7 @@ La aplicación estará disponible normalmente en `http://localhost:3000`.
 - Formularios integrados en un fondo de degradado vertical azul con toque dorado y tira separadora luminosa.
 - Botones conectados a formularios, preselección de servicio/sector y enlaces provisionales a las páginas principales de redes sociales.
 - Candidatos con CV privado y filtros profesionales; solicitudes comerciales con filtros y paginación.
-- El registro comienza con la carga del CV y su lectura local para sugerir datos editables. Admite PDF con texto de hasta 5 MB y 20 páginas; los documentos escaneados o protegidos requieren completar los campos manualmente. No se envía el CV hasta presentar la candidatura. Al cambiar de archivo se conservan las correcciones manuales.
+- El registro comienza con la carga del CV y su lectura local para sugerir datos editables. Admite PDF con texto de hasta 4 MB y 20 páginas; los documentos escaneados o protegidos requieren completar los campos manualmente. No se envía el CV hasta presentar la candidatura. Al cambiar de archivo se conservan las correcciones manuales.
 - Scripts SQL, documentación de las integraciones y 16 pruebas con Supabase simulado.
 
 ## Paneles
@@ -52,6 +52,6 @@ npm.cmd run build
 `npm.cmd run start` sirve la compilación de producción. `npm.cmd run lint` ejecuta ESLint; existe una incompatibilidad previa documentada en la guía principal. Las pruebas con Supabase simulado no sustituyen la validación de una conexión real.
 ## Cookies y páginas legales
 
-Ya existen aviso legal, privacidad y cookies, un aviso de preferencias configurable y fuentes de marca locales. No hay herramientas de analítica ni publicidad instaladas. Los textos son borradores hasta completar los datos del titular y proveedores en `lib/legal.ts`; los formularios de producción permanecen bloqueados hasta esa revisión.
+Los documentos legales siguen en borrador mientras falten los datos de `lib/legal.ts`. Ese estado no bloquea los formularios en producción. Consulta [VERCEL_SETUP.md](VERCEL_SETUP.md) para configurar las variables y publicar los cambios.
 
 Ver [PUESTA_EN_MARCHA_LEGAL.md](PUESTA_EN_MARCHA_LEGAL.md) para completar la configuración, aplicar la migración de privacidad y revisar las obligaciones pendientes. Hay 20 pruebas de lógica y una suite de 3 pruebas de navegador (`npx.cmd playwright test`, tras compilar).

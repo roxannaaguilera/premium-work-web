@@ -30,7 +30,7 @@ export function validateForm(kind: FormKind, data: Record<string, unknown>): Fie
     const years = Number(String(data.years).replace(",", "."));
     if (typeof data.years !== "string" || !/^\d+(?:[.,]\d{1,2})?$/.test(data.years.trim()) || !Number.isFinite(years) || years < 0 || years > 80) errors.years = "Indica cuántos años tienes de experiencia.";
     const cv = data.cv;
-    if (!(cv instanceof File) || !cv.size || cv.size > 5 * 1024 * 1024 || !cv.name.toLowerCase().endsWith(".pdf")) errors.cv = "Adjunta un CV en PDF, no vacío y de hasta 5 MB.";
+    if (!(cv instanceof File) || !cv.size || cv.size > 4 * 1024 * 1024 || !cv.name.toLowerCase().endsWith(".pdf")) errors.cv = "Adjunta un CV en PDF, no vacío y de hasta 4 MB.";
   } else {
     if (!errors.service && !Object.hasOwn(serviceLabels, String(data.service).trim())) errors.service = "Selecciona un servicio válido.";
     const date = data.event_date ?? "";

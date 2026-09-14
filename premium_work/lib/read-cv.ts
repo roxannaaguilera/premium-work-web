@@ -4,7 +4,7 @@ import { fieldsFromCv } from "./cv-fields";
 GlobalWorkerOptions.workerSrc = new URL("pdfjs-dist/build/pdf.worker.min.mjs", import.meta.url).toString();
 
 export async function readCv(file: File) {
-  if (!file.size || file.size > 5 * 1024 * 1024 || !file.name.toLowerCase().endsWith(".pdf")) throw new Error("Selecciona un PDF no vacío de hasta 5 MB.");
+  if (!file.size || file.size > 4 * 1024 * 1024 || !file.name.toLowerCase().endsWith(".pdf")) throw new Error("Selecciona un PDF no vacío de hasta 4 MB.");
   const data = new Uint8Array(await file.arrayBuffer());
   if (new TextDecoder().decode(data.subarray(0, 5)) !== "%PDF-") throw new Error("El archivo no es un PDF válido.");
   const task = getDocument({ data, useSystemFonts: true });

@@ -13,7 +13,7 @@ Actualización: septiembre de 2026. Este documento distingue los cambios técnic
 - Información básica de privacidad junto a cada formulario, con enlace a la política completa. Consentimiento específico para la bolsa de candidatos; lectura de información para la solicitud comercial, sin consentimiento de marketing.
 - Las nuevas solicitudes guardan `privacy_version` además de la fecha. Los registros anteriores no se rellenan con consentimientos ficticios.
 - Cabeceras contra incrustación y detección incorrecta de tipos, política de referente y desactivación de cámara, micrófono y geolocalización. Paneles y API tienen `X-Robots-Tag: noindex, nofollow`; esto complementa, no sustituye, su autenticación.
-- Las páginas legales incompletas se muestran como borrador y no se indexan. En producción, los POST de candidatos y clientes devuelven 503 si la información legal no está completa y revisada. En desarrollo siguen disponibles para pruebas.
+- Los documentos legales incompletos se muestran como borrador. Los formularios funcionan en producción independientemente de ese estado.
 
 ## Datos necesarios para completar los textos
 
@@ -66,7 +66,7 @@ Al desplegar, revisar en un navegador limpio el almacenamiento, las peticiones d
 | `app/politica-de-privacidad/page.tsx` | Datos, finalidades, bases, conservación, destinatarios y derechos. |
 | `app/politica-de-cookies/page.tsx` | Inventario, duración, configuración y alcance. |
 | `supabase/privacy-update.sql` | Actualización de tablas ya existentes. |
-| `tests/privacy.test.cjs` | Pruebas de preferencias y bloqueo de producción. |
+| `tests/privacy.test.cjs` | Pruebas de preferencias y envíos en producción. |
 | `tests/browser/privacy.spec.ts` | Comprobaciones del aviso y páginas en navegador. |
 
 ## Comprobaciones
@@ -77,7 +77,7 @@ npm.cmd run build
 npx.cmd playwright test
 ```
 
-La configuración de Playwright utiliza Edge en Windows y un servidor temporal en el puerto 3107. En otros sistemas requiere Chromium instalado para Playwright. Las pruebas de API usan Supabase simulado; no envían datos a un proyecto real. La prueba de bloqueo en navegador corresponde al estado de borrador actual y debe adaptarse cuando se complete `lib/legal.ts`.
+La configuración de Playwright utiliza Edge en Windows y un servidor temporal en el puerto 3107. En otros sistemas requiere Chromium instalado para Playwright. Las pruebas de API usan Supabase simulado; no envían datos a un proyecto real. Las pruebas verifican los env?os y la validaci?n en producci?n.
 
 Para revisión manual: comprobar igual visibilidad de aceptar/rechazar, configuración con teclado, persistencia tras recargar, caducidad, acceso a documentos desde móvil, campos de privacidad y ausencia de conexiones externas no previstas. El aviso no se utiliza como muro que impida navegar sin aceptar.
 

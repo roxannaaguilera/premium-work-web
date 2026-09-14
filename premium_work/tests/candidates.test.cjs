@@ -89,6 +89,15 @@ test('rejects missing consent, invalid years, and disguised PDF before storage',
   assert.equal(calls.length, 0);
 });
 
+test('rejects CVs above the Vercel-compatible upload limit before storage', async () => {
+  const { routes, calls } = setup();
+  const cv = new File([new Uint8Array(4 * 1024 * 1024 + 1)], 'cv.pdf', { type: 'application/pdf' });
+  const response = await routes.POST(submission({ cv }));
+  assert.equal(response.status, 400);
+  assert.match((await response.json()).errors.cv, /4 MB/);
+  assert.equal(calls.length, 0);
+});
+
 test('rejects oversized request and cross-origin upload', async () => {
   const { routes, calls } = setup();
   const response = await routes.POST(new Request('http://localhost/api/candidatos', { method: 'POST', body: new Uint8Array(6 * 1024 * 1024 + 1) }));

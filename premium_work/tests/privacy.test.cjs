@@ -26,18 +26,25 @@ test('accept and reject do not grant analytics or marketing permissions', () => 
     assert.equal(result.marketing, undefined);
   }
 });
-test('production rejects personal-data submissions until legal details are ready', async () => {
+test('production saves valid submissions even when legal details are still drafts', async () => {
   const previous = process.env.NODE_ENV;
   process.env.NODE_ENV = 'production';
   try {
     const legal = load('lib/legal.ts');
-    // Force an incomplete draft even if real details are added later.
     legal.legal.reviewed = false;
-    const mocks = { '@/lib/legal': legal, '@/lib/candidates': { privateHeaders: {}, database() { throw new Error('Must not access database'); } }, '@/lib/service-options': load('lib/service-options.ts') };
-    for (const route of ['app/api/candidatos/route.ts', 'app/api/clientes/route.ts']) {
-      const response = await load(route, mocks).POST(new Request('http://localhost', { method: 'POST' }));
-      assert.equal(response.status, 503);
-    }
+    const inserts = [];
+    const mocks = { '@/lib/legal': legal, '@/lib/candidates': { privateHeaders: {}, CV_BUCKET: 'candidate-cvs', database() { return {
+      from(table) { return { async insert(row) { inserts.push({ table, row }); return { error: null }; } }; },
+      storage: { from() { return { async upload() { return { error: null }; } }; } },
+    }; } } };
+    const candidate = new FormData();
+    for (const [key, value] of Object.entries({ name: 'Test Candidate', email: 'test@example.invalid', phone: '600123456', city: 'Madrid', years: '0', sector: 'Hoteles', companies: 'Sin experiencia', availability: 'Inmediata', consent: 'on' })) candidate.set(key, value);
+    candidate.set('cv', new File(['%PDF-1.4\nTest'], 'cv.pdf', { type: 'application/pdf' }));
+    const response = await load('app/api/candidatos/route.ts', mocks).POST(new Request('http://localhost', { method: 'POST', body: candidate }));
+    assert.equal(response.status, 201);
+    const commercial = await load('app/api/clientes/route.ts', mocks).POST(new Request('http://localhost', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ name: 'Test Contact', company: 'Hotel Test', email: 'test@example.invalid', city: 'Madrid', sector: 'hoteles', service: 'camareros', message: 'Personal para un evento', consent: 'on' }) }));
+    assert.equal(commercial.status, 201);
+    assert.deepEqual(inserts.map(item => item.table), ['candidates', 'client_requests']);
   } finally { if (previous === undefined) delete process.env.NODE_ENV; else process.env.NODE_ENV = previous; }
 });
 test('legal readiness requires identity, retention and providers, not just approval flag', () => {

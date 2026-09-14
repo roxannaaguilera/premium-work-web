@@ -68,7 +68,7 @@ export function CandidateForm() {
     if (!validation.validate(form)) { setStatus("Revisa los campos señalados antes de enviar."); return; }
     const data = new FormData(form);
     const cv = data.get("cv");
-    if (!(cv instanceof File) || cv.size > 5 * 1024 * 1024) { setStatus("Adjunta un PDF de hasta 5 MB."); return; }
+    if (!(cv instanceof File) || cv.size > 4 * 1024 * 1024) { setStatus("Adjunta un PDF de hasta 4 MB."); return; }
     setBusy(true); setStatus(""); setSuccess(false);
     try {
       if (new TextDecoder().decode(await cv.slice(0, 5).arrayBuffer()) !== "%PDF-") {
@@ -94,7 +94,7 @@ export function CandidateForm() {
       <div className="rounded-2xl border border-[#C9A227]/60 bg-white/5 p-5 sm:col-span-2">
         <label className="block text-base font-bold">1. Carga tu CV para completar tus datos *
           <input required type="file" accept=".pdf,application/pdf" name="cv" onChange={loadCv} {...validation.props("cv")} className="mt-4 block w-full text-sm file:mr-3 file:rounded-full file:border-0 file:bg-[#C9A227] file:px-4 file:py-3 file:text-[#0B1F3A]" />
-          <span className="mt-3 block text-sm font-normal text-white/80">PDF de hasta 5 MB. La lectura se realiza en tu dispositivo; el CV se envía al presentar tu candidatura.</span>
+          <span className="mt-3 block text-sm font-normal text-white/80">PDF de hasta 4 MB. La lectura se realiza en tu dispositivo; el CV se envía al presentar tu candidatura.</span>
           {validation.error("cv")}
         </label>
         <p role="status" aria-live="polite" className="mt-3 text-sm text-[#f1d986]">{cvStatus}</p>

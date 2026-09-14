@@ -21,8 +21,8 @@ function load(relative) {
   }, mod, mod.exports);
   return mod.exports;
 }
-// Synthetic testing only: production's legal gate remains unchanged.
-process.env.NODE_ENV = 'test';
+// Exercise the same production handlers used by the deployment.
+process.env.NODE_ENV = 'production';
 const originalFetch = global.fetch;
 global.fetch = (input, init) => originalFetch(input, { ...init, signal: AbortSignal.timeout(15000) });
 const db = load('lib/candidates.ts').database();

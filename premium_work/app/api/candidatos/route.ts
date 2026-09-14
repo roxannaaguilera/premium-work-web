@@ -1,14 +1,13 @@
 import { validateForm } from "@/lib/form-validation";
 import { normalizedPhone, resolveCity } from "@/lib/contact-options";
-import { legalReady, PRIVACY_VERSION } from "@/lib/legal";
+import { PRIVACY_VERSION } from "@/lib/legal";
 import { randomUUID } from "node:crypto";
 import { authorized, CV_BUCKET, database, privateHeaders } from "@/lib/candidates";
 
 export const runtime = "nodejs";
-const LIMIT = 6 * 1024 * 1024;
+const LIMIT = 4 * 1024 * 1024 + 64 * 1024;
 
 export async function POST(request: Request) {
-  if (process.env.NODE_ENV === "production" && !legalReady()) return Response.json({ error: "El formulario no está disponible temporalmente. Vuelve a intentarlo más adelante." }, { status: 503, headers: privateHeaders });
   if (request.headers.get("origin") && request.headers.get("origin") !== new URL(request.url).origin) return Response.json({ error: "Origen no permitido." }, { status: 403 });
   try {
     const reader = request.body?.getReader();
@@ -19,7 +18,7 @@ export async function POST(request: Request) {
       const { value, done } = await reader.read();
       if (done) break;
       size += value.byteLength;
-      if (size > LIMIT) { await reader.cancel(); return Response.json({ error: "El CV debe pesar como máximo 5 MB." }, { status: 413 }); }
+      if (size > LIMIT) { await reader.cancel(); return Response.json({ error: "El CV debe pesar como máximo 4 MB." }, { status: 413 }); }
       chunks.push(value);
     }
     const data = await new Response(Buffer.concat(chunks), { headers: { "Content-Type": request.headers.get("content-type") || "" } }).formData();
@@ -37,7 +36,7 @@ export async function POST(request: Request) {
     const years = Number(String(rawYears).replace(",", "."));
     if (typeof rawYears !== "string" || !rawYears.trim() || !Number.isFinite(years) || years < 0 || years > 80 || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(values.email) || data.get("consent") !== "on") return Response.json({ error: "Revisa el email, los años de experiencia y el consentimiento." }, { status: 400 });
     const cv = data.get("cv");
-    if (!(cv instanceof File) || cv.size === 0 || cv.size > 5 * 1024 * 1024 || !cv.name.toLowerCase().endsWith(".pdf")) return Response.json({ error: "Adjunta un CV en PDF de hasta 5 MB." }, { status: 400 });
+    if (!(cv instanceof File) || cv.size === 0 || cv.size > 4 * 1024 * 1024 || !cv.name.toLowerCase().endsWith(".pdf")) return Response.json({ error: "Adjunta un CV en PDF de hasta 4 MB." }, { status: 400 });
     const bytes = Buffer.from(await cv.arrayBuffer());
     if (bytes.subarray(0, 5).toString() !== "%PDF-") return Response.json({ error: "El archivo no es un PDF válido.", errors: { cv: "El archivo no es un PDF válido." } }, { status: 400, headers: privateHeaders });
     const db = database();
