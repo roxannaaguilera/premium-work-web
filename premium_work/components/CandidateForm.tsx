@@ -1,5 +1,6 @@
 "use client";
 
+import { PrivacySummary } from "@/components/PrivacySummary";
 import { useState, type FormEvent } from "react";
 
 const field = "mt-2 w-full border-b border-white/35 bg-transparent py-3 font-normal outline-none focus:border-[#C9A227]";
@@ -35,7 +36,7 @@ export function CandidateForm() {
       <label className="text-sm font-bold sm:col-span-2">Empresas en las que has trabajado<textarea required maxLength={3000} name="companies" rows={2} placeholder="Una empresa por línea. Si es tu primer empleo, indica «Sin experiencia»." className={field} /></label>
       <label className="text-sm font-bold sm:col-span-2">Puesto de interés, experiencia y disponibilidad<textarea required maxLength={3000} name="availability" rows={4} className={field} /></label>
       <label className="text-sm font-bold sm:col-span-2">Adjunta tu currículum<input required type="file" accept=".pdf,application/pdf" name="cv" className="mt-3 block w-full text-sm file:mr-3 file:rounded-full file:border-0 file:bg-[#C9A227] file:px-4 file:py-2 file:text-[#0B1F3A]" /><span className="mt-2 block text-xs font-normal text-white/80">Formato PDF. Máximo 5 MB.</span></label>
-      <label className="flex gap-3 text-sm leading-5 sm:col-span-2"><input required type="checkbox" name="consent" className="mt-1 accent-[#C9A227]" />Autorizo a Premium Work a guardar mis datos y mi CV para gestionar mi candidatura y contactar conmigo por oportunidades laborales.</label>
+      <PrivacySummary candidate /><label className="flex gap-3 text-sm leading-5 sm:col-span-2"><input required type="checkbox" name="consent" className="mt-1 accent-[#C9A227]" />Consiento que Premium Work incluya mis datos y CV en su bolsa de candidatos y contacte conmigo sobre oportunidades laborales, según la política de privacidad. Puedo retirar mi consentimiento.</label>
       <button type="submit" className="rounded-full bg-[#C9A227] px-6 py-4 text-sm font-bold text-[#0B1F3A] transition hover:bg-[#e2be3d] disabled:opacity-60 sm:col-span-2">{busy ? "GUARDANDO CANDIDATURA…" : "ENVIAR CANDIDATURA"}</button>
     </fieldset>
     <p role={success ? "status" : "alert"} className="mt-4 text-sm text-white">{status}</p>

@@ -8,6 +8,7 @@ create table if not exists public.candidates (
   sector text not null,
   companies text not null,
   availability text not null,
+  privacy_version text,
   consent_at timestamptz not null,
   cv_path text not null unique
 );

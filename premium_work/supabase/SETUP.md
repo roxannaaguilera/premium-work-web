@@ -22,3 +22,7 @@ El formulario comercial también guarda solicitudes en Supabase: ejecuta además
 Antes de recoger candidaturas reales, incorpora el aviso de privacidad definitivo y define el plazo de conservación y el procedimiento de eliminación de datos y CV. No se han inventado textos legales ni plazos.
 
 Documentación: https://supabase.com/docs/guides/storage/uploads/standard-uploads y https://supabase.com/docs/guides/api/securing-your-api
+
+## Actualización de privacidad
+
+Si las tablas ya existían, ejecuta también `supabase/privacy-update.sql`. Las nuevas solicitudes guardan la versión de privacidad; los registros anteriores conservan NULL. Completa los datos de `lib/legal.ts` y la revisión del titular antes de habilitar envíos en producción. Ver `PUESTA_EN_MARCHA_LEGAL.md`. La política de privacidad ya tiene ruta y contenido de borrador; sigue pendiente completar identidad, conservación y proveedores.

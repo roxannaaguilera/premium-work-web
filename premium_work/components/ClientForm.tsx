@@ -1,5 +1,6 @@
 "use client";
 
+import { PrivacySummary } from "@/components/PrivacySummary";
 import { useState, type FormEvent } from "react";
 import { sectorLabels, serviceLabels } from "@/lib/service-options";
 
@@ -35,7 +36,7 @@ export function ClientForm({ sector = "", service = "" }: { sector?: string; ser
       <label className="text-sm font-bold">Profesionales necesarios (opcional)<input type="number" min="1" max="10000" step="1" name="staff_count" className={field} /></label>
       <label className="text-sm font-bold">Presupuesto estimado en € (opcional)<input type="number" min="0" max="100000000" step="0.01" name="budget" className={field} /></label>
       <label className="text-sm font-bold sm:col-span-2">¿En qué podemos ayudarte?<textarea required name="message" rows={5} maxLength={5000} className={field} /></label>
-      <label className="flex gap-3 text-sm leading-5 text-white/80 sm:col-span-2"><input required type="checkbox" name="consent" className="mt-1 accent-[#C9A227]" />Autorizo a Premium Work a guardar mis datos para atender esta solicitud y contactar conmigo.</label>
+      <PrivacySummary /><label className="flex gap-3 text-sm leading-5 text-white/80 sm:col-span-2"><input required type="checkbox" name="consent" className="mt-1 accent-[#C9A227]" />He leído la información de privacidad sobre la gestión de mi solicitud. Esto no supone una suscripción a publicidad.</label>
       <button type="submit" className="rounded-full bg-[#C9A227] px-6 py-4 text-sm font-bold text-[#0B1F3A] transition hover:bg-[#e2be3d] disabled:opacity-60 sm:col-span-2">{busy ? "GUARDANDO SOLICITUD…" : "ENVIAR SOLICITUD"}</button>
     </fieldset>
     <p role={success ? "status" : "alert"} className="mt-4 text-sm text-white">{status}</p>

@@ -21,10 +21,10 @@ export function ServicesIntro() {
         <div className="marquee-track flex w-max group-hover:[animation-play-state:paused]">
           {loop.map((service, index) => (
             <div key={`${service.slug}-${index}`} className="shrink-0">
-              <a href={`/solicitar-servicio?servicio=${service.slug}`} className="flex h-11 w-max items-center justify-center border-r border-[#0B1F3A]/25 whitespace-nowrap px-7 text-center text-xs font-bold uppercase tracking-[.12em] md:text-sm text-[#0B1F3A] lg:hidden">
+              <a href={`/#${service.slug}`} className="flex h-11 w-max items-center justify-center border-r border-[#0B1F3A]/25 whitespace-nowrap px-7 text-center text-xs font-bold uppercase tracking-[.12em] md:text-sm text-[#0B1F3A] lg:hidden">
                 {service.title}
               </a>
-              <a href={`/solicitar-servicio?servicio=${service.slug}`} className="hidden h-11 w-max items-center justify-center border-r border-[#0B1F3A]/25 whitespace-nowrap px-7 text-center text-xs font-bold uppercase tracking-[.12em] md:text-sm text-[#0B1F3A] transition-colors hover:bg-[#0B1F3A] hover:text-white lg:flex">
+              <a href={`/#${service.slug}`} className="hidden h-11 w-max items-center justify-center border-r border-[#0B1F3A]/25 whitespace-nowrap px-7 text-center text-xs font-bold uppercase tracking-[.12em] md:text-sm text-[#0B1F3A] transition-colors hover:bg-[#0B1F3A] hover:text-white lg:flex">
                 {service.title}
               </a>
             </div>

@@ -1,4 +1,3 @@
-@import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:ital,wght@0,500;0,600;0,700;1,500;1,600&display=swap');
 @import "tailwindcss";
 
 :root { --navy:#0B1F3A; --gold:#C9A227; --cream:#F8F7F4; --ink:#111827; }
@@ -164,3 +163,15 @@ body { margin:0; background:var(--cream); color:var(--navy); font-family:"DM San
 .integrated-form input:focus,
 .integrated-form select:focus,
 .integrated-form textarea:focus { border-color: #e5c65a; }
+
+@font-face { font-family: "DM Sans"; src: url("/fonts/dm-sans.ttf") format("truetype"); font-style: normal; font-weight: 100 1000; font-display: swap; }
+@font-face { font-family: "Playfair Display"; src: url("/fonts/playfair-display.ttf") format("truetype"); font-style: normal; font-weight: 400 900; font-display: swap; }
+@font-face { font-family: "Playfair Display"; src: url("/fonts/playfair-display-italic.ttf") format("truetype"); font-style: italic; font-weight: 400 900; font-display: swap; }
+.legal-copy h2 { margin-top: 2.25rem; margin-bottom: .8rem; font-size: 1.35rem; font-weight: 600; }
+.legal-copy p, .legal-copy dd, .legal-copy li { line-height: 1.8; margin-bottom: .8rem; }
+.legal-copy a { text-decoration: underline; text-underline-offset: 3px; }
+.legal-copy dt { margin-top: 1rem; font-weight: 700; }
+.legal-copy ul { list-style: disc; padding-left: 1.4rem; }
+.legal-copy th, .legal-copy td { border-bottom: 1px solid #0b1f3a33; padding: .8rem; text-align: left; vertical-align: top; }
+.legal-copy :focus-visible { outline: 2px solid #94751d; outline-offset: 4px; }
+@media print { .legal-copy { max-width: none; } body > header, dialog { display: none; } }

@@ -1,33 +1,56 @@
 # Premium Work
 
-Sitio corporativo de Premium Work, construido con Next.js, TypeScript y Tailwind CSS.
+Web corporativa de Premium Work con Next.js, React, TypeScript, Tailwind CSS y Framer Motion. Incluye formularios y paneles privados preparados para Supabase.
+
+La documentación principal, actualizada el 11 de septiembre de 2026, está en **[GUIA_DEL_PROYECTO.md](GUIA_DEL_PROYECTO.md)**. Recoge todos los cambios de diseño, animaciones, navegación, formularios y administración, junto con el estado de configuración y las tareas pendientes.
 
 ## Desarrollo
 
-```bash
-npm run dev
+Requiere Node.js 24.x.
+
+```powershell
+npm.cmd run dev
 ```
 
-La aplicación estará disponible en `http://localhost:3000`.
+La aplicación estará disponible normalmente en `http://localhost:3000`.
 
-## Scripts
+## Cambios incorporados
 
-- `npm run dev`: inicia el entorno de desarrollo.
-- `npm run build`: genera y valida la compilación de producción.
-- `npm run start`: sirve la compilación de producción.
-- `npm run lint`: ejecuta ESLint.
+- Tipografía y colores de marca, banda dorada sólida con reflejo blanco y diseño adaptable.
+- Carrusel de sectores cada 3 segundos, tarjetas redondeadas y luz dorada en el fondo.
+- Features sin luz, textos con entrada lateral y tarjetas móviles con texto blanco sobre la foto.
+- ServicesIntro con fundido repetible y animaciones de scroll que se repiten en las secciones actualizadas.
+- Corrección del ancla «Acerca de nosotros» para respetar el navbar fijo.
+- Formularios integrados en un fondo de degradado vertical azul con toque dorado y tira separadora luminosa.
+- Botones conectados a formularios, preselección de servicio/sector y enlaces provisionales a las páginas principales de redes sociales.
+- Candidatos con CV privado y filtros profesionales; solicitudes comerciales con filtros y paginación.
+- Scripts SQL, documentación de las integraciones y 16 pruebas con Supabase simulado.
 
-## Actualizaciones de interfaz
+## Paneles
 
-### Septiembre de 2026
+- [Clientes y solicitudes](http://localhost:3000/admin/clientes).
+- [Candidaturas](http://localhost:3000/admin/candidatos).
 
-- El hero móvil ya no utiliza imágenes ni carrusel: se presenta sobre un fondo azul marino uniforme y conserva el mensaje principal y la llamada a la acción.
-- La sección de servicios se organiza en escritorio como franjas alternadas: texto e imagen intercambian su posición en cada profesión. Las imágenes se muestran en formato vertical y con encuadres que preservan rostros y manos.
-- En móvil y tablet, el listado de profesiones se sustituye por un carrusel horizontal manual con el título «¿Qué necesitas?» y dos accesos: registro de candidatos y soluciones para empresas. En escritorio, cada tarjeta de servicio enlaza directamente a su bloque correspondiente.
-- La sección «Nuestros servicios incluyen» se muestra en escritorio y móvil como una sección completa, con contenido reducido para que el catálogo posterior conserve su protagonismo.
-- «La diferencia Premium Work» se rediseñó como una sección de pantalla completa: titular, ventajas resumidas, títulos alineados y navegación horizontal solo para móvil y tablet. La respuesta ante imprevistos se comunica como «Respuesta sin demoras».
-- Los sectores se presentan en un carrusel automático e infinito: destaca un sector cada 3,8 segundos, atenúa el resto, se pausa al interactuar y permite navegación manual. Cada tarjeta enlaza al formulario de solicitud con el sector preseleccionado, sin desplazar al usuario a otra sección de la página.
-- Se añadió la ruta `/solicitar-servicio`, con un formulario visual para recibir solicitudes de servicio. El envío permanece pendiente de conectar una base de datos y un proveedor de correo.
-- El footer se rehízo para caber en una sola vista, con ritmo vertical equilibrado, logo gráfico, acceso a WhatsApp sin exponer el teléfono, correo, enlaces de navegación y servicios, e iconos de Instagram, LinkedIn y Facebook. Se corrigió la codificación UTF-8 de sus textos.
-- Se incorporó el recurso visual `public/images/logo_nombre_premium_work.png` para la identidad de marca en el footer.
-- Los CTA de candidato, empresas y envío de solicitud comparten el mismo lenguaje visual: forma de píldora, color dorado y elevación sutil al pasar el cursor.
+Ambos requieren `CANDIDATE_ADMIN_TOKEN` para consultar datos. **La conexión real sigue pendiente de crear/configurar Supabase y ejecutar los scripts SQL.**
+
+## Documentación
+
+- [Guía principal del proyecto](GUIA_DEL_PROYECTO.md).
+- [Implementación de candidatos](IMPLEMENTACION_CANDIDATOS.md).
+- [Implementación de clientes](IMPLEMENTACION_CLIENTES.md).
+- [Configuración de Supabase](supabase/SETUP.md).
+
+## Verificación
+
+```powershell
+node --test tests/candidates.test.cjs tests/clients.test.cjs tests/privacy.test.cjs
+npx.cmd tsc --noEmit
+npm.cmd run build
+```
+
+`npm.cmd run start` sirve la compilación de producción. `npm.cmd run lint` ejecuta ESLint; existe una incompatibilidad previa documentada en la guía principal. Las pruebas con Supabase simulado no sustituyen la validación de una conexión real.
+## Cookies y páginas legales
+
+Ya existen aviso legal, privacidad y cookies, un aviso de preferencias configurable y fuentes de marca locales. No hay herramientas de analítica ni publicidad instaladas. Los textos son borradores hasta completar los datos del titular y proveedores en `lib/legal.ts`; los formularios de producción permanecen bloqueados hasta esa revisión.
+
+Ver [PUESTA_EN_MARCHA_LEGAL.md](PUESTA_EN_MARCHA_LEGAL.md) para completar la configuración, aplicar la migración de privacidad y revisar las obligaciones pendientes. Hay 20 pruebas de lógica y una suite de 3 pruebas de navegador (`npx.cmd playwright test`, tras compilar).

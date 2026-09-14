@@ -12,6 +12,7 @@ create table if not exists public.client_requests (
   staff_count integer check (staff_count between 1 and 10000),
   budget numeric(11,2) check (budget between 0 and 100000000),
   message text not null check (char_length(message) between 1 and 5000),
+  privacy_version text,
   consent_at timestamptz not null
 );
 create index if not exists client_requests_date_idx on public.client_requests (event_date);

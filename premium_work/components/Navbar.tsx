@@ -32,6 +32,15 @@ export function Navbar() {
   const [scrolled, setScrolled] = useState(false);
 
   useEffect(() => {
+    if (!menu) return;
+    const previous = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    const closeOnEscape = (event: KeyboardEvent) => { if (event.key === "Escape") setMenu(false); };
+    window.addEventListener("keydown", closeOnEscape);
+    return () => { document.body.style.overflow = previous; window.removeEventListener("keydown", closeOnEscape); };
+  }, [menu]);
+
+  useEffect(() => {
     const handler = () => setScrolled(window.scrollY > 24);
     handler();
     window.addEventListener("scroll", handler);
@@ -52,7 +61,7 @@ export function Navbar() {
         <a
           href="/#inicio"
           aria-label="Premium Work, Inicio"
-          className="relative block h-16 w-60 md:h-20 md:w-72"
+          className="relative block h-16 w-[min(60vw,15rem)] shrink-0 md:h-20 md:w-72"
         >
           <Image
             src="/brand/logotipo-horizontal.svg"
@@ -86,7 +95,7 @@ export function Navbar() {
                   {services.map((s) => (
                     <a
                       key={s}
-                      href={`/solicitar-servicio?servicio=${serviceId(s)}`}
+                      href={`/#${serviceId(s)}`}
                       onClick={() => setServicesOpen(false)}
                       className="block px-4 py-3 text-sm transition-colors hover:bg-white/10 hover:text-[#e5c65a]"
                     >
@@ -117,6 +126,8 @@ export function Navbar() {
 
         {/* Hamburger */}
         <button
+          aria-expanded={menu}
+          aria-controls="mobile-navigation"
           aria-label={menu ? "Cerrar menú" : "Abrir menú"}
           onClick={() => setMenu(!menu)}
           className="p-2 lg:hidden"
@@ -128,7 +139,7 @@ export function Navbar() {
       {/* Mobile Fullscreen Menu */}
       {menu && (
         <div
-          className="brand-navbar fixed inset-0 z-50 h-screen overflow-y-auto px-5 pb-10 pt-6 text-white transition-all lg:hidden"
+          id="mobile-navigation" className="brand-navbar fixed inset-0 z-50 h-[100dvh] overflow-y-auto px-5 pb-10 pt-6 text-white transition-all lg:hidden"
         >
           <div className="mx-auto max-w-[1600px]">
 
@@ -165,9 +176,9 @@ export function Navbar() {
                   {services.map((s) => (
                     <a
                       onClick={() => setMenu(false)}
-                      href={`/solicitar-servicio?servicio=${serviceId(s)}`}
+                      href={`/#${serviceId(s)}`}
                       key={s}
-                      className="block text-base"
+                      className="flex min-h-11 items-center text-base"
                     >
                       {s}
                     </a>

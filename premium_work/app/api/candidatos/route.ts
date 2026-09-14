@@ -1,3 +1,4 @@
+import { legalReady, PRIVACY_VERSION } from "@/lib/legal";
 import { randomUUID } from "node:crypto";
 import { authorized, CV_BUCKET, database, privateHeaders } from "@/lib/candidates";
 
@@ -5,6 +6,7 @@ export const runtime = "nodejs";
 const LIMIT = 6 * 1024 * 1024;
 
 export async function POST(request: Request) {
+  if (process.env.NODE_ENV === "production" && !legalReady()) return Response.json({ error: "El formulario no está disponible temporalmente. Vuelve a intentarlo más adelante." }, { status: 503, headers: privateHeaders });
   if (request.headers.get("origin") && request.headers.get("origin") !== new URL(request.url).origin) return Response.json({ error: "Origen no permitido." }, { status: 403 });
   try {
     const reader = request.body?.getReader();
@@ -37,7 +39,7 @@ export async function POST(request: Request) {
     const cvPath = `${id}/cv.pdf`;
     const upload = await db.storage.from(CV_BUCKET).upload(cvPath, bytes, { contentType: "application/pdf", upsert: false });
     if (upload.error) throw upload.error;
-    const inserted = await db.from("candidates").insert({ id, ...values, years, consent_at: new Date().toISOString(), cv_path: cvPath });
+    const inserted = await db.from("candidates").insert({ id, ...values, years, consent_at: new Date().toISOString(), privacy_version: PRIVACY_VERSION, cv_path: cvPath });
     if (inserted.error) {
       await db.storage.from(CV_BUCKET).remove([cvPath]);
       throw inserted.error;

@@ -1,3 +1,4 @@
+import { legalReady, PRIVACY_VERSION } from "@/lib/legal";
 import { randomUUID } from "node:crypto";
 import { authorized, database, privateHeaders } from "@/lib/candidates";
 import { sectorLabels, serviceLabels, validDate } from "@/lib/service-options";
@@ -6,6 +7,7 @@ export const runtime = "nodejs";
 const error = (message: string, status = 400) => Response.json({ error: message }, { status, headers: privateHeaders });
 
 export async function POST(request: Request) {
+  if (process.env.NODE_ENV === "production" && !legalReady()) return Response.json({ error: "El formulario no está disponible temporalmente. Vuelve a intentarlo más adelante." }, { status: 503, headers: privateHeaders });
   if (request.headers.get("origin") && request.headers.get("origin") !== new URL(request.url).origin) return error("Origen no permitido.", 403);
   if (!request.headers.get("content-type")?.startsWith("application/json")) return error("Formato de solicitud no válido.", 415);
   let data: Record<string, unknown>;
@@ -42,7 +44,7 @@ export async function POST(request: Request) {
   if (staff !== null && (!Number.isInteger(staff) || staff < 1 || staff > 10000)) return error("Indica un número entero de profesionales entre 1 y 10.000.");
   if (budget !== null && (!Number.isFinite(budget) || budget < 0 || budget > 100000000 || Math.abs(budget * 100 - Math.round(budget * 100)) > 0.00001)) return error("Indica un presupuesto válido, con un máximo de dos decimales.");
   try {
-    const { error: insertError } = await database().from("client_requests").insert({ id: randomUUID(), ...values, phone: phone.trim() || null, event_date: eventDate || null, staff_count: staff, budget, consent_at: new Date().toISOString() });
+    const { error: insertError } = await database().from("client_requests").insert({ id: randomUUID(), ...values, phone: phone.trim() || null, event_date: eventDate || null, staff_count: staff, budget, consent_at: new Date().toISOString(), privacy_version: PRIVACY_VERSION });
     if (insertError) throw insertError;
     return Response.json({ ok: true }, { status: 201, headers: privateHeaders });
   } catch { return error("No se ha podido guardar tu solicitud. Inténtalo de nuevo más tarde.", 503); }

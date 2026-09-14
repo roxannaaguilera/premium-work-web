@@ -41,7 +41,7 @@ function setup(options = {}) {
   process.env.SUPABASE_SERVICE_ROLE_KEY = 'test-only-service-key';
   process.env.CANDIDATE_ADMIN_TOKEN = 'test-admin-token-with-at-least-32-characters';
   const lib = load('lib/candidates.ts', { '@supabase/supabase-js': { createClient: () => client } });
-  return { calls, lib, routes: load('app/api/candidatos/route.ts', { '@/lib/candidates': lib }), cv: load('app/api/candidatos/[id]/cv/route.ts', { '@/lib/candidates': lib }) };
+  return { calls, lib, routes: load('app/api/candidatos/route.ts', { '@/lib/legal': load('lib/legal.ts'), '@/lib/candidates': lib }), cv: load('app/api/candidatos/[id]/cv/route.ts', { '@/lib/legal': load('lib/legal.ts'), '@/lib/candidates': lib }) };
 }
 
 function submission(overrides = {}) {

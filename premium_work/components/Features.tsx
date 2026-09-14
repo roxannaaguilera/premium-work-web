@@ -68,7 +68,7 @@ export function Features() {
   return (
     <section
       id="servicios"
-      className="brand-surface-soft w-full overflow-hidden"
+      className="brand-surface-soft w-full scroll-mt-[calc(5rem+1px)] overflow-hidden"
     >
       {/* MOBILE */}
       <div className="relative overflow-hidden py-20 lg:hidden">
@@ -111,7 +111,7 @@ export function Features() {
       </div>
 
       {/* DESKTOP - ANCHO COMPLETO SIN MÁRGENES LATERALES */}
-      <div className="hidden w-full lg:block">
+      <div className="w-full">
         {services.map((service, index) => {
           const imageFirst = index % 2 === 1;
 
@@ -119,12 +119,12 @@ export function Features() {
             <article
               id={service.slug}
               key={service.title}
-              className="grid min-h-[100svh] w-full grid-cols-2"
+              className="grid w-full scroll-mt-[calc(5rem+1px)] grid-cols-1 lg:min-h-[100svh] lg:grid-cols-2"
             >
               {/* TEXTO */}
               <div
-                className={`feature-soft-panel relative isolate flex items-center overflow-hidden px-[clamp(3rem,8vw,9rem)] py-16 ${
-                  imageFirst ? "order-2" : "order-1"
+                className={`feature-soft-panel relative isolate flex items-center overflow-hidden px-5 py-10 sm:px-8 lg:px-[clamp(3rem,8vw,9rem)] lg:py-16 ${
+                  imageFirst ? "order-1 lg:order-2" : "order-1"
                 }`}
               >
                 <motion.div initial={{ opacity: reducedMotion ? 1 : 0, x: reducedMotion ? 0 : imageFirst ? 120 : -120 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: false, amount: 0.25 }} transition={{ duration: 0.9, ease: "easeOut" }} className="relative max-w-md">
@@ -132,20 +132,21 @@ export function Features() {
                     {String(index + 1).padStart(2, "0")}
                   </p>
 
-                  <h3 className="display mt-6 text-6xl leading-[.95] text-[#0B1F3A] lg:text-7xl">
+                  <h3 className="display mt-5 text-[clamp(2.5rem,10vw,3.5rem)] leading-[1.05] text-[#0B1F3A] lg:text-7xl">
                     {service.title}
                   </h3>
 
-                  <p className="mt-8 text-base leading-7 text-[#0B1F3A]/75">
+                  <p className="mt-6 text-base leading-7 text-[#0B1F3A]/75">
                     {service.copy}
                   </p>
+                  <a href={`/solicitar-servicio?servicio=${service.slug}`} className="mt-7 inline-flex min-h-11 items-center gap-3 rounded-full bg-[#C9A227] px-5 py-3 text-sm font-bold text-[#0B1F3A] transition hover:bg-[#e2be3d]">Solicitar este servicio <ArrowRight size={18} aria-hidden="true" /></a>
                 </motion.div>
               </div>
 
               {/* FOTO SIN MÁRGENES */}
               <div
-                className={`relative min-h-[100svh] w-full overflow-hidden ${
-                  imageFirst ? "order-1" : "order-2"
+                className={`relative mx-auto mb-8 aspect-[4/5] w-[calc(100%-2.5rem)] overflow-hidden rounded-xl sm:w-[calc(100%-4rem)] lg:mb-0 lg:aspect-auto lg:min-h-[100svh] lg:w-full lg:rounded-none ${
+                  imageFirst ? "order-2 lg:order-1" : "order-2"
                 }`}
               >
                 <img

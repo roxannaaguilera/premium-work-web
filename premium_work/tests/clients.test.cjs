@@ -29,7 +29,7 @@ function setup(fail = false) {
   process.env.SUPABASE_SERVICE_ROLE_KEY = 'test-only';
   process.env.CANDIDATE_ADMIN_TOKEN = 'test-admin-token-with-at-least-32-characters';
   const lib = load('lib/candidates.ts', { '@supabase/supabase-js': { createClient: () => client } });
-  return { calls, routes: load('app/api/clientes/route.ts', { '@/lib/candidates': lib, '@/lib/service-options': load('lib/service-options.ts') }) };
+  return { calls, routes: load('app/api/clientes/route.ts', { '@/lib/legal': load('lib/legal.ts'), '@/lib/candidates': lib, '@/lib/service-options': load('lib/service-options.ts') }) };
 }
 function request(overrides = {}) {
   return new Request('http://localhost/api/clientes', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ name: 'Test Contact', company: 'Example Hotel', email: 'test@example.invalid', city: 'Madrid', sector: 'hoteles', service: 'camareros', message: 'Servicio de prueba', consent: 'on', ...overrides }) });
