@@ -1,5 +1,7 @@
 # Premium Work
 
+Consulta [Tecnologías y librerías](TECNOLOGIAS_Y_LIBRERIAS.md) para conocer la función de cada herramienta, las dependencias utilizadas y el estado de la migración a Cloudflare.
+
 Web corporativa de Premium Work con Next.js, React, TypeScript, Tailwind CSS y Framer Motion. Incluye formularios y paneles privados preparados para Supabase.
 
 La documentación principal, actualizada el 11 de septiembre de 2026, está en **[GUIA_DEL_PROYECTO.md](GUIA_DEL_PROYECTO.md)**. Recoge todos los cambios de diseño, animaciones, navegación, formularios y administración, junto con el estado de configuración y las tareas pendientes.

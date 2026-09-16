@@ -14,7 +14,9 @@ for (const path of ["/registro", "/solicitar-servicio"]) {
     });
     await page.goto(path);
     const form = page.locator("form.integrated-form");
-    await expect(form.locator('select[name="city"] option')).toHaveCount(8116);
+    const cityOptions = await form.locator('select[name="city"] option').allTextContents();
+    expect(cityOptions.length).toBeLessThan(100);
+    expect(cityOptions).toEqual(expect.arrayContaining(["Madrid", "Barcelona", "Málaga", "Sevilla"]));
     await form.locator('button[type="submit"]').click();
     await expect(form.locator('[name="name"]')).toBeFocused();
     await expect(form.locator('[name="name"]')).toHaveAttribute("aria-invalid", "true");

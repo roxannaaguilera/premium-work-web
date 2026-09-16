@@ -1,6 +1,7 @@
 "use client";
 
 import { CityField } from "@/components/CityField";
+import { submitForm } from "@/lib/submit-form";
 import { FormConsent } from "@/components/FormConsent";
 import { PhoneField, usePhoneValue } from "@/components/PhoneField";
 import { useFormValidation } from "@/components/useFormValidation";
@@ -23,10 +24,9 @@ export function ClientForm({ sector = "", service = "" }: { sector?: string; ser
     const data = Object.fromEntries(new FormData(form));
     setBusy(true); setSuccess(false); setStatus("");
     try {
-      const response = await fetch("/api/clientes", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(data) });
-      const result = await response.json();
+      const result = await submitForm("/api/clientes", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(data) });
       if (result.errors) validation.setErrors(result.errors);
-      if (!response.ok) throw new Error(result.error || "No se ha podido guardar tu solicitud.");
+      if (result.error) throw new Error(result.error);
       setSuccess(true); setStatus("Hemos recibido tu solicitud. Nos pondremos en contacto contigo para preparar tu propuesta.");
       form.reset();
       phone.clear();

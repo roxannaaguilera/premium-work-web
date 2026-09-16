@@ -1,6 +1,7 @@
 "use client";
 
 import { candidateSectors } from "@/lib/form-validation";
+import { submitForm } from "@/lib/submit-form";
 import { FormConsent } from "@/components/FormConsent";
 import { resolveCity } from "@/lib/contact-options";
 import { CityField } from "@/components/CityField";
@@ -75,10 +76,9 @@ export function CandidateForm() {
         validation.setErrors({ cv: "El archivo no es un PDF válido." });
         throw new Error("Adjunta un archivo PDF válido.");
       }
-      const response = await fetch("/api/candidatos", { method: "POST", body: data });
-      const result = await response.json();
+      const result = await submitForm("/api/candidatos", { method: "POST", body: data });
       if (result.errors) validation.setErrors(result.errors);
-      if (!response.ok) throw new Error(result.error || "No se ha podido guardar. Inténtalo de nuevo.");
+      if (result.error) throw new Error(result.error);
       setSuccess(true);
       setStatus("Hemos recibido tus datos y tu currículum. Gracias por presentar tu candidatura.");
       form.reset();

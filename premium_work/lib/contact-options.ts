@@ -1,7 +1,7 @@
-import cities from "./spanish-cities.json";
+import cities from "./spanish-main-cities.json";
 import { parsePhoneNumberFromString, isSupportedCountry, type CountryCode } from "libphonenumber-js";
 
-export const spanishCities = cities.toSorted((a, b) => a.localeCompare(b, "es"));
+export const spanishCities = [...cities].sort((a, b) => a.localeCompare(b, "es"));
 const normalize = (value: string) => value.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase().trim();
 const cityNames = new Map<string, string>();
 for (const city of spanishCities) {
@@ -12,6 +12,7 @@ for (const city of spanishCities) {
     if (inverted) cityNames.set(normalize(`${inverted[2]} ${inverted[1]}`), city);
   }
 }
+for (const [alias, city] of Object.entries({ "Coruña, A": "A Coruña", "La Coruña": "A Coruña", "Hospitalet de Llobregat, L'": "L'Hospitalet de Llobregat", "Palma de Mallorca": "Palma", "Vitoria": "Vitoria-Gasteiz", "Gasteiz": "Vitoria-Gasteiz" })) cityNames.set(normalize(alias), city);
 export function resolveCity(value: string) { return cityNames.get(normalize(value)); }
 export function phoneParts(value: string, country: CountryCode = "ES") {
   const parsed = parsePhoneNumberFromString(value.replace(/^00/, "+"), country);
