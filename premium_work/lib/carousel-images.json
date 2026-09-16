@@ -1,0 +1,566 @@
+{
+  "/images/serv-hoteles.webp": {
+    "mobile": {
+      "src": "/images/carousel/serv-hoteles-mobile-768.webp",
+      "width": 768,
+      "height": 711,
+      "srcSet": "/images/carousel/serv-hoteles-mobile-480.webp 480w, /images/carousel/serv-hoteles-mobile-768.webp 768w, /images/carousel/serv-hoteles-mobile-1152.webp 1152w, /images/carousel/serv-hoteles-mobile-1536.webp 1536w",
+      "variants": [
+        {
+          "src": "/images/carousel/serv-hoteles-mobile-480.webp",
+          "width": 480,
+          "height": 444,
+          "bytes": 12374
+        },
+        {
+          "src": "/images/carousel/serv-hoteles-mobile-768.webp",
+          "width": 768,
+          "height": 711,
+          "bytes": 22324
+        },
+        {
+          "src": "/images/carousel/serv-hoteles-mobile-1152.webp",
+          "width": 1152,
+          "height": 1067,
+          "bytes": 38684
+        },
+        {
+          "src": "/images/carousel/serv-hoteles-mobile-1536.webp",
+          "width": 1536,
+          "height": 1422,
+          "bytes": 61968
+        }
+      ]
+    },
+    "desktop": {
+      "src": "/images/carousel/serv-hoteles-desktop-960.webp",
+      "width": 960,
+      "height": 657,
+      "srcSet": "/images/carousel/serv-hoteles-desktop-320.webp 320w, /images/carousel/serv-hoteles-desktop-480.webp 480w, /images/carousel/serv-hoteles-desktop-640.webp 640w, /images/carousel/serv-hoteles-desktop-960.webp 960w, /images/carousel/serv-hoteles-desktop-1344.webp 1344w",
+      "variants": [
+        {
+          "src": "/images/carousel/serv-hoteles-desktop-320.webp",
+          "width": 320,
+          "height": 219,
+          "bytes": 6054
+        },
+        {
+          "src": "/images/carousel/serv-hoteles-desktop-480.webp",
+          "width": 480,
+          "height": 329,
+          "bytes": 9668
+        },
+        {
+          "src": "/images/carousel/serv-hoteles-desktop-640.webp",
+          "width": 640,
+          "height": 438,
+          "bytes": 13640
+        },
+        {
+          "src": "/images/carousel/serv-hoteles-desktop-960.webp",
+          "width": 960,
+          "height": 657,
+          "bytes": 23854
+        },
+        {
+          "src": "/images/carousel/serv-hoteles-desktop-1344.webp",
+          "width": 1344,
+          "height": 920,
+          "bytes": 39212
+        }
+      ]
+    }
+  },
+  "/images/serv-restaurants.webp": {
+    "mobile": {
+      "src": "/images/carousel/serv-restaurants-mobile-768.webp",
+      "width": 768,
+      "height": 711,
+      "srcSet": "/images/carousel/serv-restaurants-mobile-480.webp 480w, /images/carousel/serv-restaurants-mobile-768.webp 768w, /images/carousel/serv-restaurants-mobile-1152.webp 1152w, /images/carousel/serv-restaurants-mobile-1536.webp 1536w",
+      "variants": [
+        {
+          "src": "/images/carousel/serv-restaurants-mobile-480.webp",
+          "width": 480,
+          "height": 444,
+          "bytes": 26178
+        },
+        {
+          "src": "/images/carousel/serv-restaurants-mobile-768.webp",
+          "width": 768,
+          "height": 711,
+          "bytes": 47914
+        },
+        {
+          "src": "/images/carousel/serv-restaurants-mobile-1152.webp",
+          "width": 1152,
+          "height": 1067,
+          "bytes": 77968
+        },
+        {
+          "src": "/images/carousel/serv-restaurants-mobile-1536.webp",
+          "width": 1536,
+          "height": 1422,
+          "bytes": 119776
+        }
+      ]
+    },
+    "desktop": {
+      "src": "/images/carousel/serv-restaurants-desktop-960.webp",
+      "width": 960,
+      "height": 658,
+      "srcSet": "/images/carousel/serv-restaurants-desktop-320.webp 320w, /images/carousel/serv-restaurants-desktop-480.webp 480w, /images/carousel/serv-restaurants-desktop-640.webp 640w, /images/carousel/serv-restaurants-desktop-960.webp 960w, /images/carousel/serv-restaurants-desktop-1344.webp 1344w",
+      "variants": [
+        {
+          "src": "/images/carousel/serv-restaurants-desktop-320.webp",
+          "width": 320,
+          "height": 219,
+          "bytes": 12688
+        },
+        {
+          "src": "/images/carousel/serv-restaurants-desktop-480.webp",
+          "width": 480,
+          "height": 329,
+          "bytes": 21286
+        },
+        {
+          "src": "/images/carousel/serv-restaurants-desktop-640.webp",
+          "width": 640,
+          "height": 438,
+          "bytes": 30478
+        },
+        {
+          "src": "/images/carousel/serv-restaurants-desktop-960.webp",
+          "width": 960,
+          "height": 658,
+          "bytes": 51844
+        },
+        {
+          "src": "/images/carousel/serv-restaurants-desktop-1344.webp",
+          "width": 1344,
+          "height": 921,
+          "bytes": 78672
+        }
+      ]
+    }
+  },
+  "/images/serv-catering.webp": {
+    "mobile": {
+      "src": "/images/carousel/serv-catering-mobile-768.webp",
+      "width": 768,
+      "height": 711,
+      "srcSet": "/images/carousel/serv-catering-mobile-480.webp 480w, /images/carousel/serv-catering-mobile-768.webp 768w, /images/carousel/serv-catering-mobile-1152.webp 1152w, /images/carousel/serv-catering-mobile-1536.webp 1536w",
+      "variants": [
+        {
+          "src": "/images/carousel/serv-catering-mobile-480.webp",
+          "width": 480,
+          "height": 444,
+          "bytes": 35540
+        },
+        {
+          "src": "/images/carousel/serv-catering-mobile-768.webp",
+          "width": 768,
+          "height": 711,
+          "bytes": 65900
+        },
+        {
+          "src": "/images/carousel/serv-catering-mobile-1152.webp",
+          "width": 1152,
+          "height": 1067,
+          "bytes": 108436
+        },
+        {
+          "src": "/images/carousel/serv-catering-mobile-1536.webp",
+          "width": 1536,
+          "height": 1422,
+          "bytes": 157060
+        }
+      ]
+    },
+    "desktop": {
+      "src": "/images/carousel/serv-catering-desktop-960.webp",
+      "width": 960,
+      "height": 658,
+      "srcSet": "/images/carousel/serv-catering-desktop-320.webp 320w, /images/carousel/serv-catering-desktop-480.webp 480w, /images/carousel/serv-catering-desktop-640.webp 640w, /images/carousel/serv-catering-desktop-960.webp 960w, /images/carousel/serv-catering-desktop-1344.webp 1344w",
+      "variants": [
+        {
+          "src": "/images/carousel/serv-catering-desktop-320.webp",
+          "width": 320,
+          "height": 219,
+          "bytes": 18136
+        },
+        {
+          "src": "/images/carousel/serv-catering-desktop-480.webp",
+          "width": 480,
+          "height": 329,
+          "bytes": 31632
+        },
+        {
+          "src": "/images/carousel/serv-catering-desktop-640.webp",
+          "width": 640,
+          "height": 438,
+          "bytes": 45336
+        },
+        {
+          "src": "/images/carousel/serv-catering-desktop-960.webp",
+          "width": 960,
+          "height": 658,
+          "bytes": 76990
+        },
+        {
+          "src": "/images/carousel/serv-catering-desktop-1344.webp",
+          "width": 1344,
+          "height": 921,
+          "bytes": 115166
+        }
+      ]
+    }
+  },
+  "/images/serv-eventos-corporativos.webp": {
+    "mobile": {
+      "src": "/images/carousel/serv-eventos-corporativos-mobile-768.webp",
+      "width": 768,
+      "height": 711,
+      "srcSet": "/images/carousel/serv-eventos-corporativos-mobile-480.webp 480w, /images/carousel/serv-eventos-corporativos-mobile-768.webp 768w, /images/carousel/serv-eventos-corporativos-mobile-896.webp 896w",
+      "variants": [
+        {
+          "src": "/images/carousel/serv-eventos-corporativos-mobile-480.webp",
+          "width": 480,
+          "height": 445,
+          "bytes": 18242
+        },
+        {
+          "src": "/images/carousel/serv-eventos-corporativos-mobile-768.webp",
+          "width": 768,
+          "height": 711,
+          "bytes": 31022
+        },
+        {
+          "src": "/images/carousel/serv-eventos-corporativos-mobile-896.webp",
+          "width": 896,
+          "height": 830,
+          "bytes": 37836
+        }
+      ]
+    },
+    "desktop": {
+      "src": "/images/carousel/serv-eventos-corporativos-desktop-896.webp",
+      "width": 896,
+      "height": 614,
+      "srcSet": "/images/carousel/serv-eventos-corporativos-desktop-320.webp 320w, /images/carousel/serv-eventos-corporativos-desktop-480.webp 480w, /images/carousel/serv-eventos-corporativos-desktop-640.webp 640w, /images/carousel/serv-eventos-corporativos-desktop-896.webp 896w",
+      "variants": [
+        {
+          "src": "/images/carousel/serv-eventos-corporativos-desktop-320.webp",
+          "width": 320,
+          "height": 219,
+          "bytes": 9832
+        },
+        {
+          "src": "/images/carousel/serv-eventos-corporativos-desktop-480.webp",
+          "width": 480,
+          "height": 329,
+          "bytes": 15134
+        },
+        {
+          "src": "/images/carousel/serv-eventos-corporativos-desktop-640.webp",
+          "width": 640,
+          "height": 439,
+          "bytes": 20874
+        },
+        {
+          "src": "/images/carousel/serv-eventos-corporativos-desktop-896.webp",
+          "width": 896,
+          "height": 614,
+          "bytes": 31742
+        }
+      ]
+    }
+  },
+  "/images/serv-eventos-deportivos.webp": {
+    "mobile": {
+      "src": "/images/carousel/serv-eventos-deportivos-mobile-768.webp",
+      "width": 768,
+      "height": 711,
+      "srcSet": "/images/carousel/serv-eventos-deportivos-mobile-480.webp 480w, /images/carousel/serv-eventos-deportivos-mobile-768.webp 768w, /images/carousel/serv-eventos-deportivos-mobile-1152.webp 1152w, /images/carousel/serv-eventos-deportivos-mobile-1536.webp 1536w",
+      "variants": [
+        {
+          "src": "/images/carousel/serv-eventos-deportivos-mobile-480.webp",
+          "width": 480,
+          "height": 444,
+          "bytes": 23820
+        },
+        {
+          "src": "/images/carousel/serv-eventos-deportivos-mobile-768.webp",
+          "width": 768,
+          "height": 711,
+          "bytes": 45280
+        },
+        {
+          "src": "/images/carousel/serv-eventos-deportivos-mobile-1152.webp",
+          "width": 1152,
+          "height": 1067,
+          "bytes": 80028
+        },
+        {
+          "src": "/images/carousel/serv-eventos-deportivos-mobile-1536.webp",
+          "width": 1536,
+          "height": 1422,
+          "bytes": 113468
+        }
+      ]
+    },
+    "desktop": {
+      "src": "/images/carousel/serv-eventos-deportivos-desktop-960.webp",
+      "width": 960,
+      "height": 658,
+      "srcSet": "/images/carousel/serv-eventos-deportivos-desktop-320.webp 320w, /images/carousel/serv-eventos-deportivos-desktop-480.webp 480w, /images/carousel/serv-eventos-deportivos-desktop-640.webp 640w, /images/carousel/serv-eventos-deportivos-desktop-960.webp 960w, /images/carousel/serv-eventos-deportivos-desktop-1344.webp 1344w",
+      "variants": [
+        {
+          "src": "/images/carousel/serv-eventos-deportivos-desktop-320.webp",
+          "width": 320,
+          "height": 219,
+          "bytes": 12110
+        },
+        {
+          "src": "/images/carousel/serv-eventos-deportivos-desktop-480.webp",
+          "width": 480,
+          "height": 329,
+          "bytes": 20370
+        },
+        {
+          "src": "/images/carousel/serv-eventos-deportivos-desktop-640.webp",
+          "width": 640,
+          "height": 438,
+          "bytes": 29278
+        },
+        {
+          "src": "/images/carousel/serv-eventos-deportivos-desktop-960.webp",
+          "width": 960,
+          "height": 658,
+          "bytes": 50828
+        },
+        {
+          "src": "/images/carousel/serv-eventos-deportivos-desktop-1344.webp",
+          "width": 1344,
+          "height": 921,
+          "bytes": 79684
+        }
+      ]
+    }
+  },
+  "/images/serv-festivales.webp": {
+    "mobile": {
+      "src": "/images/carousel/serv-festivales-mobile-768.webp",
+      "width": 768,
+      "height": 711,
+      "srcSet": "/images/carousel/serv-festivales-mobile-480.webp 480w, /images/carousel/serv-festivales-mobile-768.webp 768w, /images/carousel/serv-festivales-mobile-1152.webp 1152w, /images/carousel/serv-festivales-mobile-1536.webp 1536w",
+      "variants": [
+        {
+          "src": "/images/carousel/serv-festivales-mobile-480.webp",
+          "width": 480,
+          "height": 444,
+          "bytes": 20108
+        },
+        {
+          "src": "/images/carousel/serv-festivales-mobile-768.webp",
+          "width": 768,
+          "height": 711,
+          "bytes": 35580
+        },
+        {
+          "src": "/images/carousel/serv-festivales-mobile-1152.webp",
+          "width": 1152,
+          "height": 1067,
+          "bytes": 56180
+        },
+        {
+          "src": "/images/carousel/serv-festivales-mobile-1536.webp",
+          "width": 1536,
+          "height": 1422,
+          "bytes": 82820
+        }
+      ]
+    },
+    "desktop": {
+      "src": "/images/carousel/serv-festivales-desktop-960.webp",
+      "width": 960,
+      "height": 657,
+      "srcSet": "/images/carousel/serv-festivales-desktop-320.webp 320w, /images/carousel/serv-festivales-desktop-480.webp 480w, /images/carousel/serv-festivales-desktop-640.webp 640w, /images/carousel/serv-festivales-desktop-960.webp 960w, /images/carousel/serv-festivales-desktop-1344.webp 1344w",
+      "variants": [
+        {
+          "src": "/images/carousel/serv-festivales-desktop-320.webp",
+          "width": 320,
+          "height": 219,
+          "bytes": 10906
+        },
+        {
+          "src": "/images/carousel/serv-festivales-desktop-480.webp",
+          "width": 480,
+          "height": 329,
+          "bytes": 18374
+        },
+        {
+          "src": "/images/carousel/serv-festivales-desktop-640.webp",
+          "width": 640,
+          "height": 438,
+          "bytes": 25386
+        },
+        {
+          "src": "/images/carousel/serv-festivales-desktop-960.webp",
+          "width": 960,
+          "height": 657,
+          "bytes": 41666
+        },
+        {
+          "src": "/images/carousel/serv-festivales-desktop-1344.webp",
+          "width": 1344,
+          "height": 920,
+          "bytes": 60262
+        }
+      ]
+    }
+  },
+  "/images/serv-bodas-celebraciones.webp": {
+    "mobile": {
+      "src": "/images/carousel/serv-bodas-celebraciones-mobile-768.webp",
+      "width": 768,
+      "height": 711,
+      "srcSet": "/images/carousel/serv-bodas-celebraciones-mobile-480.webp 480w, /images/carousel/serv-bodas-celebraciones-mobile-768.webp 768w, /images/carousel/serv-bodas-celebraciones-mobile-1152.webp 1152w, /images/carousel/serv-bodas-celebraciones-mobile-1536.webp 1536w",
+      "variants": [
+        {
+          "src": "/images/carousel/serv-bodas-celebraciones-mobile-480.webp",
+          "width": 480,
+          "height": 444,
+          "bytes": 31920
+        },
+        {
+          "src": "/images/carousel/serv-bodas-celebraciones-mobile-768.webp",
+          "width": 768,
+          "height": 711,
+          "bytes": 57570
+        },
+        {
+          "src": "/images/carousel/serv-bodas-celebraciones-mobile-1152.webp",
+          "width": 1152,
+          "height": 1067,
+          "bytes": 94970
+        },
+        {
+          "src": "/images/carousel/serv-bodas-celebraciones-mobile-1536.webp",
+          "width": 1536,
+          "height": 1422,
+          "bytes": 140034
+        }
+      ]
+    },
+    "desktop": {
+      "src": "/images/carousel/serv-bodas-celebraciones-desktop-960.webp",
+      "width": 960,
+      "height": 658,
+      "srcSet": "/images/carousel/serv-bodas-celebraciones-desktop-320.webp 320w, /images/carousel/serv-bodas-celebraciones-desktop-480.webp 480w, /images/carousel/serv-bodas-celebraciones-desktop-640.webp 640w, /images/carousel/serv-bodas-celebraciones-desktop-960.webp 960w, /images/carousel/serv-bodas-celebraciones-desktop-1344.webp 1344w",
+      "variants": [
+        {
+          "src": "/images/carousel/serv-bodas-celebraciones-desktop-320.webp",
+          "width": 320,
+          "height": 219,
+          "bytes": 18042
+        },
+        {
+          "src": "/images/carousel/serv-bodas-celebraciones-desktop-480.webp",
+          "width": 480,
+          "height": 329,
+          "bytes": 31052
+        },
+        {
+          "src": "/images/carousel/serv-bodas-celebraciones-desktop-640.webp",
+          "width": 640,
+          "height": 438,
+          "bytes": 44458
+        },
+        {
+          "src": "/images/carousel/serv-bodas-celebraciones-desktop-960.webp",
+          "width": 960,
+          "height": 658,
+          "bytes": 73228
+        },
+        {
+          "src": "/images/carousel/serv-bodas-celebraciones-desktop-1344.webp",
+          "width": 1344,
+          "height": 921,
+          "bytes": 112808
+        }
+      ]
+    }
+  },
+  "/images/serv-eventos-priv.webp": {
+    "mobile": {
+      "src": "/images/carousel/serv-eventos-priv-mobile-768.webp",
+      "width": 768,
+      "height": 711,
+      "srcSet": "/images/carousel/serv-eventos-priv-mobile-480.webp 480w, /images/carousel/serv-eventos-priv-mobile-768.webp 768w, /images/carousel/serv-eventos-priv-mobile-1152.webp 1152w, /images/carousel/serv-eventos-priv-mobile-1536.webp 1536w",
+      "variants": [
+        {
+          "src": "/images/carousel/serv-eventos-priv-mobile-480.webp",
+          "width": 480,
+          "height": 444,
+          "bytes": 19976
+        },
+        {
+          "src": "/images/carousel/serv-eventos-priv-mobile-768.webp",
+          "width": 768,
+          "height": 711,
+          "bytes": 36806
+        },
+        {
+          "src": "/images/carousel/serv-eventos-priv-mobile-1152.webp",
+          "width": 1152,
+          "height": 1067,
+          "bytes": 59212
+        },
+        {
+          "src": "/images/carousel/serv-eventos-priv-mobile-1536.webp",
+          "width": 1536,
+          "height": 1422,
+          "bytes": 84608
+        }
+      ]
+    },
+    "desktop": {
+      "src": "/images/carousel/serv-eventos-priv-desktop-960.webp",
+      "width": 960,
+      "height": 658,
+      "srcSet": "/images/carousel/serv-eventos-priv-desktop-320.webp 320w, /images/carousel/serv-eventos-priv-desktop-480.webp 480w, /images/carousel/serv-eventos-priv-desktop-640.webp 640w, /images/carousel/serv-eventos-priv-desktop-960.webp 960w, /images/carousel/serv-eventos-priv-desktop-1344.webp 1344w",
+      "variants": [
+        {
+          "src": "/images/carousel/serv-eventos-priv-desktop-320.webp",
+          "width": 320,
+          "height": 219,
+          "bytes": 10852
+        },
+        {
+          "src": "/images/carousel/serv-eventos-priv-desktop-480.webp",
+          "width": 480,
+          "height": 329,
+          "bytes": 18946
+        },
+        {
+          "src": "/images/carousel/serv-eventos-priv-desktop-640.webp",
+          "width": 640,
+          "height": 438,
+          "bytes": 27742
+        },
+        {
+          "src": "/images/carousel/serv-eventos-priv-desktop-960.webp",
+          "width": 960,
+          "height": 658,
+          "bytes": 47958
+        },
+        {
+          "src": "/images/carousel/serv-eventos-priv-desktop-1344.webp",
+          "width": 1344,
+          "height": 921,
+          "bytes": 70652
+        }
+      ]
+    }
+  }
+}

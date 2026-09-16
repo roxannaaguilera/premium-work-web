@@ -2,20 +2,17 @@
 
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
+import carouselImages from "@/lib/carousel-images.json";
 
 const sectors = [
-  { title: "Hoteles", slug: "hoteles", src: "/images/serv-1-display.webp", position: "object-[50%_center]" },
-  { title: "Restaurantes", slug: "restaurantes", src: "/images/serv-2-display.webp", position: "object-[50%_center]" },
-  { title: "Catering", slug: "catering", src: "/images/serv-5-display.webp", position: "object-[50%_center]" },
-  { title: "Eventos corporativos", slug: "eventos-corporativos", src: "/images/serv-4-display.webp", position: "object-[50%_20%]" },
-  { title: "Congresos", slug: "congresos", src: "/images/serv-6-display.webp", position: "object-[50%_center]" },
-  { title: "Ferias", slug: "ferias", src: "/images/serv-3-display.webp", position: "object-[50%_70%]" },
-  { title: "Eventos deportivos", slug: "eventos-deportivos", src: "/images/hero-2.webp", position: "object-[60%_center]" },
-  { title: "Festivales", slug: "festivales", src: "/images/hero-3.webp", position: "object-[55%_center]" },
-  { title: "Bodas y celebraciones", slug: "bodas-y-celebraciones", src: "/images/hero-4.webp", position: "object-[50%_center]" },
-  { title: "Espacios culturales", slug: "espacios-culturales", src: "/images/hero-5.webp", position: "object-[50%_center]" },
-  { title: "Clubs y ocio", slug: "clubs-y-ocio", src: "/images/serv-4-display.webp", position: "object-[50%_35%]" },
-  { title: "Experiencias privadas", slug: "experiencias-privadas", src: "/images/serv-1-display.webp", position: "object-[50%_center]" },
+  { title: "Hoteles", slug: "hoteles", src: "/images/serv-hoteles.webp", position: "object-[50%_center]" },
+  { title: "Restaurantes", slug: "restaurantes", src: "/images/serv-restaurants.webp", position: "object-[50%_center]" },
+  { title: "Catering", slug: "catering", src: "/images/serv-catering.webp", position: "object-[50%_center]" },
+  { title: "Eventos corporativos", slug: "eventos-corporativos", src: "/images/serv-eventos-corporativos.webp", position: "object-[50%_20%]" },
+  { title: "Eventos deportivos", slug: "eventos-deportivos", src: "/images/serv-eventos-deportivos.webp", position: "object-[60%_center]" },
+  { title: "Festivales", slug: "festivales", src: "/images/serv-festivales.webp", position: "object-[55%_center]" },
+  { title: "Bodas y celebraciones", slug: "bodas-y-celebraciones", src: "/images/serv-bodas-celebraciones.webp", position: "object-[50%_center]" },
+  { title: "Eventos privados", slug: "experiencias-privadas", src: "/images/serv-eventos-priv.webp", position: "object-[50%_center]" },
 ];
 
 const slides = [...sectors, ...sectors, ...sectors];
@@ -62,9 +59,13 @@ export function ClientsCarousel() {
           <div className="sectors-track flex" style={{ transform: `translateX(calc(50% - var(--sector-width) / 2 - ${position} * (var(--sector-width) + var(--sector-gap))))`, transition: animated ? "transform 550ms ease" : "none" }}>
             {slides.map((sector, index) => {
               const visible = Math.abs(index - position) <= 1;
+              const image = carouselImages[sector.src as keyof typeof carouselImages];
               return (
                 <a key={`${sector.slug}-${index}`} href={`/solicitar-servicio?sector=${sector.slug}`} tabIndex={visible ? 0 : -1} aria-hidden={!visible} className="sector-card group relative shrink-0 overflow-hidden rounded-xl bg-[#0B1F3A] shadow-md focus-visible:outline-4 focus-visible:outline-offset-2 focus-visible:outline-[#C9A227]">
-                  <img src={sector.src} alt="" loading={Math.abs(index - sectors.length) <= 2 ? "eager" : "lazy"} decoding="async" className={`h-full w-full object-cover ${sector.position} transition-transform duration-500 group-hover:scale-105`} />
+                  <picture>
+                    <source media="(min-width: 768px)" srcSet={image.desktop.srcSet} sizes="(min-width: 1600px) 447px, calc(30vw - 33.6px)" width={image.desktop.width} height={image.desktop.height} />
+                    <img src={image.mobile.src} srcSet={image.mobile.srcSet} sizes="76vw" width={image.mobile.width} height={image.mobile.height} alt="" loading="lazy" decoding="async" className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105" />
+                  </picture>
                   <span className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/10 to-transparent" />
                   <span className="display absolute inset-x-0 bottom-0 p-5 text-2xl font-semibold leading-tight text-white lg:p-6 lg:text-3xl">{sector.title}</span>
                 </a>
