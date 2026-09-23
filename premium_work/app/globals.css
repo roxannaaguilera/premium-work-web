@@ -6,7 +6,7 @@ html { scroll-behavior:smooth; }
 body { margin:0; background:var(--cream); color:var(--navy); font-family:"DM Sans", ui-sans-serif, system-ui, sans-serif; }
 ::selection { background:var(--gold); color:white; }
 .display { font-family:"Playfair Display", Georgia, serif; letter-spacing:-.055em; }
-.eyebrow { font-size:11px; font-weight:700; letter-spacing:.12em; text-transform:uppercase; }
+.eyebrow { font-size:12px; font-weight:700; letter-spacing:.14em; text-transform:uppercase; }
 .section-pad { padding:clamp(5rem,10vw,9rem) clamp(1.25rem,4vw,4rem); }
 .photo-placeholder { background:radial-gradient(circle at 75% 12%, rgba(201,162,39,.63), transparent 26%), linear-gradient(125deg, #112849 0%, #0B1F3A 52%, #43391f 100%); }
 .photo-placeholder--light { background:radial-gradient(circle at 25% 25%, rgba(201,162,39,.3), transparent 30%), linear-gradient(145deg, #ded8ca, #a79e8c); }
@@ -168,6 +168,129 @@ body { margin:0; background:var(--cream); color:var(--navy); font-family:"DM San
 @font-face { font-family: "Playfair Display"; src: url("/fonts/playfair-display.ttf") format("truetype"); font-style: normal; font-weight: 400 900; font-display: swap; }
 @font-face { font-family: "Playfair Display"; src: url("/fonts/playfair-display-italic.ttf") format("truetype"); font-style: italic; font-weight: 400 900; font-display: swap; }
 .legal-copy h2 { margin-top: 2.25rem; margin-bottom: .8rem; font-size: 1.35rem; font-weight: 600; }
+
+/* ——— Rediseño visual: textura, botones, divisores, hero ——— */
+
+/* Grano de película sutil sobre toda la página */
+body::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: 80;
+  pointer-events: none;
+  opacity: .05;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+/* Variantes de botón: no todo con la misma píldora dorada */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: .6rem;
+  border-radius: 9999px;
+  padding: .9rem 1.5rem;
+  min-height: 2.75rem;
+  font-size: .875rem;
+  font-weight: 700;
+  line-height: 1.25;
+  transition: transform .25s ease, background-color .25s ease, color .25s ease, border-color .25s ease, box-shadow .25s ease;
+}
+.btn:hover { transform: translateY(-2px); }
+.btn:active { transform: translateY(0); }
+.btn-gold {
+  background: var(--gold);
+  color: var(--navy);
+  box-shadow: 0 10px 26px rgba(201,162,39,.35);
+}
+.btn-gold:hover { background: #e2be3d; }
+.btn-navy {
+  background: var(--navy);
+  color: #fff;
+  box-shadow: 0 12px 28px rgba(11,31,58,.28);
+}
+.btn-navy:hover { background: #16345e; }
+.btn-outline-light {
+  border: 1px solid rgba(255,255,255,.45);
+  color: #fff;
+  background: rgba(255,255,255,.05);
+  -webkit-backdrop-filter: blur(6px);
+  backdrop-filter: blur(6px);
+}
+.btn-outline-light:hover { background: #fff; border-color: #fff; color: var(--navy); }
+.btn-link {
+  display: inline-flex;
+  align-items: center;
+  gap: .5rem;
+  font-size: .875rem;
+  font-weight: 700;
+  color: var(--navy);
+  text-decoration: underline;
+  text-decoration-color: var(--gold);
+  text-decoration-thickness: 2px;
+  text-underline-offset: 8px;
+  transition: color .25s ease, text-decoration-color .25s ease;
+}
+.btn-link:hover { color: #94751d; text-decoration-color: #94751d; }
+
+/* Divisor hairline con acento dorado */
+.divider-gold {
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(201,162,39,.55), transparent);
+}
+
+/* Resplandor dorado ambiental del hero: visible pero elegante */
+.hero-glow {
+  position: absolute;
+  right: -12vmax;
+  top: -18vmax;
+  width: 62vmax;
+  height: 62vmax;
+  pointer-events: none;
+  background: radial-gradient(circle, rgba(229,198,90,.32) 0%, rgba(201,162,39,.13) 38%, transparent 68%);
+  filter: blur(50px);
+  animation: hero-glow-drift 14s ease-in-out infinite alternate;
+  will-change: transform;
+}
+@keyframes hero-glow-drift {
+  from { transform: translate3d(-6%, 4%, 0) scale(1); }
+  to { transform: translate3d(6%, -5%, 0) scale(1.12); }
+}
+
+/* Indicador de scroll refinado */
+.scroll-cue-line {
+  position: relative;
+  width: 1px;
+  height: 56px;
+  overflow: hidden;
+  background: rgba(255,255,255,.28);
+}
+.scroll-cue-line::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: -40%;
+  width: 100%;
+  height: 40%;
+  background: #e5c65a;
+  animation: scroll-cue-drop 2.2s ease-in-out infinite;
+}
+@keyframes scroll-cue-drop {
+  0% { top: -40%; }
+  60%, 100% { top: 110%; }
+}
+.scroll-cue-label {
+  writing-mode: vertical-rl;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: .3em;
+  text-transform: uppercase;
+  color: rgba(255,255,255,.55);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hero-glow { animation: none; }
+  .scroll-cue-line::after { animation: none; top: 30%; }
+}
 .legal-copy p, .legal-copy dd, .legal-copy li { line-height: 1.8; margin-bottom: .8rem; }
 .legal-copy a { text-decoration: underline; text-underline-offset: 3px; }
 .legal-copy dt { margin-top: 1rem; font-weight: 700; }

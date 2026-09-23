@@ -32,7 +32,7 @@ export function Footer() {
   return (
     <footer id="contacto" className="brand-footer scroll-mt-[calc(5rem+1px)] min-h-[calc(100svh-5rem)] text-[#F8F7F4]">
       <div className="mx-auto flex h-full max-w-[1600px] flex-col px-5 py-5 md:px-8 md:py-6 lg:px-10">
-        <header className="flex shrink-0 items-center justify-between border-b border-white/15 pb-4">
+        <header className="flex shrink-0 items-center justify-between border-b border-white/25 pb-4">
           <p className="eyebrow flex items-center gap-2 text-white/60"><span className="text-[#C9A227]" aria-hidden="true">◆</span> Hablemos de su próximo servicio</p>
 
         </header>
@@ -47,7 +47,7 @@ export function Footer() {
             </div>
           </div>
 
-          <div className="flex flex-col items-start gap-7 border-t border-white/15 pt-5 sm:flex-row sm:items-center sm:gap-14 lg:border-l lg:border-t-0 lg:pl-10 lg:pt-0">
+          <div className="flex flex-col items-start gap-7 border-t border-white/25 pt-5 sm:flex-row sm:items-center sm:gap-14 lg:border-l lg:border-t-0 lg:pl-10 lg:pt-0">
             <div>
               <p className="eyebrow text-[#C9A227]">Atención comercial</p>
               <a href={`https://wa.me/${WHATSAPP_NUMBER}`} target="_blank" rel="noreferrer" className="mt-3 inline-flex items-center gap-2 text-base font-semibold text-white transition hover:text-[#C9A227]">Hablar por WhatsApp <ArrowUpRight size={17} /></a>
@@ -64,7 +64,7 @@ export function Footer() {
           </div>
         </div>
 
-        <div className="grid shrink-0 gap-4 border-y border-white/15 py-4 sm:grid-cols-2 lg:grid-cols-[.65fr_1.35fr]">
+        <div className="grid shrink-0 gap-4 border-y border-white/25 py-4 sm:grid-cols-2 lg:grid-cols-[.65fr_1.35fr]">
           <nav aria-label="Navegación del pie de página" className="flex flex-wrap gap-x-5 gap-y-1">{navigation.map((item) => <a key={item.label} href={item.href} className="text-sm text-white/65 transition hover:text-[#C9A227]">{item.label}</a>)}</nav>
           <div className="flex flex-wrap gap-x-5 gap-y-3">{services.map((service) => <a key={service} href={`/#${service === "Camareros/as" ? "camareros" : service.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase().replaceAll(" ", "-")}`} className="text-sm text-white/65 transition hover:text-[#C9A227]">{service}</a>)}</div>
         </div>

@@ -3,13 +3,24 @@
 import { motion, useReducedMotion } from "framer-motion";
 import { ArrowRight } from "lucide-react";
 
-const services = [
+type Layout = "cinematic" | "split" | "editorial";
+
+const services: Array<{
+  title: string;
+  copy: string;
+  slug: string;
+  src: string;
+  position: string;
+  layout: Layout;
+  flip?: boolean;
+}> = [
   {
     title: "Camareros/as",
     copy: "Cada servicio de sala es ejecutado por profesionales propios, cuidadosamente seleccionados, formados en nuestros estándares y supervisados durante toda la prestación, garantizando agilidad y coherencia con la atmósfera del evento.",
     slug: "camareros",
     src: "/images/serv-1-display.webp",
     position: "object-[50%_50%]",
+    layout: "cinematic",
   },
   {
     title: "Maîtres",
@@ -17,6 +28,7 @@ const services = [
     slug: "maitres",
     src: "/images/serv-2-display.webp",
     position: "object-[50%_center]",
+    layout: "split",
   },
   {
     title: "Office y Housekeeping",
@@ -24,6 +36,7 @@ const services = [
     slug: "office-y-housekeeping",
     src: "/images/serv-3-display.webp",
     position: "object-[50%_87%]",
+    layout: "editorial",
   },
   {
     title: "Hostess",
@@ -31,6 +44,7 @@ const services = [
     slug: "hostess",
     src: "/images/serv-4-display.webp",
     position: "object-[50%_9%]",
+    layout: "cinematic",
   },
   {
     title: "Personal de cocina",
@@ -38,6 +52,8 @@ const services = [
     slug: "personal-de-cocina",
     src: "/images/serv-5-display.webp",
     position: "object-[50%_center]",
+    layout: "split",
+    flip: true,
   },
   {
     title: "Supervisores",
@@ -45,6 +61,7 @@ const services = [
     slug: "supervisores",
     src: "/images/serv-6-display.webp",
     position: "object-[50%_center]",
+    layout: "editorial",
   },
 ];
 
@@ -63,12 +80,136 @@ const mobileActions = [
   },
 ];
 
+function CinematicArticle({ service, index, reducedMotion }: { service: (typeof services)[number]; index: number; reducedMotion: boolean | null }) {
+  const number = String(index + 1).padStart(2, "0");
+  return (
+    <article id={service.slug} className="group relative flex min-h-[92svh] scroll-mt-[calc(5rem+1px)] items-center overflow-hidden bg-[#0B1F3A]">
+      <div className="absolute inset-0">
+        <img
+          src={service.src}
+          alt={service.title}
+          loading="lazy"
+          decoding="async"
+          className={`absolute inset-0 h-full w-full object-cover ${service.position} transition-transform duration-[1400ms] ease-out group-hover:scale-105`}
+        />
+        <div className="absolute inset-0 bg-[linear-gradient(100deg,rgba(11,31,58,.88)_0%,rgba(11,31,58,.45)_52%,rgba(11,31,58,.06)_88%)]" />
+        <div className="absolute inset-0 bg-[#C9A227]/10 mix-blend-overlay" aria-hidden="true" />
+      </div>
+      <span aria-hidden="true" className="display pointer-events-none absolute -right-4 top-8 select-none text-[24vw] leading-none text-white/[.05] lg:text-[18vw]">{number}</span>
+      <div className="relative mx-auto w-full max-w-[1600px] px-5 py-24 md:px-8 lg:px-10">
+        <motion.div
+          initial={{ opacity: reducedMotion ? 1 : 0, y: reducedMotion ? 0 : 40 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: false, amount: 0.3 }}
+          transition={{ duration: 0.9, ease: "easeOut" }}
+          className="max-w-xl"
+        >
+          <p className="eyebrow text-[#e5c65a]">{number}</p>
+          <h3 className="display mt-5 text-[clamp(2.8rem,7vw,5.5rem)] leading-[1.02] text-white">{service.title}</h3>
+          <p className="mt-6 max-w-md text-base leading-7 text-white/85">{service.copy}</p>
+          <a href={`/solicitar-servicio?servicio=${service.slug}`} className="btn btn-outline-light mt-8">Solicitar este servicio <ArrowRight size={18} aria-hidden="true" /></a>
+        </motion.div>
+      </div>
+    </article>
+  );
+}
+
+function SplitArticle({ service, index, reducedMotion }: { service: (typeof services)[number]; index: number; reducedMotion: boolean | null }) {
+  const number = String(index + 1).padStart(2, "0");
+  const flip = service.flip;
+  return (
+    <article id={service.slug} className="brand-surface-soft scroll-mt-[calc(5rem+1px)]">
+      <div className="mx-auto grid max-w-[1600px] items-center gap-10 px-5 py-20 md:px-8 lg:grid-cols-12 lg:gap-6 lg:px-10 lg:py-28">
+        <motion.div
+          initial={{ opacity: reducedMotion ? 1 : 0, scale: reducedMotion ? 1 : 0.97 }}
+          whileInView={{ opacity: 1, scale: 1 }}
+          viewport={{ once: false, amount: 0.3 }}
+          transition={{ duration: 0.9, ease: "easeOut" }}
+          className={`group relative overflow-hidden rounded-2xl shadow-[0_30px_70px_-30px_rgba(11,31,58,.35)] lg:col-span-7 ${flip ? "lg:order-2" : ""}`}
+        >
+          <img
+            src={service.src}
+            alt={service.title}
+            loading="lazy"
+            decoding="async"
+            className={`aspect-[16/10] w-full object-cover ${service.position} transition-transform duration-[1200ms] ease-out group-hover:scale-105`}
+          />
+          <div className="absolute inset-0 bg-gradient-to-t from-[#0B1F3A]/30 via-transparent to-transparent transition-opacity duration-700 group-hover:opacity-40" aria-hidden="true" />
+          <div className="absolute inset-0 bg-[#C9A227]/0 mix-blend-color transition-colors duration-700 group-hover:bg-[#C9A227]/15" aria-hidden="true" />
+        </motion.div>
+        <motion.div
+          initial={{ opacity: reducedMotion ? 1 : 0, x: reducedMotion ? 0 : flip ? 60 : -60 }}
+          whileInView={{ opacity: 1, x: 0 }}
+          viewport={{ once: false, amount: 0.3 }}
+          transition={{ duration: 0.9, ease: "easeOut" }}
+          className={`lg:col-span-5 ${flip ? "lg:order-1 lg:pr-10" : "lg:pl-10"}`}
+        >
+          <p className="eyebrow text-[#94751D]">{number}</p>
+          <h3 className="display mt-5 text-[clamp(2.2rem,4.5vw,3.8rem)] leading-[1.05] text-[#0B1F3A]">{service.title}</h3>
+          <p className="mt-5 max-w-md text-base leading-7 text-[#0B1F3A]/75">{service.copy}</p>
+          <a href={`/solicitar-servicio?servicio=${service.slug}`} className="btn btn-navy mt-7">Solicitar este servicio <ArrowRight size={18} aria-hidden="true" /></a>
+        </motion.div>
+      </div>
+    </article>
+  );
+}
+
+function EditorialArticle({ service, index, reducedMotion }: { service: (typeof services)[number]; index: number; reducedMotion: boolean | null }) {
+  const number = String(index + 1).padStart(2, "0");
+  return (
+    <article id={service.slug} className="scroll-mt-[calc(5rem+1px)] bg-[#F8F7F4]">
+      <div className="mx-auto max-w-[1600px] px-5 py-20 md:px-8 lg:px-10 lg:py-28">
+        <div className="divider-gold mb-12 lg:mb-16" aria-hidden="true" />
+        <div className="grid items-center gap-10 lg:grid-cols-12 lg:gap-8">
+          <motion.p
+            initial={{ opacity: reducedMotion ? 1 : 0, y: reducedMotion ? 0 : 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: false, amount: 0.3 }}
+            transition={{ duration: 0.8, ease: "easeOut" }}
+            aria-hidden="true"
+            className="display text-[clamp(4rem,9vw,7rem)] leading-none text-[#C9A227] lg:col-span-2"
+          >
+            {number}
+          </motion.p>
+          <motion.div
+            initial={{ opacity: reducedMotion ? 1 : 0, y: reducedMotion ? 0 : 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: false, amount: 0.3 }}
+            transition={{ duration: 0.8, delay: 0.08, ease: "easeOut" }}
+            className="lg:col-span-5"
+          >
+            <h3 className="display text-[clamp(2rem,4vw,3.2rem)] leading-[1.05] text-[#0B1F3A]">{service.title}</h3>
+            <p className="mt-4 max-w-md text-base leading-7 text-[#0B1F3A]/75">{service.copy}</p>
+            <a href={`/solicitar-servicio?servicio=${service.slug}`} className="btn-link mt-6">Solicitar este servicio <ArrowRight size={18} aria-hidden="true" /></a>
+          </motion.div>
+          <motion.div
+            initial={{ opacity: reducedMotion ? 1 : 0, y: reducedMotion ? 0 : 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: false, amount: 0.3 }}
+            transition={{ duration: 0.8, delay: 0.16, ease: "easeOut" }}
+            className="group relative overflow-hidden rounded-2xl shadow-[0_30px_70px_-30px_rgba(11,31,58,.35)] lg:col-span-5"
+          >
+            <img
+              src={service.src}
+              alt={service.title}
+              loading="lazy"
+              decoding="async"
+              className={`aspect-[4/3] w-full object-cover ${service.position} transition-transform duration-[1200ms] ease-out group-hover:scale-105`}
+            />
+            <div className="absolute inset-0 bg-[#0B1F3A]/10 transition-colors duration-700 group-hover:bg-transparent" aria-hidden="true" />
+          </motion.div>
+        </div>
+      </div>
+    </article>
+  );
+}
+
 export function Features() {
   const reducedMotion = useReducedMotion();
   return (
     <section
       id="servicios"
-      className="brand-surface-soft w-full scroll-mt-[calc(5rem+1px)] overflow-hidden"
+      className="w-full scroll-mt-[calc(5rem+1px)] overflow-hidden bg-[#F8F7F4]"
     >
       {/* MOBILE */}
       <div className="relative overflow-hidden py-20 lg:hidden">
@@ -110,57 +251,12 @@ export function Features() {
         </p>
       </div>
 
-      {/* DESKTOP - ANCHO COMPLETO SIN MÁRGENES LATERALES */}
+      {/* DESKTOP - RITMO EDITORIAL ALTERNADO */}
       <div className="w-full">
         {services.map((service, index) => {
-          const imageFirst = index % 2 === 1;
-
-          return (
-            <article
-              id={service.slug}
-              key={service.title}
-              className="grid w-full scroll-mt-[calc(5rem+1px)] grid-cols-1 lg:min-h-[100svh] lg:grid-cols-2"
-            >
-              {/* TEXTO */}
-              <div
-                className={`feature-soft-panel relative isolate flex items-center overflow-hidden px-5 py-10 sm:px-8 lg:px-[clamp(3rem,8vw,9rem)] lg:py-16 ${
-                  imageFirst ? "order-1 lg:order-2" : "order-1"
-                }`}
-              >
-                <motion.div initial={{ opacity: reducedMotion ? 1 : 0, x: reducedMotion ? 0 : imageFirst ? 120 : -120 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: false, amount: 0.25 }} transition={{ duration: 0.9, ease: "easeOut" }} className="relative max-w-md">
-                  <p className="eyebrow text-[#94751D]">
-                    {String(index + 1).padStart(2, "0")}
-                  </p>
-
-                  <h3 className="display mt-5 text-[clamp(2.5rem,10vw,3.5rem)] leading-[1.05] text-[#0B1F3A] lg:text-7xl">
-                    {service.title}
-                  </h3>
-
-                  <p className="mt-6 text-base leading-7 text-[#0B1F3A]/75">
-                    {service.copy}
-                  </p>
-                  <a href={`/solicitar-servicio?servicio=${service.slug}`} className="mt-7 inline-flex min-h-11 items-center gap-3 rounded-full bg-[#C9A227] px-5 py-3 text-sm font-bold text-[#0B1F3A] transition hover:bg-[#e2be3d]">Solicitar este servicio <ArrowRight size={18} aria-hidden="true" /></a>
-                </motion.div>
-              </div>
-
-              {/* FOTO SIN MÁRGENES */}
-              <div
-                className={`relative mx-auto mb-8 aspect-[4/5] w-[calc(100%-2.5rem)] overflow-hidden rounded-xl sm:w-[calc(100%-4rem)] lg:mb-0 lg:aspect-auto lg:min-h-[100svh] lg:w-full lg:rounded-none ${
-                  imageFirst ? "order-2 lg:order-1" : "order-2"
-                }`}
-              >
-                <img
-                  src={service.src}
-                  alt={service.title}
-                  loading="lazy"
-                  decoding="async"
-                  className={`absolute inset-0 block h-full w-full object-cover ${service.position}`}
-                />
-
-                <div className="pointer-events-none absolute inset-0 bg-[linear-gradient(135deg,rgba(11,31,58,.15),transparent_55%,rgba(11,31,58,.28))]" />
-              </div>
-            </article>
-          );
+          if (service.layout === "cinematic") return <CinematicArticle key={service.slug} service={service} index={index} reducedMotion={reducedMotion} />;
+          if (service.layout === "split") return <SplitArticle key={service.slug} service={service} index={index} reducedMotion={reducedMotion} />;
+          return <EditorialArticle key={service.slug} service={service} index={index} reducedMotion={reducedMotion} />;
         })}
       </div>
     </section>

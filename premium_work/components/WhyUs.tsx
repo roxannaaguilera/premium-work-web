@@ -1,8 +1,6 @@
 "use client";
 
-import { ArrowLeft, ArrowRight } from "lucide-react";
-import { motion } from "framer-motion";
-import { useRef, useState } from "react";
+import { motion, useReducedMotion } from "framer-motion";
 
 const benefits = [
   { title: "Selección con criterio", copy: "El perfil que su marca merece." },
@@ -13,49 +11,37 @@ const benefits = [
 ];
 
 export function WhyUs() {
-  const scroller = useRef<HTMLDivElement>(null);
-  const [progress, setProgress] = useState(0);
-
-  const scroll = (direction: number) => scroller.current?.scrollBy({ left: direction * (scroller.current?.clientWidth ?? 360), behavior: "smooth" });
-
-  const handleScroll = () => {
-    const element = scroller.current;
-    if (!element) return;
-    const max = element.scrollWidth - element.clientWidth;
-    setProgress(max > 0 ? element.scrollLeft / max : 0);
-  };
+  const reducedMotion = useReducedMotion();
 
   return (
-    <section id="nosotros" className="brand-moving-light relative isolate flex h-[calc(100svh-5rem)] scroll-mt-[calc(5rem+1px)] flex-col overflow-hidden text-white">
-      <motion.header initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: false, margin: "-100px" }} transition={{ duration: 0.5 }} className="relative mx-auto grid w-full max-w-[1600px] shrink-0 gap-4 px-5 py-8 md:grid-cols-[.65fr_1.35fr] md:items-end md:gap-12 md:px-8 md:py-10 lg:px-10">
-        <p className="eyebrow flex items-center gap-2 text-[#0B1F3A]/65"><span className="text-[#C9A227]" aria-hidden="true">◆</span> La diferencia Premium Work</p>
-        <h2 className="display max-w-4xl text-[clamp(2.5rem,5.4vw,5.4rem)] leading-[.9] tracking-[-.035em] text-[#0B1F3A]">La diferencia está en <em className="font-normal text-[#C9A227]">cómo lo hacemos.</em></h2>
-      </motion.header>
+    <section id="nosotros" className="brand-moving-light relative isolate scroll-mt-[calc(5rem+1px)] overflow-hidden py-20 text-white md:py-28">
+      <div className="mx-auto w-full max-w-[1600px] px-5 md:px-8 lg:px-10">
+        <motion.header
+          initial={{ opacity: 0, y: reducedMotion ? 0 : 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: false, margin: "-100px" }}
+          transition={{ duration: 0.5 }}
+          className="grid gap-4 md:grid-cols-[.65fr_1.35fr] md:items-end md:gap-12"
+        >
+          <p className="eyebrow flex items-center gap-2"><span className="text-[#C9A227]" aria-hidden="true">◆</span> La diferencia Premium Work</p>
+          <h2 className="display max-w-4xl text-[clamp(2.5rem,5.4vw,5.4rem)] leading-[.95] tracking-[-.035em]">La diferencia está en <em className="font-normal">cómo lo hacemos.</em></h2>
+        </motion.header>
 
-      <div className="relative min-h-0 flex-1 overflow-hidden bg-[#07182e]/20 backdrop-blur-[2px]">
-        <div className="mx-auto flex h-full w-full max-w-[1600px] flex-col px-5 py-7 md:px-8 md:py-9 lg:px-10">
-          <motion.div ref={scroller} onScroll={handleScroll} initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: false, margin: "-100px" }} transition={{ duration: 0.5, delay: 0.08 }} className="hide-scrollbar flex min-h-0 flex-1 snap-x snap-mandatory overflow-x-auto border-y border-white/20">
-            {benefits.map((benefit, index) => (
-              <article key={benefit.title} className="group flex h-full min-w-[84vw] snap-start flex-col border-r border-white/20 p-5 text-right text-white last:border-r-0 sm:min-w-[48vw] md:p-7 lg:min-w-0 lg:flex-1">
-                <div className="flex items-center justify-between">
-                  <p className="display text-3xl text-[#C9A227]">/{String(index + 1).padStart(2, "0")}</p>
-                  <span className="size-2 rounded-full bg-[#C9A227] transition-transform duration-300 group-hover:scale-[2]" aria-hidden="true" />
-                </div>
-                <div className="flex flex-1 flex-col items-end justify-center pt-6">
-                  <h3 className="max-w-[14ch] text-xl font-bold leading-[1.05] tracking-[-.02em] text-[#F8F7F4] md:text-2xl">{benefit.title}</h3>
-                  <p className="mt-3 max-w-[20ch] text-sm leading-5 text-white/65">{benefit.copy}</p>
-                </div>
-              </article>
-            ))}
-          </motion.div>
-
-          <div className="mt-4 flex shrink-0 items-center justify-between gap-5">
-            <div className="h-px flex-1 bg-white/20"><div className="h-full bg-[#e5c65a] transition-[width] duration-300" style={{ width: `${Math.max(8, progress * 100)}%` }} /></div>
-            <div className="flex border border-white/30 lg:hidden">
-              <button type="button" aria-label="Ventaja anterior" onClick={() => scroll(-1)} className="p-3 text-white transition hover:bg-white hover:text-[#0B1F3A]"><ArrowLeft size={18} /></button>
-              <button type="button" aria-label="Siguiente ventaja" onClick={() => scroll(1)} className="border-l border-white/30 p-3 text-white transition hover:bg-white hover:text-[#0B1F3A]"><ArrowRight size={18} /></button>
-            </div>
-          </div>
+        <div className="mt-12 grid gap-4 sm:grid-cols-2 md:mt-16 lg:grid-cols-3 xl:grid-cols-5">
+          {benefits.map((benefit, index) => (
+            <motion.article
+              key={benefit.title}
+              initial={{ opacity: 0, y: reducedMotion ? 0 : 28 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: false, margin: "-60px" }}
+              transition={{ duration: 0.55, delay: reducedMotion ? 0 : index * 0.08, ease: [0.22, 1, 0.36, 1] }}
+              className="group rounded-2xl border border-white/15 bg-white/[.05] p-6 backdrop-blur-sm transition-all duration-300 hover:-translate-y-1.5 hover:border-[#C9A227]/60 hover:bg-white/[.08] hover:shadow-[0_24px_50px_-20px_rgba(0,0,0,.5)] md:p-7"
+            >
+              <p className="display text-5xl leading-none text-[#C9A227] transition-transform duration-300 group-hover:scale-105 md:text-6xl">/{String(index + 1).padStart(2, "0")}</p>
+              <h3 className="mt-7 text-lg font-bold leading-snug text-white">{benefit.title}</h3>
+              <p className="mt-2 text-sm leading-6 text-white/80">{benefit.copy}</p>
+            </motion.article>
+          ))}
         </div>
       </div>
     </section>
