@@ -1,23 +1,69 @@
 @import "tailwindcss";
 
-:root { --navy:#0B1F3A; --gold:#C9A227; --cream:#F8F7F4; --ink:#111827; }
-* { box-sizing:border-box; }
-html { scroll-behavior:smooth; }
-body { margin:0; background:var(--cream); color:var(--navy); font-family:"DM Sans", ui-sans-serif, system-ui, sans-serif; }
-::selection { background:var(--gold); color:white; }
-.display { font-family:"Playfair Display", Georgia, serif; letter-spacing:-.055em; }
-.eyebrow { font-size:12px; font-weight:700; letter-spacing:.14em; text-transform:uppercase; }
-.section-pad { padding:clamp(5rem,10vw,9rem) clamp(1.25rem,4vw,4rem); }
-.photo-placeholder { background:radial-gradient(circle at 75% 12%, rgba(201,162,39,.63), transparent 26%), linear-gradient(125deg, #112849 0%, #0B1F3A 52%, #43391f 100%); }
-.photo-placeholder--light { background:radial-gradient(circle at 25% 25%, rgba(201,162,39,.3), transparent 30%), linear-gradient(145deg, #ded8ca, #a79e8c); }
-.hide-scrollbar { scrollbar-width:none; } .hide-scrollbar::-webkit-scrollbar { display:none; }
-@keyframes marquee { from { transform:translateX(0); } to { transform:translateX(-50%); } }
-.marquee-track { animation:marquee 36s linear infinite; }
-.gold-marquee {
-  isolation: isolate;
-  background: var(--gold);
+/* ——— Sistema de diseño: Premium Work × Contra ———
+   Lienzo blanco editorial, negro cálido, acento lima.
+   Grutesca compacta (DM Sans 800, tracking negativo),
+   píldoras totalmente redondeadas, bordes finos 1px,
+   tarjetas blancas y ritmo generoso entre secciones. */
+:root {
+  --paper: #ffffff;
+  --paper-warm: #faf8f5;
+  --ink: #131313;
+  --ink-deep: #0b0b0b;
+  --ink-soft: #4a5264;
+  --muted: #8b8b8b;
+  --line: #e5e7eb;
+  --lime: #d2d943;
+  --lime-deep: #6e7a10;
+  --lime-wash: #f2f6d8;
+  --selection: #fedf89;
+  /* Compatibilidad con componentes heredados no migrados */
+  --navy: #0b1f3a;
+  --gold: #c9a227;
+  --cream: #f8f7f4;
 }
-.gold-marquee::after {
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body {
+  margin: 0;
+  background: var(--paper);
+  color: var(--ink);
+  font-family: "DM Sans", ui-sans-serif, system-ui, sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+::selection { background: var(--selection); color: var(--ink); }
+
+/* Titulares: gruesos, compactos, sin serifas */
+.display {
+  font-family: "DM Sans", ui-sans-serif, system-ui, sans-serif;
+  font-weight: 800;
+  letter-spacing: -.035em;
+  line-height: 1.02;
+}
+/* Rótulo de sección: 11px mayúsculas, tracking amplio */
+.eyebrow {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: .18em;
+  text-transform: uppercase;
+}
+.section-pad { padding: clamp(4.5rem, 9vw, 8rem) clamp(1.25rem, 4vw, 4rem); }
+
+/* Fondo fotográfico por defecto: gris editorial claro */
+.photo-placeholder {
+  background: linear-gradient(145deg, #e9e9e9 0%, #d8d8d8 52%, #c9c9c9 100%);
+}
+.photo-placeholder--light {
+  background: linear-gradient(145deg, #f1f1f1, #e2e2e2);
+}
+.hide-scrollbar { scrollbar-width: none; }
+.hide-scrollbar::-webkit-scrollbar { display: none; }
+
+/* ——— Marquesina lima ——— */
+@keyframes marquee { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+.marquee-track { animation: marquee 36s linear infinite; }
+.lime-marquee { isolation: isolate; background: var(--lime); }
+.lime-marquee::after {
   content: "";
   position: absolute;
   top: -50%;
@@ -25,101 +71,94 @@ body { margin:0; background:var(--cream); color:var(--navy); font-family:"DM San
   width: 55%;
   height: 200%;
   pointer-events: none;
-  background: linear-gradient(110deg, transparent 15%, rgba(255,255,255,.16) 36%, rgba(255,255,255,.8) 50%, rgba(255,255,255,.2) 62%, transparent 85%);
-  animation: gold-marquee-shine 7s ease-in-out infinite;
+  background: linear-gradient(110deg, transparent 15%, rgba(255,255,255,.14) 36%, rgba(255,255,255,.65) 50%, rgba(255,255,255,.18) 62%, transparent 85%);
+  animation: lime-marquee-shine 8s ease-in-out infinite;
 }
-.gold-marquee .marquee-track { position: relative; z-index: 1; }
-.gold-marquee:focus-within .marquee-track { animation-play-state: paused; }
-@keyframes gold-marquee-shine {
+.lime-marquee .marquee-track { position: relative; z-index: 1; }
+.lime-marquee:focus-within .marquee-track { animation-play-state: paused; }
+@keyframes lime-marquee-shine {
   0% { transform: translateX(0); }
   85%, 100% { transform: translateX(300%); }
 }
 @media (prefers-reduced-motion: reduce) {
-  .gold-marquee::after { animation: none; transform: translateX(120%); }
-  .gold-marquee .marquee-track { animation: none; }
+  .lime-marquee::after { animation: none; transform: translateX(120%); }
+  .lime-marquee .marquee-track { animation: none; }
 }
 
-/* Premium Work brand gradients */
+/* ——— Barra de navegación clara ——— */
 .brand-navbar {
-  background:
-    linear-gradient(105deg, rgba(11,31,58,.9) 0%, rgba(20,43,72,.82) 58%, rgba(201,162,39,.28) 100%);
-  box-shadow: 0 1px 0 rgba(255,255,255,.12);
-  -webkit-backdrop-filter: blur(14px) saturate(135%);
-  backdrop-filter: blur(14px) saturate(135%);
+  background: rgba(255,255,255,.82);
+  border-bottom: 1px solid var(--line);
+  -webkit-backdrop-filter: blur(16px) saturate(140%);
+  backdrop-filter: blur(16px) saturate(140%);
 }
 .brand-navbar--scrolled {
-  background:
-    linear-gradient(105deg, rgba(11,31,58,.88) 0%, rgba(20,43,72,.82) 58%, rgba(201,162,39,.32) 100%);
-  box-shadow: 0 10px 34px rgba(11,31,58,.18), 0 1px 0 rgba(255,255,255,.14);
-  -webkit-backdrop-filter: blur(18px) saturate(145%);
-  backdrop-filter: blur(18px) saturate(145%);
+  background: rgba(255,255,255,.94);
+  border-bottom: 1px solid var(--line);
+  box-shadow: 0 8px 28px rgba(19,19,19,.08);
+  -webkit-backdrop-filter: blur(18px) saturate(150%);
+  backdrop-filter: blur(18px) saturate(150%);
 }
-.brand-surface-light {
-  background:
-    radial-gradient(circle at 6% 8%, rgba(201,162,39,.16), transparent 30%),
-    radial-gradient(circle at 94% 88%, rgba(11,31,58,.09), transparent 34%),
-    linear-gradient(135deg, #f8f7f4 0%, #f2eee4 48%, #f8f7f4 100%);
-}
-.brand-surface-soft {
-  background:
-    radial-gradient(circle at 84% 18%, rgba(201,162,39,.14), transparent 28%),
-    linear-gradient(145deg, #f8f7f4 0%, #ece8de 54%, #f7f5ef 100%);
-}
-.brand-panel {
-  background:
-    radial-gradient(circle at 12% 12%, rgba(201,162,39,.14), transparent 32%),
-    linear-gradient(145deg, #f8f7f4 0%, #f1ede4 100%);
-}
-.brand-footer {
-  background:
-    radial-gradient(circle at 82% 10%, rgba(201,162,39,.18), transparent 28%),
-    linear-gradient(125deg, #07182e 0%, #0b1f3a 58%, #172d48 100%);
-}
+.nav-link { color: var(--ink); transition: color .2s ease; }
+.nav-link:hover { color: var(--lime-deep); }
 
-/* Deep blue canvas with a soft golden light travelling across it. */
-.brand-moving-light {
-  background: linear-gradient(118deg, #06172d 0%, #0b315d 48%, #0b1f3a 100%);
+/* ——— Panel oscuro de contraste (marketing) ——— */
+.panel-dark {
+  background: var(--ink-deep);
+  color: #fff;
+  position: relative;
+  overflow: hidden;
 }
-.brand-moving-light > header .eyebrow { color: rgba(255,255,255,.68); }
-.brand-moving-light > header h2 { color: #f8f7f4; }
-.brand-moving-light > header h2 em { color: #e5c65a; }
-.brand-moving-light::before {
+.panel-dark::before {
+  content: "";
   position: absolute;
   inset: -45%;
-  z-index: -1;
-  content: "";
+  z-index: 0;
   pointer-events: none;
-  background: radial-gradient(ellipse at center, rgba(229,198,90,.5) 0%, rgba(201,162,39,.25) 22%, rgba(201,162,39,.08) 40%, transparent 66%);
-  filter: blur(30px);
-  transform: translate3d(-34%, -8%, 0) rotate(-8deg);
-  animation: premium-light-drift 13s ease-in-out infinite alternate;
+  background: radial-gradient(ellipse at center, rgba(210,217,67,.22) 0%, rgba(210,217,67,.08) 34%, transparent 62%);
+  filter: blur(40px);
+  animation: panel-glow-drift 14s ease-in-out infinite alternate;
   will-change: transform;
 }
-@keyframes premium-light-drift {
-  0% { transform: translate3d(-34%, -8%, 0) rotate(-8deg) scale(.92); }
-  50% { transform: translate3d(3%, 10%, 0) rotate(4deg) scale(1.08); }
-  100% { transform: translate3d(34%, -4%, 0) rotate(-3deg) scale(.98); }
+@keyframes panel-glow-drift {
+  from { transform: translate3d(-30%, -6%, 0) rotate(-8deg); }
+  to { transform: translate3d(30%, 6%, 0) rotate(6deg); }
 }
 @media (prefers-reduced-motion: reduce) {
-  .brand-moving-light::before { animation: none; transform: translate3d(8%, 0, 0); }
+  .panel-dark::before { animation: none; transform: translate3d(10%, 0, 0); }
 }
 
+/* ——— Tarjetas blancas estilo Contra ——— */
+.card {
+  background: #fff;
+  border: 1px solid var(--line);
+  border-radius: 20px;
+  box-shadow: 0 4px 32px rgba(34,40,52,.06);
+  transition: transform .3s ease, box-shadow .3s ease, border-color .3s ease;
+}
+.card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 16px 48px rgba(34,40,52,.1);
+  border-color: #d8dbe0;
+}
+/* Insignia píldora */
+.pill-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: .5rem;
+  border-radius: 9999px;
+  padding: .45rem 1rem;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: .02em;
+}
+.pill-badge--lime { background: var(--lime); color: var(--ink); }
+.pill-badge--ink { background: var(--ink); color: #fff; }
+.pill-badge--ghost { background: #fff; color: var(--ink); border: 1px solid var(--line); }
+
+/* ——— Carrusel de sectores ——— */
 .sectors-viewport { --sector-width: 76%; --sector-gap: 12px; touch-action: pan-y; }
 .sectors-track { gap: var(--sector-gap); }
-.sectors-moving-light::before {
-  content: "";
-  position: absolute;
-  inset: -30% -15%;
-  z-index: -1;
-  pointer-events: none;
-  background: radial-gradient(ellipse at center, rgba(255,220,105,.65) 0%, rgba(239,199,75,.32) 22%, rgba(201,162,39,.12) 40%, transparent 65%);
-  filter: blur(28px);
-  animation: sectors-lamp-sweep 12s ease-in-out infinite alternate;
-}
-@keyframes sectors-lamp-sweep {
-  from { transform: translate3d(-38%, -5%, 0) rotate(-12deg); }
-  to { transform: translate3d(38%, 5%, 0) rotate(12deg); }
-}
 .sector-card { width: var(--sector-width); aspect-ratio: 1.08; }
 @media (min-width: 768px) {
   .sectors-viewport { --sector-width: 30%; --sector-gap: 24px; }
@@ -127,118 +166,129 @@ body { margin:0; background:var(--cream); color:var(--navy); font-family:"DM San
 }
 @media (prefers-reduced-motion: reduce) {
   .sectors-track { transition: none !important; }
-  .sectors-moving-light::before { animation: none; }
 }
 
-.feature-soft-panel { background: #f3efe5; }
-
+/* ——— Superficies de formulario (claras) ——— */
 .service-request-surface {
-  background: linear-gradient(180deg, #061529 0%, #0b1f3a 42%, #234462 78%, #4b626e 94%, #a49768 100%);
+  background:
+    radial-gradient(rgba(19,19,19,.07) 1px, transparent 1.4px) 0 0 / 22px 22px,
+    linear-gradient(180deg, #ffffff 0%, #faf8f5 60%, #f4f1ea 100%);
 }
 .form-separator {
   position: absolute;
   top: 5rem;
   inset-inline: 0;
-  height: 3rem;
+  height: .5rem;
   overflow: hidden;
-  background: linear-gradient(90deg, #847b54 0%, #47617b 25%, #203e66 55%, #0b1f3a 100%);
-  border-block: 1px solid rgba(255,255,255,.12);
+  background: linear-gradient(90deg, var(--lime) 0%, #e8ef8a 50%, var(--lime) 100%);
+  border-block: 1px solid rgba(19,19,19,.08);
 }
-.form-separator::before {
-  content: "";
-  position: absolute;
-  inset: -100% 0;
-  pointer-events: none;
-  background: radial-gradient(ellipse at 18% 50%, rgba(255,229,160,.38), transparent 48%);
-  filter: blur(14px);
-}
+.integrated-form label,
+.integrated-form legend { color: var(--ink); }
 .integrated-form input:not([type="checkbox"]),
 .integrated-form select,
 .integrated-form textarea {
-  color: #f8f7f4;
-  border-color: rgba(255,255,255,.35);
-  color-scheme: dark;
+  color: var(--ink);
+  border-color: rgba(19,19,19,.28);
+  background: #fff;
+  color-scheme: light;
 }
-.integrated-form select option { background: #0b1f3a; color: #f8f7f4; }
+.integrated-form select option { background: #fff; color: var(--ink); }
 .integrated-form input:focus,
 .integrated-form select:focus,
-.integrated-form textarea:focus { border-color: #e5c65a; }
+.integrated-form textarea:focus {
+  border-color: var(--lime-deep);
+  box-shadow: 0 0 0 3px rgba(210,217,67,.25);
+}
+
+/* ——— Footer claro ——— */
+.brand-footer {
+  background: #fff;
+  border-top: 1px solid var(--line);
+}
 
 @font-face { font-family: "DM Sans"; src: url("/fonts/dm-sans.ttf") format("truetype"); font-style: normal; font-weight: 100 1000; font-display: swap; }
 @font-face { font-family: "Playfair Display"; src: url("/fonts/playfair-display.ttf") format("truetype"); font-style: normal; font-weight: 400 900; font-display: swap; }
 @font-face { font-family: "Playfair Display"; src: url("/fonts/playfair-display-italic.ttf") format("truetype"); font-style: italic; font-weight: 400 900; font-display: swap; }
-.legal-copy h2 { margin-top: 2.25rem; margin-bottom: .8rem; font-size: 1.35rem; font-weight: 600; }
+.legal-copy h2 { margin-top: 2.25rem; margin-bottom: .8rem; font-size: 1.35rem; font-weight: 700; letter-spacing: -.01em; }
 
-/* ——— Rediseño visual: textura, botones, divisores, hero ——— */
-
-/* Grano de película sutil sobre toda la página */
-body::after {
-  content: "";
-  position: fixed;
-  inset: 0;
-  z-index: 80;
-  pointer-events: none;
-  opacity: .05;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
-}
-
-/* Variantes de botón: no todo con la misma píldora dorada */
+/* ——— Botones píldora estilo Contra ——— */
 .btn {
   display: inline-flex;
   align-items: center;
+  justify-content: center;
   gap: .6rem;
   border-radius: 9999px;
-  padding: .9rem 1.5rem;
+  padding: .95rem 1.6rem;
   min-height: 2.75rem;
   font-size: .875rem;
   font-weight: 700;
   line-height: 1.25;
+  white-space: nowrap;
   transition: transform .25s ease, background-color .25s ease, color .25s ease, border-color .25s ease, box-shadow .25s ease;
 }
 .btn:hover { transform: translateY(-2px); }
 .btn:active { transform: translateY(0); }
-.btn-gold {
-  background: var(--gold);
-  color: var(--navy);
-  box-shadow: 0 10px 26px rgba(201,162,39,.35);
-}
-.btn-gold:hover { background: #e2be3d; }
-.btn-navy {
-  background: var(--navy);
+.btn:focus-visible { outline: 2px solid var(--lime-deep); outline-offset: 4px; }
+/* Primario: negro sólido */
+.btn-dark {
+  background: var(--ink);
   color: #fff;
-  box-shadow: 0 12px 28px rgba(11,31,58,.28);
+  box-shadow: 0 12px 28px rgba(19,19,19,.22);
 }
-.btn-navy:hover { background: #16345e; }
-.btn-outline-light {
-  border: 1px solid rgba(255,255,255,.45);
+.btn-dark:hover { background: #2b2b2b; }
+/* Acento: lima */
+.btn-lime {
+  background: var(--lime);
+  color: var(--ink);
+  box-shadow: 0 12px 28px rgba(210,217,67,.35);
+}
+.btn-lime:hover { background: #dde455; }
+/* Secundario: blanco con borde fino */
+.btn-outline {
+  border: 1px solid #cfd4da;
+  color: var(--ink);
+  background: #fff;
+}
+.btn-outline:hover { background: var(--ink); border-color: var(--ink); color: #fff; }
+/* Secundario sobre fondo oscuro */
+.btn-outline-on-dark {
+  border: 1px solid rgba(255,255,255,.35);
   color: #fff;
-  background: rgba(255,255,255,.05);
+  background: rgba(255,255,255,.04);
   -webkit-backdrop-filter: blur(6px);
   backdrop-filter: blur(6px);
 }
-.btn-outline-light:hover { background: #fff; border-color: #fff; color: var(--navy); }
+.btn-outline-on-dark:hover { background: #fff; border-color: #fff; color: var(--ink); }
+/* Enlace de texto con subrayado lima */
 .btn-link {
   display: inline-flex;
   align-items: center;
   gap: .5rem;
   font-size: .875rem;
   font-weight: 700;
-  color: var(--navy);
+  color: var(--ink);
   text-decoration: underline;
-  text-decoration-color: var(--gold);
-  text-decoration-thickness: 2px;
+  text-decoration-color: var(--lime);
+  text-decoration-thickness: 3px;
   text-underline-offset: 8px;
   transition: color .25s ease, text-decoration-color .25s ease;
 }
-.btn-link:hover { color: #94751d; text-decoration-color: #94751d; }
+.btn-link:hover { color: var(--lime-deep); text-decoration-color: var(--lime-deep); }
 
-/* Divisor hairline con acento dorado */
-.divider-gold {
+/* Divisor hairline con acento lima */
+.divider-lime {
   height: 1px;
-  background: linear-gradient(90deg, transparent, rgba(201,162,39,.55), transparent);
+  background: linear-gradient(90deg, transparent, rgba(210,217,67,.8), transparent);
 }
 
-/* Resplandor dorado ambiental del hero: visible pero elegante */
+/* Hero claro: puntos sutiles + resplandor lima */
+.hero-dots {
+  background-image: radial-gradient(rgba(19,19,19,.08) 1px, transparent 1.3px);
+  background-size: 14px 14px;
+  mask-image: radial-gradient(ellipse 90% 80% at 50% 30%, black 30%, transparent 75%);
+  -webkit-mask-image: radial-gradient(ellipse 90% 80% at 50% 30%, black 30%, transparent 75%);
+}
 .hero-glow {
   position: absolute;
   right: -12vmax;
@@ -246,7 +296,7 @@ body::after {
   width: 62vmax;
   height: 62vmax;
   pointer-events: none;
-  background: radial-gradient(circle, rgba(229,198,90,.32) 0%, rgba(201,162,39,.13) 38%, transparent 68%);
+  background: radial-gradient(circle, rgba(210,217,67,.4) 0%, rgba(210,217,67,.15) 38%, transparent 68%);
   filter: blur(50px);
   animation: hero-glow-drift 14s ease-in-out infinite alternate;
   will-change: transform;
@@ -256,13 +306,13 @@ body::after {
   to { transform: translate3d(6%, -5%, 0) scale(1.12); }
 }
 
-/* Indicador de scroll refinado */
+/* Indicador de scroll */
 .scroll-cue-line {
   position: relative;
   width: 1px;
   height: 56px;
   overflow: hidden;
-  background: rgba(255,255,255,.28);
+  background: rgba(19,19,19,.18);
 }
 .scroll-cue-line::after {
   content: "";
@@ -271,7 +321,7 @@ body::after {
   top: -40%;
   width: 100%;
   height: 40%;
-  background: #e5c65a;
+  background: var(--lime-deep);
   animation: scroll-cue-drop 2.2s ease-in-out infinite;
 }
 @keyframes scroll-cue-drop {
@@ -284,7 +334,7 @@ body::after {
   font-weight: 700;
   letter-spacing: .3em;
   text-transform: uppercase;
-  color: rgba(255,255,255,.55);
+  color: rgba(19,19,19,.45);
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -295,6 +345,6 @@ body::after {
 .legal-copy a { text-decoration: underline; text-underline-offset: 3px; }
 .legal-copy dt { margin-top: 1rem; font-weight: 700; }
 .legal-copy ul { list-style: disc; padding-left: 1.4rem; }
-.legal-copy th, .legal-copy td { border-bottom: 1px solid #0b1f3a33; padding: .8rem; text-align: left; vertical-align: top; }
-.legal-copy :focus-visible { outline: 2px solid #94751d; outline-offset: 4px; }
+.legal-copy th, .legal-copy td { border-bottom: 1px solid rgba(19,19,19,.2); padding: .8rem; text-align: left; vertical-align: top; }
+.legal-copy :focus-visible { outline: 2px solid var(--lime-deep); outline-offset: 4px; }
 @media print { .legal-copy { max-width: none; } body > header, dialog { display: none; } }

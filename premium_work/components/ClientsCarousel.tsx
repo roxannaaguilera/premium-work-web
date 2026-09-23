@@ -48,20 +48,20 @@ export function ClientsCarousel() {
   }, [position, active]);
 
   return (
-    <section aria-label="Sectores para los que trabajamos" aria-roledescription="carrusel" className="sectors-moving-light relative isolate overflow-hidden bg-white py-12 md:py-16">
+    <section aria-label="Sectores para los que trabajamos" aria-roledescription="carrusel" className="relative isolate overflow-hidden bg-white py-12 md:py-16">
       <div className="mx-auto mb-8 flex w-full max-w-[1600px] items-center gap-3 px-5 md:mb-10 md:px-8 lg:px-10">
-        <span className="text-sm text-[#C9A227]" aria-hidden="true">◆</span>
-        <h2 className="eyebrow text-[#0B1F3A]/70">Sectores para los que diseñamos nuestros servicios</h2>
+        <span className="text-sm text-[#6e7a10]" aria-hidden="true">◆</span>
+        <h2 className="eyebrow text-[#4a5264]">Sectores para los que diseñamos nuestros servicios</h2>
       </div>
       <div className="relative mx-auto max-w-[1600px] md:px-14" onMouseEnter={() => setPaused(true)} onMouseLeave={() => setPaused(false)} onFocusCapture={() => setPaused(true)} onBlurCapture={(event) => { if (!event.currentTarget.contains(event.relatedTarget)) setPaused(false); }}>
-        <button type="button" onClick={() => move(-1)} aria-label="Sector anterior" className="absolute left-0 top-1/2 z-10 hidden -translate-y-1/2 p-3 text-[#0B1F3A]/50 hover:text-[#0B1F3A] md:block"><ChevronLeft size={28} /></button>
+        <button type="button" onClick={() => move(-1)} aria-label="Sector anterior" className="absolute left-0 top-1/2 z-10 hidden -translate-y-1/2 rounded-full border border-[#e5e7eb] bg-white p-3 text-[#131313] shadow-md transition hover:bg-[#d2d943] md:block"><ChevronLeft size={22} /></button>
         <div className="sectors-viewport overflow-hidden py-2" onTouchStart={(event) => { touchStart.current = event.touches[0].clientX; setPaused(true); }} onTouchEnd={(event) => { if (touchStart.current !== null) { const distance = touchStart.current - event.changedTouches[0].clientX; if (Math.abs(distance) > 40) move(distance > 0 ? 1 : -1); } touchStart.current = null; setPaused(false); }} onTouchCancel={() => { touchStart.current = null; setPaused(false); }}>
           <div className="sectors-track flex" style={{ transform: `translateX(calc(50% - var(--sector-width) / 2 - ${position} * (var(--sector-width) + var(--sector-gap))))`, transition: animated ? "transform 550ms ease" : "none" }}>
             {slides.map((sector, index) => {
               const visible = Math.abs(index - position) <= 1;
               const image = carouselImages[sector.src as keyof typeof carouselImages];
               return (
-                <a key={`${sector.slug}-${index}`} href={`/solicitar-servicio?sector=${sector.slug}`} tabIndex={visible ? 0 : -1} aria-hidden={!visible} className="sector-card group relative shrink-0 overflow-hidden rounded-xl bg-[#0B1F3A] shadow-md focus-visible:outline-4 focus-visible:outline-offset-2 focus-visible:outline-[#C9A227]">
+                <a key={`${sector.slug}-${index}`} href={`/solicitar-servicio?sector=${sector.slug}`} tabIndex={visible ? 0 : -1} aria-hidden={!visible} className="sector-card card group relative shrink-0 overflow-hidden !rounded-[20px] focus-visible:outline-4 focus-visible:outline-offset-2 focus-visible:outline-[#6e7a10]">
                   <picture>
                     <source media="(min-width: 768px)" srcSet={image.desktop.srcSet} sizes="(min-width: 1600px) 447px, calc(30vw - 33.6px)" width={image.desktop.width} height={image.desktop.height} />
                     <img src={image.mobile.src} srcSet={image.mobile.srcSet} sizes="76vw" width={image.mobile.width} height={image.mobile.height} alt="" loading="lazy" decoding="async" className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105" />
@@ -73,12 +73,12 @@ export function ClientsCarousel() {
             })}
           </div>
         </div>
-        <button type="button" onClick={() => move(1)} aria-label="Siguiente sector" className="absolute right-0 top-1/2 z-10 hidden -translate-y-1/2 p-3 text-[#0B1F3A]/50 hover:text-[#0B1F3A] md:block"><ChevronRight size={28} /></button>
+        <button type="button" onClick={() => move(1)} aria-label="Siguiente sector" className="absolute right-0 top-1/2 z-10 hidden -translate-y-1/2 rounded-full border border-[#e5e7eb] bg-white p-3 text-[#131313] shadow-md transition hover:bg-[#d2d943] md:block"><ChevronRight size={22} /></button>
       </div>
       <div className="mt-5 flex justify-center" aria-label="Seleccionar sector">
         {sectors.map((sector, index) => (
-          <button key={sector.slug} type="button" aria-label={`Ver ${sector.title}`} aria-current={active === index ? "true" : undefined} onClick={() => { setAnimated(true); setPosition(sectors.length + index); }} className="flex h-8 w-6 items-center justify-center rounded-full focus-visible:outline-2 focus-visible:outline-[#0B1F3A] md:w-7">
-            <span className={`h-2.5 w-2.5 rounded-full transition-colors md:h-3 md:w-3 ${active === index ? "bg-[#0B1F3A]" : "bg-[#cecece]"}`} />
+          <button key={sector.slug} type="button" aria-label={`Ver ${sector.title}`} aria-current={active === index ? "true" : undefined} onClick={() => { setAnimated(true); setPosition(sectors.length + index); }} className="flex h-8 w-6 items-center justify-center rounded-full focus-visible:outline-2 focus-visible:outline-[#131313] md:w-7">
+            <span className={`h-2.5 w-2.5 rounded-full transition-colors md:h-3 md:w-3 ${active === index ? "bg-[#131313]" : "bg-[#d4d4d4]"}`} />
           </button>
         ))}
       </div>

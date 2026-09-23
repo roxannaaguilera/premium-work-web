@@ -8,7 +8,7 @@ import { useFormValidation } from "@/components/useFormValidation";
 import { useState, type FormEvent } from "react";
 import { sectorLabels, serviceLabels } from "@/lib/service-options";
 
-const field = "mt-2 w-full border-b border-white/35 bg-transparent py-3 font-normal outline-none focus:border-[#C9A227]";
+const field = "mt-2 w-full border-b border-[#131313]/30 bg-transparent py-3 font-normal outline-none focus:border-[#6e7a10]";
 export function ClientForm({ sector = "", service = "" }: { sector?: string; service?: string }) {
   const phone = usePhoneValue();
   const validation = useFormValidation("client");
@@ -35,7 +35,7 @@ export function ClientForm({ sector = "", service = "" }: { sector?: string; ser
     finally { setBusy(false); }
   }
   return <form noValidate onBlur={validation.onBlur} onChange={validation.onChange} onSubmit={submit} className="integrated-form" aria-busy={busy}>
-    <p className="mb-6 text-sm text-white/80">* Campos obligatorios.</p>
+    <p className="mb-6 text-sm text-[#4a5264]">* Campos obligatorios.</p>
     <fieldset disabled={busy} className="grid gap-6 sm:grid-cols-2">
       <label className="text-sm font-bold">Nombre y apellidos *<input required name="name" {...validation.props("name")} autoComplete="name" maxLength={200} className={field} />{validation.error("name")}</label>
       <label className="text-sm font-bold">Empresa *<input required name="company" {...validation.props("company")} autoComplete="organization" maxLength={200} className={field} />{validation.error("company")}</label>
@@ -49,8 +49,8 @@ export function ClientForm({ sector = "", service = "" }: { sector?: string; ser
       <label className="text-sm font-bold">Presupuesto estimado en € (opcional)<input type="number" min="0" max="100000000" step="0.01" name="budget" {...validation.props("budget")} className={field} />{validation.error("budget")}</label>
       <label className="text-sm font-bold sm:col-span-2">¿En qué podemos ayudarte? *<textarea required name="message" {...validation.props("message")} rows={5} maxLength={5000} className={field} />{validation.error("message")}</label>
       <FormConsent validation={validation} />
-      <button type="submit" className="rounded-full bg-[#C9A227] px-6 py-4 text-sm font-bold text-[#0B1F3A] transition hover:bg-[#e2be3d] disabled:opacity-60 sm:col-span-2">{busy ? "GUARDANDO SOLICITUD…" : "ENVIAR SOLICITUD"}</button>
+      <button type="submit" className="rounded-full bg-[#131313] px-6 py-4 text-sm font-bold text-white transition hover:bg-[#2b2b2b] disabled:opacity-60 sm:col-span-2">{busy ? "GUARDANDO SOLICITUD…" : "ENVIAR SOLICITUD"}</button>
     </fieldset>
-    <p role={success ? "status" : "alert"} className="mt-4 text-sm text-white">{status}</p>
+    <p role={success ? "status" : "alert"} className="mt-4 text-sm text-[#131313]">{status}</p>
   </form>;
 }

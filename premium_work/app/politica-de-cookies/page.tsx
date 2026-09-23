@@ -17,7 +17,7 @@ export default function CookiesPolicy() {
     <p>La elección actual no autoriza futuras herramientas. Si se incorporan servicios opcionales, deberán informarse sus fines, proveedores y duraciones, bloquearse hasta obtener el consentimiento correspondiente y solicitarse una nueva elección. Las reglas sobre consentimiento y sus excepciones se recogen en la <a href="https://www.aepd.es/guias/guia-cookies.pdf">Guía de cookies de la AEPD</a>.</p>
     <h2>4. Cambiar la elección</h2>
     <p>Puedes volver al panel desde el botón permanente «Preferencias de cookies» o desde este enlace:</p>
-    <CookieSettingsButton className="rounded-full bg-[#0B1F3A] px-5 py-3 text-white" />
+    <CookieSettingsButton className="rounded-full bg-[#131313] px-5 py-3 text-sm font-bold text-white" />
     <p>También puedes borrar los datos del sitio en los ajustes de privacidad de tu navegador. Si bloqueas el almacenamiento local, la elección se aplicará a la vista actual pero el aviso puede reaparecer. Esto no impide navegar ni completar los formularios.</p>
     <h2>5. Servicios externos y alcance del inventario</h2>
     <p>WhatsApp, Instagram, LinkedIn y Facebook solo se abren al pulsar sus enlaces; sus cookies se rigen por las políticas de esos sitios. Supabase se utiliza desde el servidor para los formularios, sin una sesión de usuario de Supabase en el navegador.</p>

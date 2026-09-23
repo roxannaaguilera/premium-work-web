@@ -9,7 +9,7 @@ import { PhoneField, usePhoneValue } from "@/components/PhoneField";
 import { useFormValidation } from "@/components/useFormValidation";
 import { useRef, useState, type ChangeEvent, type FormEvent } from "react";
 
-const field = "mt-2 w-full border-b border-white/35 bg-transparent py-3 font-normal outline-none focus:border-[#C9A227]";
+const field = "mt-2 w-full border-b border-[#131313]/30 bg-transparent py-3 font-normal outline-none focus:border-[#6e7a10]";
 export function CandidateForm() {
   const phone = usePhoneValue();
   const validation = useFormValidation("candidate");
@@ -89,15 +89,15 @@ export function CandidateForm() {
     finally { setBusy(false); }
   }
   return <form noValidate onBlur={validation.onBlur} onChange={validation.onChange} onSubmit={submit} className="integrated-form" aria-busy={busy || reading}>
-    <p className="mb-6 text-sm text-white/80">* Campos obligatorios.</p>
+    <p className="mb-6 text-sm text-[#4a5264]">* Campos obligatorios.</p>
     <fieldset disabled={busy || reading} className="grid gap-6 sm:grid-cols-2">
-      <div className="rounded-2xl border border-[#C9A227]/60 bg-white/5 p-5 sm:col-span-2">
+      <div className="rounded-2xl border border-[#6e7a10]/50 bg-[#f2f6d8]/70 p-5 sm:col-span-2">
         <label className="block text-base font-bold">1. Carga tu CV para completar tus datos *
-          <input required type="file" accept=".pdf,application/pdf" name="cv" onChange={loadCv} {...validation.props("cv")} className="mt-4 block w-full text-sm file:mr-3 file:rounded-full file:border-0 file:bg-[#C9A227] file:px-4 file:py-3 file:text-[#0B1F3A]" />
-          <span className="mt-3 block text-sm font-normal text-white/80">PDF de hasta 4 MB. La lectura se realiza en tu dispositivo; el CV se envía al presentar tu candidatura.</span>
+          <input required type="file" accept=".pdf,application/pdf" name="cv" onChange={loadCv} {...validation.props("cv")} className="mt-4 block w-full text-sm file:mr-3 file:rounded-full file:border-0 file:bg-[#131313] file:px-4 file:py-3 file:text-white" />
+          <span className="mt-3 block text-sm font-normal text-[#4a5264]">PDF de hasta 4 MB. La lectura se realiza en tu dispositivo; el CV se envía al presentar tu candidatura.</span>
           {validation.error("cv")}
         </label>
-        <p role="status" aria-live="polite" className="mt-3 text-sm text-[#f1d986]">{cvStatus}</p>
+        <p role="status" aria-live="polite" className="mt-3 text-sm text-[#6e7a10]">{cvStatus}</p>
       </div>
       <p className="text-base font-bold sm:col-span-2">2. Revisa y completa tus datos</p>
       <label className="text-sm font-bold">Nombre y apellidos *<input required maxLength={200} autoComplete="name" name="name" {...validation.props("name")} className={field} />{validation.error("name")}</label>
@@ -109,8 +109,8 @@ export function CandidateForm() {
       <label className="text-sm font-bold sm:col-span-2">Empresas en las que has trabajado *<textarea required maxLength={3000} name="companies" {...validation.props("companies")} rows={2} placeholder="Una empresa por línea. Si es tu primer empleo, indica «Sin experiencia»." className={field} />{validation.error("companies")}</label>
       <label className="text-sm font-bold sm:col-span-2">Puesto de interés, experiencia y disponibilidad *<textarea required maxLength={3000} name="availability" {...validation.props("availability")} rows={4} className={field} />{validation.error("availability")}</label>
       <FormConsent candidate validation={validation} />
-      <button type="submit" className="rounded-full bg-[#C9A227] px-6 py-4 text-sm font-bold text-[#0B1F3A] transition hover:bg-[#e2be3d] disabled:opacity-60 sm:col-span-2">{reading ? "LEYENDO CV…" : busy ? "GUARDANDO CANDIDATURA…" : "ENVIAR CANDIDATURA"}</button>
+      <button type="submit" className="rounded-full bg-[#131313] px-6 py-4 text-sm font-bold text-white transition hover:bg-[#2b2b2b] disabled:opacity-60 sm:col-span-2">{reading ? "LEYENDO CV…" : busy ? "GUARDANDO CANDIDATURA…" : "ENVIAR CANDIDATURA"}</button>
     </fieldset>
-    <p role={success ? "status" : "alert"} className="mt-4 text-sm text-white">{status}</p>
+    <p role={success ? "status" : "alert"} className="mt-4 text-sm text-[#131313]">{status}</p>
   </form>;
 }

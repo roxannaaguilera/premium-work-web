@@ -83,7 +83,7 @@ const mobileActions = [
 function CinematicArticle({ service, index, reducedMotion }: { service: (typeof services)[number]; index: number; reducedMotion: boolean | null }) {
   const number = String(index + 1).padStart(2, "0");
   return (
-    <article id={service.slug} className="group relative flex min-h-[92svh] scroll-mt-[calc(5rem+1px)] items-center overflow-hidden bg-[#0B1F3A]">
+    <article id={service.slug} className="group relative flex min-h-[92svh] scroll-mt-[calc(5rem+1px)] items-center overflow-hidden bg-[#131313]">
       <div className="absolute inset-0">
         <img
           src={service.src}
@@ -92,10 +92,9 @@ function CinematicArticle({ service, index, reducedMotion }: { service: (typeof 
           decoding="async"
           className={`absolute inset-0 h-full w-full object-cover ${service.position} transition-transform duration-[1400ms] ease-out group-hover:scale-105`}
         />
-        <div className="absolute inset-0 bg-[linear-gradient(100deg,rgba(11,31,58,.88)_0%,rgba(11,31,58,.45)_52%,rgba(11,31,58,.06)_88%)]" />
-        <div className="absolute inset-0 bg-[#C9A227]/10 mix-blend-overlay" aria-hidden="true" />
+        <div className="absolute inset-0 bg-[linear-gradient(100deg,rgba(10,10,10,.85)_0%,rgba(10,10,10,.4)_52%,rgba(10,10,10,.05)_88%)]" />
       </div>
-      <span aria-hidden="true" className="display pointer-events-none absolute -right-4 top-8 select-none text-[24vw] leading-none text-white/[.05] lg:text-[18vw]">{number}</span>
+      <span aria-hidden="true" className="display pointer-events-none absolute -right-4 top-8 select-none text-[24vw] leading-none text-white/[.06] lg:text-[18vw]">{number}</span>
       <div className="relative mx-auto w-full max-w-[1600px] px-5 py-24 md:px-8 lg:px-10">
         <motion.div
           initial={{ opacity: reducedMotion ? 1 : 0, y: reducedMotion ? 0 : 40 }}
@@ -104,10 +103,10 @@ function CinematicArticle({ service, index, reducedMotion }: { service: (typeof 
           transition={{ duration: 0.9, ease: "easeOut" }}
           className="max-w-xl"
         >
-          <p className="eyebrow text-[#e5c65a]">{number}</p>
-          <h3 className="display mt-5 text-[clamp(2.8rem,7vw,5.5rem)] leading-[1.02] text-white">{service.title}</h3>
+          <p className="eyebrow flex items-center gap-2 text-[#d2d943]"><span aria-hidden="true">◆</span> {number}</p>
+          <h3 className="display mt-5 text-[clamp(2.8rem,7vw,5.5rem)] text-white">{service.title}</h3>
           <p className="mt-6 max-w-md text-base leading-7 text-white/85">{service.copy}</p>
-          <a href={`/solicitar-servicio?servicio=${service.slug}`} className="btn btn-outline-light mt-8">Solicitar este servicio <ArrowRight size={18} aria-hidden="true" /></a>
+          <a href={`/solicitar-servicio?servicio=${service.slug}`} className="btn btn-outline-on-dark mt-8">Solicitar este servicio <ArrowRight size={18} aria-hidden="true" /></a>
         </motion.div>
       </div>
     </article>
@@ -118,14 +117,14 @@ function SplitArticle({ service, index, reducedMotion }: { service: (typeof serv
   const number = String(index + 1).padStart(2, "0");
   const flip = service.flip;
   return (
-    <article id={service.slug} className="brand-surface-soft scroll-mt-[calc(5rem+1px)]">
+    <article id={service.slug} className="scroll-mt-[calc(5rem+1px)] bg-white">
       <div className="mx-auto grid max-w-[1600px] items-center gap-10 px-5 py-20 md:px-8 lg:grid-cols-12 lg:gap-6 lg:px-10 lg:py-28">
         <motion.div
           initial={{ opacity: reducedMotion ? 1 : 0, scale: reducedMotion ? 1 : 0.97 }}
           whileInView={{ opacity: 1, scale: 1 }}
           viewport={{ once: false, amount: 0.3 }}
           transition={{ duration: 0.9, ease: "easeOut" }}
-          className={`group relative overflow-hidden rounded-2xl shadow-[0_30px_70px_-30px_rgba(11,31,58,.35)] lg:col-span-7 ${flip ? "lg:order-2" : ""}`}
+          className={`group relative overflow-hidden rounded-[24px] border border-[#e5e7eb] shadow-[0_24px_64px_-30px_rgba(19,19,19,.18)] lg:col-span-7 ${flip ? "lg:order-2" : ""}`}
         >
           <img
             src={service.src}
@@ -134,8 +133,7 @@ function SplitArticle({ service, index, reducedMotion }: { service: (typeof serv
             decoding="async"
             className={`aspect-[16/10] w-full object-cover ${service.position} transition-transform duration-[1200ms] ease-out group-hover:scale-105`}
           />
-          <div className="absolute inset-0 bg-gradient-to-t from-[#0B1F3A]/30 via-transparent to-transparent transition-opacity duration-700 group-hover:opacity-40" aria-hidden="true" />
-          <div className="absolute inset-0 bg-[#C9A227]/0 mix-blend-color transition-colors duration-700 group-hover:bg-[#C9A227]/15" aria-hidden="true" />
+          <div className="absolute inset-0 bg-gradient-to-t from-black/25 via-transparent to-transparent transition-opacity duration-700 group-hover:opacity-40" aria-hidden="true" />
         </motion.div>
         <motion.div
           initial={{ opacity: reducedMotion ? 1 : 0, x: reducedMotion ? 0 : flip ? 60 : -60 }}
@@ -144,10 +142,10 @@ function SplitArticle({ service, index, reducedMotion }: { service: (typeof serv
           transition={{ duration: 0.9, ease: "easeOut" }}
           className={`lg:col-span-5 ${flip ? "lg:order-1 lg:pr-10" : "lg:pl-10"}`}
         >
-          <p className="eyebrow text-[#94751D]">{number}</p>
-          <h3 className="display mt-5 text-[clamp(2.2rem,4.5vw,3.8rem)] leading-[1.05] text-[#0B1F3A]">{service.title}</h3>
-          <p className="mt-5 max-w-md text-base leading-7 text-[#0B1F3A]/75">{service.copy}</p>
-          <a href={`/solicitar-servicio?servicio=${service.slug}`} className="btn btn-navy mt-7">Solicitar este servicio <ArrowRight size={18} aria-hidden="true" /></a>
+          <p className="eyebrow flex items-center gap-2 text-[#6e7a10]"><span aria-hidden="true">◆</span> {number}</p>
+          <h3 className="display mt-5 text-[clamp(2.2rem,4.5vw,3.8rem)] text-[#131313]">{service.title}</h3>
+          <p className="mt-5 max-w-md text-base leading-7 text-[#4a5264]">{service.copy}</p>
+          <a href={`/solicitar-servicio?servicio=${service.slug}`} className="btn btn-dark mt-7">Solicitar este servicio <ArrowRight size={18} aria-hidden="true" /></a>
         </motion.div>
       </div>
     </article>
@@ -157,9 +155,9 @@ function SplitArticle({ service, index, reducedMotion }: { service: (typeof serv
 function EditorialArticle({ service, index, reducedMotion }: { service: (typeof services)[number]; index: number; reducedMotion: boolean | null }) {
   const number = String(index + 1).padStart(2, "0");
   return (
-    <article id={service.slug} className="scroll-mt-[calc(5rem+1px)] bg-[#F8F7F4]">
+    <article id={service.slug} className="scroll-mt-[calc(5rem+1px)] bg-white">
       <div className="mx-auto max-w-[1600px] px-5 py-20 md:px-8 lg:px-10 lg:py-28">
-        <div className="divider-gold mb-12 lg:mb-16" aria-hidden="true" />
+        <div className="divider-lime mb-12 lg:mb-16" aria-hidden="true" />
         <div className="grid items-center gap-10 lg:grid-cols-12 lg:gap-8">
           <motion.p
             initial={{ opacity: reducedMotion ? 1 : 0, y: reducedMotion ? 0 : 30 }}
@@ -167,7 +165,7 @@ function EditorialArticle({ service, index, reducedMotion }: { service: (typeof 
             viewport={{ once: false, amount: 0.3 }}
             transition={{ duration: 0.8, ease: "easeOut" }}
             aria-hidden="true"
-            className="display text-[clamp(4rem,9vw,7rem)] leading-none text-[#C9A227] lg:col-span-2"
+            className="display text-[clamp(4rem,9vw,7rem)] leading-none text-[#d2d943] lg:col-span-2"
           >
             {number}
           </motion.p>
@@ -178,8 +176,8 @@ function EditorialArticle({ service, index, reducedMotion }: { service: (typeof 
             transition={{ duration: 0.8, delay: 0.08, ease: "easeOut" }}
             className="lg:col-span-5"
           >
-            <h3 className="display text-[clamp(2rem,4vw,3.2rem)] leading-[1.05] text-[#0B1F3A]">{service.title}</h3>
-            <p className="mt-4 max-w-md text-base leading-7 text-[#0B1F3A]/75">{service.copy}</p>
+            <h3 className="display text-[clamp(2rem,4vw,3.2rem)] text-[#131313]">{service.title}</h3>
+            <p className="mt-4 max-w-md text-base leading-7 text-[#4a5264]">{service.copy}</p>
             <a href={`/solicitar-servicio?servicio=${service.slug}`} className="btn-link mt-6">Solicitar este servicio <ArrowRight size={18} aria-hidden="true" /></a>
           </motion.div>
           <motion.div
@@ -187,7 +185,7 @@ function EditorialArticle({ service, index, reducedMotion }: { service: (typeof 
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: false, amount: 0.3 }}
             transition={{ duration: 0.8, delay: 0.16, ease: "easeOut" }}
-            className="group relative overflow-hidden rounded-2xl shadow-[0_30px_70px_-30px_rgba(11,31,58,.35)] lg:col-span-5"
+            className="card group relative overflow-hidden lg:col-span-5"
           >
             <img
               src={service.src}
@@ -196,7 +194,6 @@ function EditorialArticle({ service, index, reducedMotion }: { service: (typeof 
               decoding="async"
               className={`aspect-[4/3] w-full object-cover ${service.position} transition-transform duration-[1200ms] ease-out group-hover:scale-105`}
             />
-            <div className="absolute inset-0 bg-[#0B1F3A]/10 transition-colors duration-700 group-hover:bg-transparent" aria-hidden="true" />
           </motion.div>
         </div>
       </div>
@@ -209,11 +206,11 @@ export function Features() {
   return (
     <section
       id="servicios"
-      className="w-full scroll-mt-[calc(5rem+1px)] overflow-hidden bg-[#F8F7F4]"
+      className="w-full scroll-mt-[calc(5rem+1px)] overflow-hidden bg-white"
     >
       {/* MOBILE */}
       <div className="relative overflow-hidden py-20 lg:hidden">
-        <h2 id="que-necesitas" className="display scroll-mt-20 px-5 text-[2.6rem] leading-none text-[#0B1F3A]">
+        <h2 id="que-necesitas" className="display scroll-mt-20 px-5 text-[2.6rem] text-[#131313]">
           ¿Qué necesitas?
         </h2>
 
@@ -222,7 +219,7 @@ export function Features() {
             <a
               key={action.title}
               href={action.href}
-              className="group relative aspect-[1.08] w-[76vw] shrink-0 snap-center overflow-hidden rounded-xl bg-[#0B1F3A] text-white shadow-md"
+              className="group relative aspect-[1.08] w-[76vw] shrink-0 snap-center overflow-hidden rounded-[20px] border border-[#e5e7eb] bg-[#131313] text-white shadow-md"
             >
               <img
                 src={action.src}
@@ -238,15 +235,15 @@ export function Features() {
                   {action.title}
                 </motion.p>
 
-                <span className="mt-4 inline-flex size-10 items-center justify-center rounded-full border border-white/50 transition group-hover:bg-white group-hover:text-[#0B1F3A]">
-                  <ArrowRight size={25} aria-hidden="true" />
+                <span className="mt-4 inline-flex size-10 items-center justify-center rounded-full border border-white/50 transition group-hover:border-[#d2d943] group-hover:bg-[#d2d943] group-hover:text-[#131313]">
+                  <ArrowRight size={22} aria-hidden="true" />
                 </span>
               </div>
             </a>
           ))}
         </div>
 
-        <p className="mt-4 px-5 text-xs font-semibold uppercase tracking-[.14em] text-[#0B1F3A]/55">
+        <p className="mt-4 px-5 text-xs font-semibold uppercase tracking-[.14em] text-[#131313]/55">
           Desliza para ver las opciones
         </p>
       </div>

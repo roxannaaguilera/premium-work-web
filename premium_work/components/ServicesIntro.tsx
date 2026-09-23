@@ -16,16 +16,16 @@ export function ServicesIntro() {
   const loop = [...services, ...services];
 
   return (
-    <section className="brand-surface-light relative flex min-h-[50svh] justify-center overflow-hidden px-5 pb-20 pt-32 text-center md:px-8 md:pt-36">
-      <div className="gold-marquee group absolute inset-x-0 top-0 overflow-hidden border-y border-[#0B1F3A]/15">
+    <section className="relative flex justify-center overflow-hidden bg-white px-5 pb-20 pt-32 text-center md:px-8 md:pt-36">
+      <div className="lime-marquee group absolute inset-x-0 top-0 overflow-hidden border-y border-[#131313]/10">
         <div className="marquee-track flex w-max group-hover:[animation-play-state:paused]">
           {loop.map((service, index) => (
             <div key={`${service.slug}-${index}`} className="shrink-0">
-              <a href={`/#${service.slug}`} className="flex h-12 w-max items-center justify-center border-r border-[#0B1F3A]/25 whitespace-nowrap px-7 text-center text-xs font-bold uppercase tracking-[.12em] md:text-sm text-[#0B1F3A] lg:hidden">
-                {service.title}
+              <a href={`/#${service.slug}`} className="flex h-12 w-max items-center justify-center gap-3 whitespace-nowrap border-r border-[#131313]/15 px-7 text-center text-xs font-bold uppercase tracking-[.12em] text-[#131313] transition-colors hover:bg-[#131313] hover:text-white md:text-sm lg:hidden">
+                <span aria-hidden="true">◆</span> {service.title}
               </a>
-              <a href={`/#${service.slug}`} className="hidden h-12 w-max items-center justify-center border-r border-[#0B1F3A]/25 whitespace-nowrap px-7 text-center text-xs font-bold uppercase tracking-[.12em] md:text-sm text-[#0B1F3A] transition-colors hover:bg-[#0B1F3A] hover:text-white lg:flex">
-                {service.title}
+              <a href={`/#${service.slug}`} className="hidden h-12 w-max items-center justify-center gap-3 whitespace-nowrap border-r border-[#131313]/15 px-7 text-center text-xs font-bold uppercase tracking-[.12em] text-[#131313] transition-colors hover:bg-[#131313] hover:text-white md:text-sm lg:flex">
+                <span aria-hidden="true">◆</span> {service.title}
               </a>
             </div>
           ))}
@@ -38,13 +38,8 @@ export function ServicesIntro() {
         transition={{ duration: reducedMotion ? 0 : 0.8, ease: "easeInOut" }}
         className="relative mx-auto max-w-5xl"
       >
-        <div className="flex items-center justify-center gap-3 text-[#C9A227]" aria-hidden="true">
-          <span className="h-px w-12 bg-current/60 md:w-20" />
-          <span className="text-base">◆</span>
-          <span className="h-px w-12 bg-current/60 md:w-20" />
-        </div>
-        <p className="eyebrow mt-6 text-[#0B1F3A]/70">Cuidamos cada detalle</p>
-        <h2 className="display mx-auto mt-7 max-w-5xl text-[clamp(3.4rem,13vw,6.8rem)] leading-[.9] text-[#0B1F3A]">Mucho más que personal: <em className="font-normal text-[#C9A227]">un servicio completo.</em></h2>
+        <p className="eyebrow mt-6 text-[#4a5264]">Cuidamos cada detalle</p>
+        <h2 className="display mx-auto mt-7 max-w-5xl text-[clamp(2.8rem,9vw,5.6rem)] text-[#131313]">Mucho más que personal: <em className="box-decoration-clone bg-[#d2d943] px-2 not-italic">un servicio completo.</em></h2>
       </motion.div>
     </section>
   );

@@ -34,18 +34,18 @@ export function PhoneField({ value, required = false, disabled = false, field, v
     <label htmlFor={`${id}-phone`}>Teléfono{required ? " *" : " (opcional)"}</label>
     <div className="relative flex items-end gap-3" onBlur={event => { if (!event.currentTarget.contains(event.relatedTarget)) setOpen(false); }} onKeyDown={event => { if (event.key === "Escape") { setOpen(false); trigger.current?.focus(); } }}>
       <input type="hidden" name="phone_country" value={value.country} />
-      <button ref={trigger} type="button" disabled={disabled} aria-label={`País del teléfono: ${selected.name} ${selected.dial}`} aria-expanded={open} aria-controls={`${id}-countries`} aria-haspopup="dialog" onClick={() => { setSearch(""); setOpen(!open); }} className="flex min-h-12 shrink-0 items-center gap-2 border-b border-white/35 px-1 font-normal">
+      <button ref={trigger} type="button" disabled={disabled} aria-label={`País del teléfono: ${selected.name} ${selected.dial}`} aria-expanded={open} aria-controls={`${id}-countries`} aria-haspopup="dialog" onClick={() => { setSearch(""); setOpen(!open); }} className="flex min-h-12 shrink-0 items-center gap-2 border-b border-[#131313]/30 px-1 font-normal">
         {Flag && <Flag aria-hidden="true" className="h-4 w-6" />} {selected.dial} <span aria-hidden="true">▾</span>
       </button>
       <input id={`${id}-phone`} required={required} name="phone" type="tel" autoComplete="tel-national" maxLength={30} value={value.number} onChange={event => {
         const next = event.target.value;
         if (/^(\+|00)/.test(next)) value.importValue(next); else value.setNumber(next);
       }} {...validation} className={`${field} min-w-0`} />
-      {open && <div id={`${id}-countries`} role="dialog" aria-label="Selecciona el país del teléfono" className="absolute left-0 top-full z-30 mt-2 w-full min-w-64 rounded-xl border border-[#C9A227] bg-[#0B1F3A] p-3 text-white shadow-xl">
-        <input autoFocus type="search" aria-label="Buscar país o prefijo" placeholder="Buscar país o prefijo" value={search} onChange={event => setSearch(event.target.value)} className="mb-2 w-full rounded border border-white/40 bg-transparent p-2 font-normal" />
+      {open && <div id={`${id}-countries`} role="dialog" aria-label="Selecciona el país del teléfono" className="absolute left-0 top-full z-30 mt-2 w-full min-w-64 rounded-xl border border-[#e5e7eb] bg-white p-3 text-[#131313] shadow-xl">
+        <input autoFocus type="search" aria-label="Buscar país o prefijo" placeholder="Buscar país o prefijo" value={search} onChange={event => setSearch(event.target.value)} className="mb-2 w-full rounded border border-[#131313]/30 bg-transparent p-2 font-normal" />
         <ul className="max-h-52 overflow-y-auto">{options.map(country => {
           const CountryFlag = flags[country.code as keyof typeof flags];
-          return <li key={country.code}><button type="button" aria-pressed={country.code === value.country} onClick={() => { value.setCountry(country.code); setOpen(false); trigger.current?.focus(); }} className="flex min-h-11 w-full items-center gap-3 rounded px-2 py-2 text-left font-normal hover:bg-white/10 focus-visible:bg-white/10">
+          return <li key={country.code}><button type="button" aria-pressed={country.code === value.country} onClick={() => { value.setCountry(country.code); setOpen(false); trigger.current?.focus(); }} className="flex min-h-11 w-full items-center gap-3 rounded px-2 py-2 text-left font-normal hover:bg-[#f6f6f6] focus-visible:bg-[#f6f6f6]">
             {CountryFlag && <CountryFlag aria-hidden="true" className="h-4 w-6 shrink-0" />}<span className="flex-1">{country.name}</span><span>{country.dial}</span>
           </button></li>;
         })}</ul>

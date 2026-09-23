@@ -32,6 +32,6 @@ export function useFormValidation(kind: FormKind) {
   return {
     validate, onBlur, onChange, setErrors,
     props: (name: string) => ({ "aria-invalid": !!errors[name], "aria-describedby": errors[name] ? `${id}-${name}` : undefined }),
-    error: (name: string) => errors[name] ? <span id={`${id}-${name}`} className="mt-2 block text-sm font-normal text-red-200">{errors[name]}</span> : null,
+    error: (name: string) => errors[name] ? <span id={`${id}-${name}`} className="mt-2 block text-sm font-normal text-red-700">{errors[name]}</span> : null,
   };
 }
