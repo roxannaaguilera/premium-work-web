@@ -14,7 +14,7 @@ type Service = {
   position: string;
   badgeTitle: string;
   badgeSub: string;
-  tags: [string, string, string];
+  skills: [string, string, string, string];
   // Nombres ficticios de muestra autorizados por la clienta (2026-09-24);
   // sustituir por perfiles reales cuando existan.
   name: string;
@@ -32,7 +32,7 @@ const services: Service[] = [
     slug: "camareros",
     src: "/images/serv-1-display.webp",
     position: "object-[50%_50%]",
-    tags: ["Sala", "Eventos", "Hoteles"],
+    skills: ["Eventos", "5 años", "Inglés", "Hoteles"],
     name: "Lucía Fernández",
     role: "Camarera",
   },
@@ -46,7 +46,7 @@ const services: Service[] = [
     slug: "maitres",
     src: "/images/serv-2-display.webp",
     position: "object-[50%_center]",
-    tags: ["Sala", "Eventos", "Alta hostelería"],
+    skills: ["Protocolo", "7 años", "Inglés", "Sala"],
     name: "Javier Morales",
     role: "Maître",
   },
@@ -60,7 +60,7 @@ const services: Service[] = [
     slug: "office-y-housekeeping",
     src: "/images/serv-3-display.webp",
     position: "object-[50%_87%]",
-    tags: ["Hoteles", "Eventos", "Espacios"],
+    skills: ["Hoteles", "4 años", "Orden", "Detalle"],
     name: "Carmen Ruiz",
     role: "Office y Housekeeping",
   },
@@ -74,7 +74,7 @@ const services: Service[] = [
     slug: "hostess",
     src: "/images/serv-4-display.webp",
     position: "object-[50%_9%]",
-    tags: ["Recepción", "Eventos", "Imagen de marca"],
+    skills: ["Recepción", "3 años", "Inglés", "Eventos"],
     name: "Sofía Navarro",
     role: "Hostess",
   },
@@ -88,7 +88,7 @@ const services: Service[] = [
     slug: "personal-de-cocina",
     src: "/images/serv-5-display.webp",
     position: "object-[50%_center]",
-    tags: ["Cocina", "Eventos", "Equipos"],
+    skills: ["Cocina", "6 años", "Eventos", "Ritmo"],
     name: "Diego Torres",
     role: "Personal de cocina",
   },
@@ -102,7 +102,7 @@ const services: Service[] = [
     slug: "supervisores",
     src: "/images/serv-6-display.webp",
     position: "object-[50%_center]",
-    tags: ["Coordinación", "Eventos", "Control de calidad"],
+    skills: ["Equipos", "9 años", "Eventos", "Control"],
     name: "Elena Vidal",
     role: "Supervisora",
   },
@@ -172,13 +172,17 @@ function ProfileCard({ service, clone, eager }: { service: Service; clone?: bool
         <h3 className="display mt-4 text-[clamp(1.7rem,2.4vw,2.1rem)] text-[#131313]">{service.name}</h3>
         <p className="mt-2 text-sm font-semibold text-[#4a5264]">{service.role}</p>
 
-        <div className="mt-7 flex flex-wrap justify-center gap-2">
-          {service.tags.map((tag) => (
+        <p aria-label="Valoración: 5 de 5 estrellas" className="mt-3 text-lg leading-none tracking-[.2em] text-[#9db31c]">
+          <span aria-hidden="true">★★★★★</span>
+        </p>
+
+        <div className="mt-6 grid grid-cols-2 gap-2">
+          {service.skills.map((skill) => (
             <span
-              key={tag}
-              className="rounded-full border border-[#e2e2e8] bg-white px-3.5 py-1.5 text-[12px] font-bold text-[#4a5264]"
+              key={skill}
+              className="rounded-xl border border-[#e2e2e8] bg-white px-3 py-2.5 text-[12px] font-bold text-[#4a5264]"
             >
-              {tag}
+              {skill}
             </span>
           ))}
         </div>
