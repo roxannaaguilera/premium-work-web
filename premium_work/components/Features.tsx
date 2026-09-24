@@ -13,10 +13,14 @@ const services: Array<{
   position: string;
   layout: Layout;
   flip?: boolean;
+  badgeTitle: string;
+  badgeSub: string;
 }> = [
   {
     title: "Camareros/as",
     copy: "Cada servicio de sala es ejecutado por profesionales propios, cuidadosamente seleccionados, formados en nuestros estándares y supervisados durante toda la prestación, garantizando agilidad y coherencia con la atmósfera del evento.",
+    badgeTitle: "Equipos propios",
+    badgeSub: "Seleccionados, formados y supervisados",
     slug: "camareros",
     src: "/images/serv-1-display.webp",
     position: "object-[50%_50%]",
@@ -25,6 +29,8 @@ const services: Array<{
   {
     title: "Maîtres",
     copy: "Disponemos de maîtres seleccionados y entrenados según los criterios y estándares de cada empresa cliente, aportando el criterio, la presencia y la serenidad necesarios en los momentos de mayor exigencia.",
+    badgeTitle: "Criterio y presencia",
+    badgeSub: "A la medida de tu marca",
     slug: "maitres",
     src: "/images/serv-2-display.webp",
     position: "object-[50%_center]",
@@ -33,6 +39,8 @@ const services: Array<{
   {
     title: "Office y Housekeeping",
     copy: "Contamos con personal seleccionado y preparado según los estándares de cada empresa cliente, garantizando el orden, la precisión y el cuidado necesarios para que cada espacio refleje el nivel de excelencia que exige cada evento.",
+    badgeTitle: "Orden y precisión",
+    badgeSub: "En cada detalle del espacio",
     slug: "office-y-housekeeping",
     src: "/images/serv-3-display.webp",
     position: "object-[50%_87%]",
@@ -41,6 +49,8 @@ const services: Array<{
   {
     title: "Hostess",
     copy: "Disponemos de personal de recepción seleccionado y formado según nuestros estándares y las necesidades de cada empresa cliente, garantizando una bienvenida cuidada, una atención impecable y una presencia acorde con la imagen y el nivel de cada evento.",
+    badgeTitle: "Bienvenida impecable",
+    badgeSub: "Acorde a tu imagen",
     slug: "hostess",
     src: "/images/serv-4-display.webp",
     position: "object-[50%_9%]",
@@ -49,6 +59,8 @@ const services: Array<{
   {
     title: "Personal de cocina",
     copy: "Contamos con personal de cocina seleccionado y preparado para integrarse con agilidad en cada equipo, aportando orden, precisión y capacidad de respuesta para garantizar el correcto desarrollo del servicio incluso en los momentos de mayor exigencia.",
+    badgeTitle: "Integración ágil",
+    badgeSub: "En tu equipo desde el día uno",
     slug: "personal-de-cocina",
     src: "/images/serv-5-display.webp",
     position: "object-[50%_center]",
@@ -58,6 +70,8 @@ const services: Array<{
   {
     title: "Supervisores",
     copy: "Nuestros supervisores coordinan y acompañan al equipo durante toda la prestación, asegurando el cumplimiento de los estándares acordados, anticipándose a las necesidades del servicio y garantizando que cada detalle se ejecute con precisión y coherencia.",
+    badgeTitle: "Supervisión incluida",
+    badgeSub: "Durante todo el servicio",
     slug: "supervisores",
     src: "/images/serv-6-display.webp",
     position: "object-[50%_center]",
@@ -79,6 +93,35 @@ const mobileActions = [
     position: "object-[50%_center]",
   },
 ];
+
+function PopCard({ title, sub, className, rotateClass, reducedMotion, delay = 0.35 }: {
+  title: string; sub: string; className?: string; rotateClass?: string; reducedMotion: boolean | null; delay?: number;
+}) {
+  return (
+    <motion.div
+      initial={{ opacity: 0, scale: 0.6, y: 30 }}
+      whileInView={{ opacity: 1, scale: 1, y: 0 }}
+      viewport={{ once: false, amount: 0.4 }}
+      transition={{ type: "spring", stiffness: 260, damping: 20, delay }}
+      aria-hidden="true"
+      className={`absolute z-20 ${className ?? ""}`}
+    >
+      <motion.div
+        animate={reducedMotion ? undefined : { y: [0, -10, 0] }}
+        transition={{ duration: 5, repeat: Infinity, ease: "easeInOut" }}
+        className={`relative w-52 rounded-2xl border border-black/5 bg-white p-4 shadow-[0_24px_60px_-12px_rgba(0,0,0,.28)] md:w-60 md:p-5 ${rotateClass ?? "-rotate-2"}`}
+      >
+        <span className="absolute -top-3.5 -left-3 -rotate-6 rounded-full bg-[#131313] px-3.5 py-1.5 text-[11px] font-extrabold tracking-wide text-white shadow-lg">
+          <span className="text-[#d2d943]" aria-hidden="true">◆</span> Servicio destacado
+        </span>
+        <p className="mt-1.5 flex items-center gap-1.5 text-sm font-extrabold text-[#131313] md:text-[15px]">
+          <span className="text-[#9db31c]" aria-hidden="true">◆</span> {title}
+        </p>
+        <p className="mt-1 text-xs leading-5 text-[#4a5264] md:text-[13px]">{sub}</p>
+      </motion.div>
+    </motion.div>
+  );
+}
 
 function CinematicArticle({ service, index, reducedMotion }: { service: (typeof services)[number]; index: number; reducedMotion: boolean | null }) {
   const number = String(index + 1).padStart(2, "0");
@@ -109,6 +152,12 @@ function CinematicArticle({ service, index, reducedMotion }: { service: (typeof 
           <a href={`/solicitar-servicio?servicio=${service.slug}`} className="btn btn-outline-on-dark mt-8">Solicitar este servicio <ArrowRight size={18} aria-hidden="true" /></a>
         </motion.div>
       </div>
+      <PopCard
+        title={service.badgeTitle}
+        sub={service.badgeSub}
+        reducedMotion={reducedMotion}
+        className="bottom-8 right-5 md:bottom-16 md:right-14"
+      />
     </article>
   );
 }
@@ -119,22 +168,31 @@ function SplitArticle({ service, index, reducedMotion }: { service: (typeof serv
   return (
     <article id={service.slug} className="scroll-mt-[calc(5rem+1px)] bg-white">
       <div className="mx-auto grid max-w-[1600px] items-center gap-10 px-5 py-20 md:px-8 lg:grid-cols-12 lg:gap-6 lg:px-10 lg:py-28">
-        <motion.div
-          initial={{ opacity: reducedMotion ? 1 : 0, scale: reducedMotion ? 1 : 0.97 }}
-          whileInView={{ opacity: 1, scale: 1 }}
-          viewport={{ once: false, amount: 0.3 }}
-          transition={{ duration: 0.9, ease: "easeOut" }}
-          className={`group relative overflow-hidden rounded-[24px] border border-[#e5e7eb] shadow-[0_24px_64px_-30px_rgba(19,19,19,.18)] lg:col-span-7 ${flip ? "lg:order-2" : ""}`}
-        >
-          <img
-            src={service.src}
-            alt={service.title}
-            loading="lazy"
-            decoding="async"
-            className={`aspect-[16/10] w-full object-cover ${service.position} transition-transform duration-[1200ms] ease-out group-hover:scale-105`}
+        <div className={`relative lg:col-span-7 ${flip ? "lg:order-2" : ""}`}>
+          <motion.div
+            initial={{ opacity: reducedMotion ? 1 : 0, scale: reducedMotion ? 1 : 0.97 }}
+            whileInView={{ opacity: 1, scale: 1 }}
+            viewport={{ once: false, amount: 0.3 }}
+            transition={{ duration: 0.9, ease: "easeOut" }}
+            className="group relative overflow-hidden rounded-[24px] border border-[#e5e7eb] shadow-[0_24px_64px_-30px_rgba(19,19,19,.18)]"
+          >
+            <img
+              src={service.src}
+              alt={service.title}
+              loading="lazy"
+              decoding="async"
+              className={`aspect-[16/10] w-full object-cover ${service.position} transition-transform duration-[1200ms] ease-out group-hover:scale-105`}
+            />
+            <div className="absolute inset-0 bg-gradient-to-t from-black/25 via-transparent to-transparent transition-opacity duration-700 group-hover:opacity-40" aria-hidden="true" />
+          </motion.div>
+          <PopCard
+            title={service.badgeTitle}
+            sub={service.badgeSub}
+            reducedMotion={reducedMotion}
+            rotateClass="rotate-2"
+            className="-bottom-7 right-5 md:-right-5 lg:-bottom-8"
           />
-          <div className="absolute inset-0 bg-gradient-to-t from-black/25 via-transparent to-transparent transition-opacity duration-700 group-hover:opacity-40" aria-hidden="true" />
-        </motion.div>
+        </div>
         <motion.div
           initial={{ opacity: reducedMotion ? 1 : 0, x: reducedMotion ? 0 : flip ? 60 : -60 }}
           whileInView={{ opacity: 1, x: 0 }}
@@ -185,14 +243,22 @@ function EditorialArticle({ service, index, reducedMotion }: { service: (typeof 
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: false, amount: 0.3 }}
             transition={{ duration: 0.8, delay: 0.16, ease: "easeOut" }}
-            className="card group relative overflow-hidden lg:col-span-5"
+            className="relative lg:col-span-5"
           >
-            <img
-              src={service.src}
-              alt={service.title}
-              loading="lazy"
-              decoding="async"
-              className={`aspect-[4/3] w-full object-cover ${service.position} transition-transform duration-[1200ms] ease-out group-hover:scale-105`}
+            <div className="card group relative overflow-hidden">
+              <img
+                src={service.src}
+                alt={service.title}
+                loading="lazy"
+                decoding="async"
+                className={`aspect-[4/3] w-full object-cover ${service.position} transition-transform duration-[1200ms] ease-out group-hover:scale-105`}
+              />
+            </div>
+            <PopCard
+              title={service.badgeTitle}
+              sub={service.badgeSub}
+              reducedMotion={reducedMotion}
+              className="-bottom-7 left-5 md:-left-4 lg:-bottom-8"
             />
           </motion.div>
         </div>
