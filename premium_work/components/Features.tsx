@@ -15,6 +15,10 @@ type Service = {
   badgeTitle: string;
   badgeSub: string;
   tags: [string, string, string];
+  // Nombres ficticios de muestra autorizados por la clienta (2026-09-24);
+  // sustituir por perfiles reales cuando existan.
+  name: string;
+  role: string;
 };
 
 const services: Service[] = [
@@ -29,6 +33,8 @@ const services: Service[] = [
     src: "/images/serv-1-display.webp",
     position: "object-[50%_50%]",
     tags: ["Sala", "Eventos", "Hoteles"],
+    name: "Lucía Fernández",
+    role: "Camarera",
   },
   {
     title: "Maîtres",
@@ -41,6 +47,8 @@ const services: Service[] = [
     src: "/images/serv-2-display.webp",
     position: "object-[50%_center]",
     tags: ["Sala", "Eventos", "Alta hostelería"],
+    name: "Javier Morales",
+    role: "Maître",
   },
   {
     title: "Office y Housekeeping",
@@ -53,6 +61,8 @@ const services: Service[] = [
     src: "/images/serv-3-display.webp",
     position: "object-[50%_87%]",
     tags: ["Hoteles", "Eventos", "Espacios"],
+    name: "Carmen Ruiz",
+    role: "Office y Housekeeping",
   },
   {
     title: "Hostess",
@@ -65,6 +75,8 @@ const services: Service[] = [
     src: "/images/serv-4-display.webp",
     position: "object-[50%_9%]",
     tags: ["Recepción", "Eventos", "Imagen de marca"],
+    name: "Sofía Navarro",
+    role: "Hostess",
   },
   {
     title: "Personal de cocina",
@@ -77,6 +89,8 @@ const services: Service[] = [
     src: "/images/serv-5-display.webp",
     position: "object-[50%_center]",
     tags: ["Cocina", "Eventos", "Equipos"],
+    name: "Diego Torres",
+    role: "Personal de cocina",
   },
   {
     title: "Supervisores",
@@ -89,6 +103,8 @@ const services: Service[] = [
     src: "/images/serv-6-display.webp",
     position: "object-[50%_center]",
     tags: ["Coordinación", "Eventos", "Control de calidad"],
+    name: "Elena Vidal",
+    role: "Supervisora",
   },
 ];
 
@@ -109,10 +125,14 @@ const mobileActions = [
 
 const pad2 = (n: number) => String(n).padStart(2, "0");
 
-/** Mini tarjeta flotante sobre la tarjeta del servicio. */
+/** Mini tarjeta flotante, superpuesta sobre la esquina superior de la tarjeta. */
 function MiniBadge() {
   return (
-    <div aria-hidden="true" className="absolute -top-5 right-1 z-20 rotate-2 md:right-4">
+    <div
+      aria-hidden="true"
+      className="card-float absolute right-3 top-14 z-20 rotate-2"
+      style={{ animationDelay: "-2.5s" }}
+    >
       <div className="rounded-2xl border border-black/5 bg-white px-4 py-3 shadow-[0_20px_45px_-12px_rgba(0,0,0,.25)]">
         <p className="flex items-center gap-1.5 text-[13px] font-extrabold leading-5 text-[#131313]">
           <span className="text-[#9db31c]">◆</span>
@@ -127,44 +147,41 @@ function MiniBadge() {
   );
 }
 
-/** Tarjeta de perfil del servicio: solo datos reales, sin nombres inventados. */
+/** Tarjeta de profesional: flota sobre el fondo, sin panel detrás. */
 function ProfileCard({ service, clone, eager }: { service: Service; clone?: boolean; eager?: boolean }) {
   return (
     <article
       id={clone ? undefined : service.slug}
       aria-hidden={clone || undefined}
-      className="w-full shrink-0 scroll-mt-24 px-7 py-4"
+      className="w-full shrink-0 scroll-mt-24 px-6 pb-16 pt-20"
     >
-      <div className="relative mx-auto w-full max-w-[340px] rounded-[28px] border border-black/5 bg-white px-6 pb-7 pt-7 text-center shadow-[0_40px_80px_-32px_rgba(19,19,19,.28)]">
-        <div className="relative mx-auto size-32">
-          <span aria-hidden="true" className="absolute -inset-2 rounded-full bg-[#d2d943]/25 blur-lg" />
-          <img
-            src={service.src}
-            alt={clone ? "" : service.title}
-            loading={eager ? "eager" : "lazy"}
-            decoding="async"
-            className={`relative size-32 rounded-full object-cover ring-4 ring-white ${service.position}`}
-          />
+      <div className="card-float relative mx-auto flex min-h-[440px] w-full max-w-[380px] flex-col justify-center rounded-[24px] bg-white px-6 pb-10 text-center shadow-[0_30px_70px_rgba(0,0,0,0.12)]">
+        <div className="-mt-[68px] mb-7 flex justify-center">
+          <div className="relative">
+            <span aria-hidden="true" className="absolute -inset-2 rounded-full bg-[#d2d943]/25 blur-lg" />
+            <img
+              src={service.src}
+              alt={clone ? "" : `Fotografía de ${service.name}`}
+              loading={eager ? "eager" : "lazy"}
+              decoding="async"
+              className={`relative size-[136px] rounded-full object-cover ring-4 ring-white ${service.position}`}
+            />
+          </div>
         </div>
 
-        <p className="mt-5 inline-flex items-center gap-1.5 rounded-full bg-[#f2f6d8] px-3.5 py-1 text-[10px] font-extrabold uppercase tracking-[.12em] text-[#5c6b0e]">
-          <span aria-hidden="true">◆</span> {service.badgeTitle}
-        </p>
+        <h3 className="display mt-4 text-[clamp(1.7rem,2.4vw,2.1rem)] text-[#131313]">{service.name}</h3>
+        <p className="mt-2 text-sm font-semibold text-[#4a5264]">{service.role}</p>
 
-        <h3 className="display mt-3 text-[clamp(1.5rem,2.2vw,1.9rem)] text-[#131313]">{service.title}</h3>
-
-        <div className="mt-4 flex flex-wrap justify-center gap-1.5">
+        <div className="mt-7 flex flex-wrap justify-center gap-2">
           {service.tags.map((tag) => (
             <span
               key={tag}
-              className="rounded-full border border-[#e2e2e8] bg-white px-3 py-1 text-[11px] font-bold text-[#4a5264]"
+              className="rounded-full border border-[#e2e2e8] bg-white px-3.5 py-1.5 text-[12px] font-bold text-[#4a5264]"
             >
               {tag}
             </span>
           ))}
         </div>
-
-        <p className="mt-4 text-[13px] leading-6 text-[#4a5264]">{service.badgeSub}</p>
       </div>
     </article>
   );
@@ -263,8 +280,9 @@ function ServiceShowcase() {
       {/* Formas abstractas suaves detrás */}
       <div aria-hidden="true" className="pointer-events-none absolute inset-0">
         <div className="absolute -left-32 top-1/4 size-[380px] rounded-full bg-[#d2d943]/20 blur-[100px]" />
-        <div className="absolute -right-32 bottom-0 size-[420px] rounded-full bg-[#e9ebee] blur-[80px]" />
-        <div className="absolute right-[6%] top-[10%] hidden size-44 rounded-full border-[22px] border-[#6e7a10]/10 lg:block" />
+        {/* Detrás de la tarjeta: solo verde oliva muy sutil */}
+        <div className="absolute right-[2%] top-1/2 size-[460px] -translate-y-1/2 rounded-full bg-[#6e7a10]/[.07] blur-[90px]" />
+        <div className="absolute right-[9%] top-[14%] hidden size-40 rounded-full border-[20px] border-[#6e7a10]/10 lg:block" />
         <div className="absolute bottom-[8%] left-[4%] hidden size-36 rotate-12 rounded-[36px] bg-[#131313]/[.04] lg:block" />
       </div>
 
@@ -297,15 +315,15 @@ function ServiceShowcase() {
 
         {/* DERECHA — carrusel de tarjetas */}
         <div className="relative">
-          <MiniBadge />
-
           <motion.div
             initial={reducedMotion ? false : { opacity: 0, y: 32 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, amount: 0.4 }}
             transition={{ duration: 0.7, ease: "easeOut" }}
-            className="relative mx-auto w-full max-w-[400px]"
+            className="relative mx-auto w-full max-w-[440px]"
           >
+            <MiniBadge />
+
             <div
               role="region"
               aria-roledescription="carrusel"
@@ -314,7 +332,7 @@ function ServiceShowcase() {
               onKeyDown={onKeyDown}
               onTouchStart={onTouchStart}
               onTouchEnd={onTouchEnd}
-              className="overflow-hidden rounded-[32px] focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#6e7a10]"
+              className="overflow-hidden focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#6e7a10]"
             >
               <div
                 ref={trackRef}

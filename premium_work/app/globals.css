@@ -348,3 +348,13 @@ body {
 .legal-copy th, .legal-copy td { border-bottom: 1px solid rgba(19,19,19,.2); padding: .8rem; text-align: left; vertical-align: top; }
 .legal-copy :focus-visible { outline: 2px solid var(--lime-deep); outline-offset: 4px; }
 @media print { .legal-copy { max-width: none; } body > header, dialog { display: none; } }
+
+/* Tarjeta de profesional flotante: suspensión sutil, 6px en 5s */
+@keyframes card-float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-6px); }
+}
+.card-float { animation: card-float 5s ease-in-out infinite; }
+@media (prefers-reduced-motion: reduce) {
+  .card-float { animation: none; }
+}
