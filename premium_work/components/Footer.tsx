@@ -29,43 +29,43 @@ export function Footer() {
   const year = new Date().getFullYear();
 
   return (
-    <footer id="contacto" className="brand-footer scroll-mt-[calc(5rem+1px)] text-[#131313]">
+    <footer id="contacto" className="scroll-mt-[calc(5rem+1px)] border-t border-white/10 bg-[#131313] text-white">
       <div className="mx-auto flex h-full max-w-[1600px] flex-col px-5 py-10 md:px-8 lg:px-10">
         <div className="grid min-h-0 flex-1 gap-8 py-10 md:gap-14 lg:grid-cols-[1.35fr_.65fr] lg:py-14">
           <div className="flex min-h-0 flex-col justify-center">
-            <p className="hidden max-w-lg text-sm leading-6 text-[#4a5264] md:block">Diseñamos la operativa y cuidamos cada detalle para que su servicio esté a la altura de su marca.</p>
-            <h2 className="display mt-4 text-[clamp(2.8rem,5.2vw,5.8rem)] leading-[1.08] text-[#131313] md:mt-7">Hagamos que <em className="box-decoration-clone bg-[#d2d943] px-2 leading-[1.2] not-italic">todo funcione.</em></h2>
+            <p className="hidden max-w-lg text-sm leading-6 text-white/60 md:block">Diseñamos la operativa y cuidamos cada detalle para que su servicio esté a la altura de su marca.</p>
+            <h2 className="display mt-4 text-[clamp(2.8rem,5.2vw,5.8rem)] leading-[1.08] text-white md:mt-7">Hagamos que <em className="box-decoration-clone bg-[#d2d943] px-2 leading-[1.2] text-[#131313] not-italic">todo funcione.</em></h2>
             <div className="mt-10 flex flex-wrap gap-3 md:mt-12">
-              <a href="/solicitar-servicio" className="btn btn-dark group">Solicitar un servicio <ArrowUpRight size={16} className="transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" /></a>
-              <a href="mailto:hola@premiumwork.es" className="btn btn-outline"><Mail size={16} /> hola@premiumwork.es</a>
+              <a href="/solicitar-servicio" className="btn btn-lime group">Solicitar un servicio <ArrowUpRight size={16} className="transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" /></a>
+              <a href="mailto:hola@premiumwork.es" className="btn btn-outline-on-dark"><Mail size={16} /> hola@premiumwork.es</a>
             </div>
           </div>
 
-          <div className="flex flex-col items-start gap-7 border-t border-[#e5e7eb] pt-5 sm:flex-row sm:items-center sm:gap-14 lg:border-l lg:border-t-0 lg:pl-10 lg:pt-0">
+          <div className="flex flex-col items-start gap-7 border-t border-white/15 pt-5 sm:flex-row sm:items-center sm:gap-14 lg:border-l lg:border-t-0 lg:pl-10 lg:pt-0">
             <div>
-              <p className="eyebrow text-[#6e7a10]">Atención comercial</p>
-              <a href={`https://wa.me/${WHATSAPP_NUMBER}`} target="_blank" rel="noreferrer" className="mt-3 inline-flex items-center gap-2 text-base font-semibold text-[#131313] transition hover:text-[#6e7a10]">Hablar por WhatsApp <ArrowUpRight size={17} /></a>
-              <a href="mailto:hola@premiumwork.es" className="mt-2 block text-sm text-[#4a5264] transition hover:text-[#131313]">hola@premiumwork.es</a>
+              <p className="eyebrow text-[#d2d943]">Atención comercial</p>
+              <a href={`https://wa.me/${WHATSAPP_NUMBER}`} target="_blank" rel="noreferrer" className="mt-3 inline-flex items-center gap-2 text-base font-semibold text-white transition hover:text-[#d2d943]">Hablar por WhatsApp <ArrowUpRight size={17} /></a>
+              <a href="mailto:hola@premiumwork.es" className="mt-2 block text-sm text-white/60 transition hover:text-white">hola@premiumwork.es</a>
             </div>
             <div>
-              <p className="eyebrow text-[#6e7a10]">Síguenos</p>
+              <p className="eyebrow text-[#d2d943]">Síguenos</p>
               <div className="mt-3 flex gap-2">
-                <a href="https://www.instagram.com/" target="_blank" rel="noopener noreferrer" aria-label="Instagram" className="flex size-10 items-center justify-center rounded-full border border-[#e5e7eb] transition hover:border-[#d2d943] hover:bg-[#d2d943] hover:text-[#131313]"><InstagramIcon /></a>
-                <a href="https://www.linkedin.com/" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn" className="flex size-10 items-center justify-center rounded-full border border-[#e5e7eb] transition hover:border-[#d2d943] hover:bg-[#d2d943] hover:text-[#131313]"><LinkedInIcon /></a>
-                <a href="https://www.facebook.com/" target="_blank" rel="noopener noreferrer" aria-label="Facebook" className="flex size-10 items-center justify-center rounded-full border border-[#e5e7eb] transition hover:border-[#d2d943] hover:bg-[#d2d943] hover:text-[#131313]"><FacebookIcon /></a>
+                <a href="https://www.instagram.com/" target="_blank" rel="noopener noreferrer" aria-label="Instagram" className="flex size-10 items-center justify-center rounded-full border border-white/20 text-white/80 transition hover:border-[#d2d943] hover:bg-[#d2d943] hover:text-[#131313]"><InstagramIcon /></a>
+                <a href="https://www.linkedin.com/" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn" className="flex size-10 items-center justify-center rounded-full border border-white/20 text-white/80 transition hover:border-[#d2d943] hover:bg-[#d2d943] hover:text-[#131313]"><LinkedInIcon /></a>
+                <a href="https://www.facebook.com/" target="_blank" rel="noopener noreferrer" aria-label="Facebook" className="flex size-10 items-center justify-center rounded-full border border-white/20 text-white/80 transition hover:border-[#d2d943] hover:bg-[#d2d943] hover:text-[#131313]"><FacebookIcon /></a>
               </div>
             </div>
           </div>
         </div>
 
-        <div className="grid shrink-0 gap-4 border-y border-[#e5e7eb] py-5 sm:grid-cols-2 lg:grid-cols-[.65fr_1.35fr]">
-          <nav aria-label="Navegación del pie de página" className="flex flex-wrap gap-x-5 gap-y-1">{navigation.map((item) => <a key={item.label} href={item.href} className="text-sm font-semibold text-[#131313] transition hover:text-[#6e7a10]">{item.label}</a>)}</nav>
-          <div className="flex flex-wrap gap-x-5 gap-y-3">{services.map((service) => <a key={service} href={`/#${service === "Camareros/as" ? "camareros" : service.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase().replaceAll(" ", "-")}`} className="text-sm text-[#4a5264] transition hover:text-[#131313]">{service}</a>)}</div>
+        <div className="grid shrink-0 gap-4 border-y border-white/15 py-5 sm:grid-cols-2 lg:grid-cols-[.65fr_1.35fr]">
+          <nav aria-label="Navegación del pie de página" className="flex flex-wrap gap-x-5 gap-y-1">{navigation.map((item) => <a key={item.label} href={item.href} className="text-sm font-semibold text-white transition hover:text-[#d2d943]">{item.label}</a>)}</nav>
+          <div className="flex flex-wrap gap-x-5 gap-y-3">{services.map((service) => <a key={service} href={`/#${service === "Camareros/as" ? "camareros" : service.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase().replaceAll(" ", "-")}`} className="text-sm text-white/60 transition hover:text-white">{service}</a>)}</div>
         </div>
 
-        <div className="flex shrink-0 flex-wrap items-center justify-between gap-4 pb-4 pt-5 text-[0.62rem] uppercase tracking-[.12em] text-[#8b8b8b]">
+        <div className="flex shrink-0 flex-wrap items-center justify-between gap-4 pb-4 pt-5 text-[0.62rem] uppercase tracking-[.12em] text-white/50">
           <p>© {year} Premium Work</p>
-          <div className="flex flex-wrap gap-4"><a href="/aviso-legal" className="hover:text-[#131313]">Aviso legal</a><a href="/politica-de-privacidad" className="hover:text-[#131313]">Privacidad</a><a href="/politica-de-cookies" className="hover:text-[#131313]">Cookies</a></div>
+          <div className="flex flex-wrap gap-4"><a href="/aviso-legal" className="hover:text-white">Aviso legal</a><a href="/politica-de-privacidad" className="hover:text-white">Privacidad</a><a href="/politica-de-cookies" className="hover:text-white">Cookies</a></div>
         </div>
       </div>
     </footer>
