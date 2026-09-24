@@ -14,7 +14,7 @@ export function WhyUs() {
   const reducedMotion = useReducedMotion();
 
   return (
-    <section id="nosotros" className="relative scroll-mt-[calc(5rem+1px)] overflow-hidden bg-[linear-gradient(165deg,#2e3314_0%,#1c1f0c_58%,#12140a_100%)] py-20 text-white md:py-28">
+    <section id="nosotros" className="relative scroll-mt-[calc(5rem+1px)] overflow-hidden bg-[linear-gradient(165deg,#2e3314_0%,#1c1f0c_58%,#12140a_100%)] py-14 text-white md:py-28">
       <div aria-hidden="true" className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_center,rgba(210,217,67,.14)_0%,transparent_62%)]" />
       <div className="relative z-10 mx-auto w-full max-w-[1600px] px-5 md:px-8 lg:px-10">
         <motion.header
@@ -28,7 +28,7 @@ export function WhyUs() {
           <h2 className="display max-w-4xl text-[clamp(2.5rem,5.4vw,5.4rem)] text-white">La diferencia está en <em className="box-decoration-clone bg-[#d2d943] px-2 not-italic text-[#131313]">cómo lo hacemos.</em></h2>
         </motion.header>
 
-        <div className="mt-12 grid gap-4 sm:grid-cols-2 md:mt-16 lg:grid-cols-3 xl:grid-cols-5">
+        <div className="mt-8 grid gap-3 md:mt-16 md:grid-cols-2 md:gap-4 lg:grid-cols-3 xl:grid-cols-5">
           {benefits.map((benefit, index) => (
             <motion.article
               key={benefit.title}
@@ -36,11 +36,11 @@ export function WhyUs() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: false, margin: "-60px" }}
               transition={{ duration: 0.55, delay: reducedMotion ? 0 : index * 0.08, ease: [0.22, 1, 0.36, 1] }}
-              className="group rounded-[20px] border border-white/15 bg-white/[.05] p-6 backdrop-blur-sm transition-all duration-300 hover:-translate-y-1.5 hover:border-[#d2d943]/70 hover:bg-white/[.08] hover:shadow-[0_24px_50px_-20px_rgba(0,0,0,.5)] md:p-7"
+              className="group rounded-2xl border border-white/15 bg-white/[.05] p-4 backdrop-blur-sm transition-all duration-300 hover:-translate-y-1.5 hover:border-[#d2d943]/70 hover:bg-white/[.08] hover:shadow-[0_24px_50px_-20px_rgba(0,0,0,.5)] md:rounded-[20px] md:p-7"
             >
-              <p className="display text-5xl leading-none text-[#d2d943] transition-transform duration-300 group-hover:scale-105 md:text-6xl">/{String(index + 1).padStart(2, "0")}</p>
-              <h3 className="mt-7 text-lg font-bold leading-snug text-white">{benefit.title}</h3>
-              <p className="mt-2 text-sm leading-6 text-white/80">{benefit.copy}</p>
+              <p className="display text-3xl leading-none text-[#d2d943] transition-transform duration-300 group-hover:scale-105 md:text-6xl">/{String(index + 1).padStart(2, "0")}</p>
+              <h3 className="mt-4 text-base font-bold leading-snug text-white md:mt-7 md:text-lg">{benefit.title}</h3>
+              <p className="mt-1 text-sm leading-6 text-white/80 md:mt-2">{benefit.copy}</p>
             </motion.article>
           ))}
         </div>
