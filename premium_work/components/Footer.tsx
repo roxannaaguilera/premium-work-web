@@ -1,7 +1,6 @@
 "use client";
 
 import { ArrowUpRight, Mail } from "lucide-react";
-import Image from "next/image";
 
 const WHATSAPP_NUMBER = "34604858113";
 
@@ -32,13 +31,6 @@ export function Footer() {
   return (
     <footer id="contacto" className="brand-footer scroll-mt-[calc(5rem+1px)] text-[#131313]">
       <div className="mx-auto flex h-full max-w-[1600px] flex-col px-5 py-10 md:px-8 lg:px-10">
-        <header className="flex shrink-0 items-center justify-between gap-4 border-b border-[#e5e7eb] pb-6">
-          <p className="eyebrow flex items-center gap-2 text-[#4a5264]"><span className="text-[#6e7a10]" aria-hidden="true">◆</span> Hablemos de su próximo servicio</p>
-          <a href="/#inicio" aria-label="Premium Work · Inicio" className="shrink-0 rounded-full bg-[#131313] px-4 py-2 transition hover:bg-[#2b2b2b]">
-            <Image src="/brand/logotipo-horizontal.svg" alt="Premium Work" width={150} height={50} className="h-8 w-auto" />
-          </a>
-        </header>
-
         <div className="grid min-h-0 flex-1 gap-8 py-10 md:gap-14 lg:grid-cols-[1.35fr_.65fr] lg:py-14">
           <div className="flex min-h-0 flex-col justify-center">
             <p className="hidden max-w-lg text-sm leading-6 text-[#4a5264] md:block">Diseñamos la operativa y cuidamos cada detalle para que su servicio esté a la altura de su marca.</p>
