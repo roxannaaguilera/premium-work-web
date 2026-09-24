@@ -50,16 +50,17 @@ export function SectorsAccordion() {
   const [open, setOpen] = useState<number | null>(0);
 
   return (
-    <section aria-label="Sectores en los que trabajamos" className="bg-[#131313] py-24 md:py-32">
-      <div className="mx-auto grid w-full max-w-[1600px] gap-12 px-5 md:px-8 lg:grid-cols-[1fr_1.5fr] lg:gap-24 lg:px-10">
+    <section aria-label="Sectores en los que trabajamos" className="relative overflow-hidden bg-white py-24 md:py-32">
+      <div aria-hidden="true" className="hero-dots pointer-events-none absolute inset-0" />
+      <div className="relative z-10 mx-auto grid w-full max-w-[1600px] gap-12 px-5 md:px-8 lg:grid-cols-[1fr_1.5fr] lg:gap-24 lg:px-10">
         <div className="lg:sticky lg:top-28 lg:self-start">
-          <p className="eyebrow flex items-center gap-2 text-white/60">
-            <span className="text-[#d2d943]" aria-hidden="true">◆</span> Sectores
+          <p className="eyebrow flex items-center gap-2 text-[#131313]/60">
+            <span className="text-[#6e7a10]" aria-hidden="true">◆</span> Sectores
           </p>
-          <h2 className="display mt-6 text-[clamp(2.5rem,5vw,4.5rem)] leading-[1.02] text-white">
+          <h2 className="display mt-6 text-[clamp(2.5rem,5vw,4.5rem)] leading-[1.02] text-[#131313]">
             ¿Dónde<br />trabajamos?
           </h2>
-          <p className="mt-6 max-w-md text-base leading-7 text-white/70">
+          <p className="mt-6 max-w-md text-base leading-7 text-[#131313]/70">
             Llevamos profesionales seleccionados, formados y supervisados a cada tipo de espacio y evento.
           </p>
           <a
@@ -70,11 +71,11 @@ export function SectorsAccordion() {
           </a>
         </div>
 
-        <div className="border-t border-white/15">
+        <div className="border-t border-[#131313]/15">
           {sectors.map((sector, index) => {
             const isOpen = open === index;
             return (
-              <div key={sector.slug} className="border-b border-white/15">
+              <div key={sector.slug} className="border-b border-[#131313]/15">
                 <button
                   type="button"
                   aria-expanded={isOpen}
@@ -82,10 +83,10 @@ export function SectorsAccordion() {
                   onClick={() => setOpen(isOpen ? null : index)}
                   className="group flex w-full items-center justify-between gap-6 py-6 text-left md:py-7"
                 >
-                  <span className={`display text-2xl transition-colors md:text-[1.75rem] ${isOpen ? "text-[#d2d943]" : "text-white group-hover:text-[#d2d943]"}`}>
+                  <span className={`display text-2xl transition-colors md:text-[1.75rem] ${isOpen ? "text-[#6e7a10]" : "text-[#131313] group-hover:text-[#6e7a10]"}`}>
                     {sector.title}
                   </span>
-                  <span className={`flex size-10 shrink-0 items-center justify-center rounded-full border transition-all ${isOpen ? "rotate-180 border-[#d2d943] bg-[#d2d943] text-[#131313]" : "border-white/25 text-white/70 group-hover:border-[#d2d943]/60"}`}>
+                  <span className={`flex size-10 shrink-0 items-center justify-center rounded-full border transition-all ${isOpen ? "rotate-180 border-[#d2d943] bg-[#d2d943] text-[#131313]" : "border-[#131313]/25 text-[#131313]/70 group-hover:border-[#6e7a10]/60"}`}>
                     <ChevronDown size={20} aria-hidden="true" />
                   </span>
                 </button>
@@ -96,10 +97,10 @@ export function SectorsAccordion() {
                 >
                   <div className="overflow-hidden">
                     <div className="pb-7 pr-4 md:pr-16">
-                      <p className="max-w-xl text-base leading-7 text-white/70">{sector.copy}</p>
+                      <p className="max-w-xl text-base leading-7 text-[#131313]/70">{sector.copy}</p>
                       <a
                         href={`/solicitar-servicio?sector=${sector.slug}`}
-                        className="mt-4 inline-flex items-center gap-2 text-sm font-bold text-[#d2d943] transition hover:gap-3"
+                        className="mt-4 inline-flex items-center gap-2 text-sm font-bold text-[#6e7a10] transition hover:gap-3"
                       >
                         Solicitar servicio para {sector.title.toLowerCase()} <ArrowRight size={16} aria-hidden="true" />
                       </a>
