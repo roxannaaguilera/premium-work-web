@@ -1,6 +1,5 @@
 "use client";
 
-import { CookieSettingsButton } from "@/components/CookiePreferences";
 import { ArrowUpRight, Mail } from "lucide-react";
 import Image from "next/image";
 
@@ -74,7 +73,7 @@ export function Footer() {
 
         <div className="flex shrink-0 flex-wrap items-center justify-between gap-4 pb-4 pt-5 text-[0.62rem] uppercase tracking-[.12em] text-[#8b8b8b]">
           <p>© {year} Premium Work</p>
-          <div className="flex flex-wrap gap-4"><a href="/aviso-legal" className="hover:text-[#131313]">Aviso legal</a><a href="/politica-de-privacidad" className="hover:text-[#131313]">Privacidad</a><a href="/politica-de-cookies" className="hover:text-[#131313]">Cookies</a><CookieSettingsButton className="hover:text-[#131313]" /></div>
+          <div className="flex flex-wrap gap-4"><a href="/aviso-legal" className="hover:text-[#131313]">Aviso legal</a><a href="/politica-de-privacidad" className="hover:text-[#131313]">Privacidad</a><a href="/politica-de-cookies" className="hover:text-[#131313]">Cookies</a></div>
         </div>
       </div>
     </footer>
