@@ -14,7 +14,8 @@ export function WhyUs() {
   const reducedMotion = useReducedMotion();
 
   return (
-    <section id="nosotros" className="panel-dark scroll-mt-[calc(5rem+1px)] py-20 md:py-28">
+    <section id="nosotros" className="relative scroll-mt-[calc(5rem+1px)] overflow-hidden bg-[linear-gradient(165deg,#2e3314_0%,#1c1f0c_58%,#12140a_100%)] py-20 text-white md:py-28">
+      <div aria-hidden="true" className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_center,rgba(210,217,67,.14)_0%,transparent_62%)]" />
       <div className="relative z-10 mx-auto w-full max-w-[1600px] px-5 md:px-8 lg:px-10">
         <motion.header
           initial={{ opacity: 0, y: reducedMotion ? 0 : 20 }}
