@@ -50,7 +50,7 @@ export function SectorsAccordion() {
   const [open, setOpen] = useState<number | null>(0);
 
   return (
-    <section aria-label="Sectores en los que trabajamos" className="relative overflow-hidden bg-white py-10 md:py-32">
+    <section aria-label="Sectores en los que trabajamos" className="relative overflow-hidden bg-white py-10 md:py-16">
       <div aria-hidden="true" className="hero-dots pointer-events-none absolute inset-0" />
       <div className="relative z-10 mx-auto grid w-full max-w-[1600px] gap-6 px-5 md:gap-12 md:px-8 lg:grid-cols-[1fr_1.5fr] lg:gap-24 lg:px-10">
         <div className="lg:sticky lg:top-28 lg:self-start">
@@ -81,7 +81,7 @@ export function SectorsAccordion() {
                   aria-expanded={isOpen}
                   aria-controls={`sector-panel-${sector.slug}`}
                   onClick={() => setOpen(isOpen ? null : index)}
-                  className="group flex w-full items-center justify-between gap-6 py-3 text-left md:py-7"
+                  className="group flex w-full items-center justify-between gap-6 py-3 text-left md:py-4"
                 >
                   <span className={`display text-xl transition-colors md:text-[1.75rem] ${isOpen ? "text-[#6e7a10]" : "text-[#131313] group-hover:text-[#6e7a10]"}`}>
                     {sector.title}
