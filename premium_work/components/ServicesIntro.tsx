@@ -16,7 +16,7 @@ export function ServicesIntro() {
   const loop = [...services, ...services];
 
   return (
-    <section className="relative flex justify-center overflow-hidden bg-white px-5 pb-20 pt-32 text-center md:px-8 md:pt-36">
+    <section className="relative flex flex-col items-center justify-center overflow-hidden bg-white px-5 pb-16 pt-28 text-center md:min-h-[100svh] md:px-8 md:pb-20 md:pt-32">
       <div className="lime-marquee group absolute inset-x-0 top-0 overflow-hidden border-y border-[#131313]/10">
         <div className="marquee-track flex w-max group-hover:[animation-play-state:paused]">
           {loop.map((service, index) => (
