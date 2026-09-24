@@ -130,7 +130,7 @@ function MiniBadge() {
   return (
     <div
       aria-hidden="true"
-      className="card-float absolute -left-6 -top-6 z-20"
+      className="card-float absolute -left-6 -top-8 z-20 sm:-left-10 sm:-top-10"
       style={{ animationDelay: "-2.5s" }}
     >
       <div className="rounded-2xl border border-black/5 bg-white px-4 py-3 shadow-[0_20px_45px_-12px_rgba(0,0,0,.25)]">
