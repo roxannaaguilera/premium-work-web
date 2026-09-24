@@ -43,7 +43,7 @@ export function Footer() {
         <div className="grid min-h-0 flex-1 gap-8 py-10 md:gap-14 lg:grid-cols-[1.35fr_.65fr] lg:py-14">
           <div className="flex min-h-0 flex-col justify-center">
             <p className="hidden max-w-lg text-sm leading-6 text-[#4a5264] md:block">Diseñamos la operativa y cuidamos cada detalle para que su servicio esté a la altura de su marca.</p>
-            <h2 className="display mt-4 text-[clamp(2.8rem,5.2vw,5.8rem)] text-[#131313] md:mt-7">Hagamos que <em className="mt-2 box-decoration-clone bg-[#d2d943] px-2 not-italic md:mt-0 md:inline">todo funcione.</em></h2>
+            <h2 className="display mt-4 text-[clamp(2.8rem,5.2vw,5.8rem)] leading-[1.08] text-[#131313] md:mt-7">Hagamos que <em className="box-decoration-clone bg-[#d2d943] px-2 leading-[1.2] not-italic">todo funcione.</em></h2>
             <div className="mt-10 flex flex-wrap gap-3 md:mt-12">
               <a href="/solicitar-servicio" className="btn btn-dark group">Solicitar un servicio <ArrowUpRight size={16} className="transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" /></a>
               <a href="mailto:hola@premiumwork.es" className="btn btn-outline"><Mail size={16} /> hola@premiumwork.es</a>

@@ -1,7 +1,6 @@
 "use client";
 
 import { ChevronDown, Menu, X } from "lucide-react";
-import Image from "next/image";
 import { useEffect, useState } from "react";
 import { serviceLabels } from "@/lib/service-options";
 
@@ -42,21 +41,16 @@ export function Navbar() {
     >
       <nav className="mx-auto flex h-20 max-w-[1600px] items-center justify-between px-5 md:px-8">
 
-        {/* Logo: marca blanca sobre pastilla negra */}
+        {/* Logo: diamante en rombo + premium work */}
         <a
           href="/#inicio"
           aria-label="Premium Work, Inicio"
-          className="shrink-0 rounded-full border border-[#e5e7eb] bg-white px-4 py-2 shadow-sm transition-shadow hover:shadow-md"
+          className="shrink-0 rounded-full border border-[#e5e7eb] bg-white px-5 py-2.5 shadow-sm transition-shadow hover:shadow-md"
         >
-          <Image
-            src="/brand/logotipo-horizontal.svg"
-            alt="Premium Work"
-            width={190}
-            height={63}
-            priority
-            sizes="190px"
-            className="h-9 w-auto"
-          />
+          <span className="flex items-center gap-2">
+            <span aria-hidden="true" className="text-[15px] leading-none text-[#9db31c]">◆</span>
+            <span className="text-[13px] font-extrabold lowercase tracking-[.28em] text-[#131313]">premium work</span>
+          </span>
         </a>
 
         {/* Desktop menu */}

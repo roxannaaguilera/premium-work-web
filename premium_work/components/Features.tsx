@@ -125,16 +125,16 @@ const mobileActions = [
 
 const pad2 = (n: number) => String(n).padStart(2, "0");
 
-/** Mini tarjeta flotante, superpuesta sobre la esquina superior de la tarjeta. */
+/** Mini tarjeta flotante, anclada a la esquina inferior derecha de la foto para no tapar la cara. */
 function MiniBadge() {
   return (
     <div
       aria-hidden="true"
-      className="card-float absolute right-3 top-14 z-20 rotate-2"
+      className="card-float absolute -bottom-3 -right-8 z-20 rotate-2"
       style={{ animationDelay: "-2.5s" }}
     >
-      <div className="rounded-2xl border border-black/5 bg-white px-4 py-3 shadow-[0_20px_45px_-12px_rgba(0,0,0,.25)]">
-        <p className="flex items-center gap-1.5 text-[13px] font-extrabold leading-5 text-[#131313]">
+      <div className="rounded-xl border border-black/5 bg-white px-3 py-2 shadow-[0_20px_45px_-12px_rgba(0,0,0,.25)]">
+        <p className="flex items-center gap-1.5 text-[11px] font-extrabold leading-4 text-[#131313]">
           <span className="text-[#9db31c]">◆</span>
           <span>
             Personal seleccionado
@@ -166,13 +166,14 @@ function ProfileCard({ service, clone, eager }: { service: Service; clone?: bool
               decoding="async"
               className={`relative size-[136px] rounded-full object-cover ring-4 ring-white ${service.position}`}
             />
+            <MiniBadge />
           </div>
         </div>
 
         <h3 className="display mt-4 text-[clamp(1.7rem,2.4vw,2.1rem)] text-[#131313]">{service.name}</h3>
         <p className="mt-2 text-sm font-semibold text-[#4a5264]">{service.role}</p>
 
-        <p aria-label="Valoración: 5 de 5 estrellas" className="mt-3 text-lg leading-none tracking-[.2em] text-[#9db31c]">
+        <p aria-label="Valoración: 5 de 5 estrellas" className="mt-3 text-lg leading-none tracking-[.2em] text-[#D2D943]">
           <span aria-hidden="true">★★★★★</span>
         </p>
 
@@ -326,8 +327,6 @@ function ServiceShowcase() {
             transition={{ duration: 0.7, ease: "easeOut" }}
             className="relative mx-auto w-full max-w-[440px]"
           >
-            <MiniBadge />
-
             <div
               role="region"
               aria-roledescription="carrusel"
