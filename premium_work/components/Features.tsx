@@ -125,16 +125,16 @@ const mobileActions = [
 
 const pad2 = (n: number) => String(n).padStart(2, "0");
 
-/** Mini tarjeta flotante, anclada a la esquina inferior derecha de la foto para no tapar la cara. */
+/** Mini tarjeta flotante, en la esquina superior izquierda de la tarjeta como una notificación. */
 function MiniBadge() {
   return (
     <div
       aria-hidden="true"
-      className="card-float absolute -bottom-3 -right-8 z-20 rotate-2"
+      className="card-float absolute -left-6 -top-6 z-20"
       style={{ animationDelay: "-2.5s" }}
     >
-      <div className="rounded-xl border border-black/5 bg-white px-3 py-2 shadow-[0_20px_45px_-12px_rgba(0,0,0,.25)]">
-        <p className="flex items-center gap-1.5 text-[11px] font-extrabold leading-4 text-[#131313]">
+      <div className="rounded-2xl border border-black/5 bg-white px-4 py-3 shadow-[0_20px_45px_-12px_rgba(0,0,0,.25)]">
+        <p className="flex items-center gap-1.5 text-[13px] font-extrabold leading-5 text-[#131313]">
           <span className="text-[#9db31c]">◆</span>
           <span>
             Personal seleccionado
@@ -156,6 +156,7 @@ function ProfileCard({ service, clone, eager }: { service: Service; clone?: bool
       className="w-full shrink-0 scroll-mt-24 px-6 pb-16 pt-20"
     >
       <div className="card-float relative mx-auto flex min-h-[440px] w-full max-w-[380px] flex-col justify-center rounded-[24px] bg-white px-6 pb-10 text-center shadow-[0_30px_70px_rgba(0,0,0,0.12)]">
+        <MiniBadge />
         <div className="-mt-[68px] mb-7 flex justify-center">
           <div className="relative">
             <span aria-hidden="true" className="absolute -inset-2 rounded-full bg-[#d2d943]/25 blur-lg" />
@@ -166,7 +167,6 @@ function ProfileCard({ service, clone, eager }: { service: Service; clone?: bool
               decoding="async"
               className={`relative size-[136px] rounded-full object-cover ring-4 ring-white ${service.position}`}
             />
-            <MiniBadge />
           </div>
         </div>
 
