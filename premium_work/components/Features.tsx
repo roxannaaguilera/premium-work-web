@@ -3,18 +3,15 @@
 import { motion, useReducedMotion } from "framer-motion";
 import { ArrowRight } from "lucide-react";
 
-type Layout = "cinematic" | "split" | "editorial";
-
 const services: Array<{
   title: string;
   copy: string;
   slug: string;
   src: string;
   position: string;
-  layout: Layout;
-  flip?: boolean;
   badgeTitle: string;
   badgeSub: string;
+  tags: [string, string, string];
 }> = [
   {
     title: "Camareros/as",
@@ -24,7 +21,7 @@ const services: Array<{
     slug: "camareros",
     src: "/images/serv-1-display.webp",
     position: "object-[50%_50%]",
-    layout: "cinematic",
+    tags: ["Sala", "Eventos", "Hoteles"],
   },
   {
     title: "Maîtres",
@@ -34,7 +31,7 @@ const services: Array<{
     slug: "maitres",
     src: "/images/serv-2-display.webp",
     position: "object-[50%_center]",
-    layout: "split",
+    tags: ["Sala", "Eventos", "Alta hostelería"],
   },
   {
     title: "Office y Housekeeping",
@@ -44,7 +41,7 @@ const services: Array<{
     slug: "office-y-housekeeping",
     src: "/images/serv-3-display.webp",
     position: "object-[50%_87%]",
-    layout: "editorial",
+    tags: ["Hoteles", "Eventos", "Espacios"],
   },
   {
     title: "Hostess",
@@ -54,7 +51,7 @@ const services: Array<{
     slug: "hostess",
     src: "/images/serv-4-display.webp",
     position: "object-[50%_9%]",
-    layout: "cinematic",
+    tags: ["Recepción", "Eventos", "Imagen de marca"],
   },
   {
     title: "Personal de cocina",
@@ -64,8 +61,7 @@ const services: Array<{
     slug: "personal-de-cocina",
     src: "/images/serv-5-display.webp",
     position: "object-[50%_center]",
-    layout: "split",
-    flip: true,
+    tags: ["Cocina", "Eventos", "Equipos"],
   },
   {
     title: "Supervisores",
@@ -75,7 +71,7 @@ const services: Array<{
     slug: "supervisores",
     src: "/images/serv-6-display.webp",
     position: "object-[50%_center]",
-    layout: "editorial",
+    tags: ["Coordinación", "Eventos", "Control de calidad"],
   },
 ];
 
@@ -94,8 +90,8 @@ const mobileActions = [
   },
 ];
 
-function PopCard({ title, sub, className, rotateClass, reducedMotion, delay = 0.35 }: {
-  title: string; sub: string; className?: string; rotateClass?: string; reducedMotion: boolean | null; delay?: number;
+function PopCard({ title, sub, ribbon = "Premium Work", className, rotateClass, reducedMotion, delay = 0.45 }: {
+  title: string; sub: string; ribbon?: string; className?: string; rotateClass?: string; reducedMotion: boolean | null; delay?: number;
 }) {
   return (
     <motion.div
@@ -112,7 +108,7 @@ function PopCard({ title, sub, className, rotateClass, reducedMotion, delay = 0.
         className={`relative w-52 rounded-2xl border border-black/5 bg-white p-4 shadow-[0_24px_60px_-12px_rgba(0,0,0,.28)] md:w-60 md:p-5 ${rotateClass ?? "-rotate-2"}`}
       >
         <span className="absolute -top-3.5 -left-3 -rotate-6 rounded-full bg-[#131313] px-3.5 py-1.5 text-[11px] font-extrabold tracking-wide text-white shadow-lg">
-          <span className="text-[#d2d943]" aria-hidden="true">◆</span> Servicio destacado
+          <span className="text-[#d2d943]" aria-hidden="true">◆</span> {ribbon}
         </span>
         <p className="mt-1.5 flex items-center gap-1.5 text-sm font-extrabold text-[#131313] md:text-[15px]">
           <span className="text-[#9db31c]" aria-hidden="true">◆</span> {title}
@@ -123,143 +119,91 @@ function PopCard({ title, sub, className, rotateClass, reducedMotion, delay = 0.
   );
 }
 
-function CinematicArticle({ service, index, reducedMotion }: { service: (typeof services)[number]; index: number; reducedMotion: boolean | null }) {
+function ServiceShowcase({ service, index, reducedMotion }: { service: (typeof services)[number]; index: number; reducedMotion: boolean | null }) {
   const number = String(index + 1).padStart(2, "0");
-  return (
-    <article id={service.slug} className="group relative flex min-h-[92svh] scroll-mt-[calc(5rem+1px)] items-center overflow-hidden bg-[#131313]">
-      <div className="absolute inset-0">
-        <img
-          src={service.src}
-          alt={service.title}
-          loading="lazy"
-          decoding="async"
-          className={`absolute inset-0 h-full w-full object-cover ${service.position} transition-transform duration-[1400ms] ease-out group-hover:scale-105`}
-        />
-        <div className="absolute inset-0 bg-[linear-gradient(100deg,rgba(10,10,10,.85)_0%,rgba(10,10,10,.4)_52%,rgba(10,10,10,.05)_88%)]" />
-      </div>
-      <span aria-hidden="true" className="display pointer-events-none absolute -right-4 top-8 select-none text-[24vw] leading-none text-white/[.06] lg:text-[18vw]">{number}</span>
-      <div className="relative mx-auto w-full max-w-[1600px] px-5 py-24 md:px-8 lg:px-10">
-        <motion.div
-          initial={{ opacity: reducedMotion ? 1 : 0, y: reducedMotion ? 0 : 40 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: false, amount: 0.3 }}
-          transition={{ duration: 0.9, ease: "easeOut" }}
-          className="max-w-xl"
-        >
-          <p className="eyebrow flex items-center gap-2 text-[#d2d943]"><span aria-hidden="true">◆</span> {number}</p>
-          <h3 className="display mt-5 text-[clamp(2.8rem,7vw,5.5rem)] text-white">{service.title}</h3>
-          <p className="mt-6 max-w-md text-base leading-7 text-white/85">{service.copy}</p>
-          <a href={`/solicitar-servicio?servicio=${service.slug}`} className="btn btn-outline-on-dark mt-8">Solicitar este servicio <ArrowRight size={18} aria-hidden="true" /></a>
-        </motion.div>
-      </div>
-      <PopCard
-        title={service.badgeTitle}
-        sub={service.badgeSub}
-        reducedMotion={reducedMotion}
-        className="bottom-8 right-5 md:bottom-16 md:right-14"
-      />
-    </article>
-  );
-}
+  const flip = index % 2 === 1;
 
-function SplitArticle({ service, index, reducedMotion }: { service: (typeof services)[number]; index: number; reducedMotion: boolean | null }) {
-  const number = String(index + 1).padStart(2, "0");
-  const flip = service.flip;
   return (
-    <article id={service.slug} className="scroll-mt-[calc(5rem+1px)] bg-white">
-      <div className="mx-auto grid max-w-[1600px] items-center gap-10 px-5 py-20 md:px-8 lg:grid-cols-12 lg:gap-6 lg:px-10 lg:py-28">
-        <div className={`relative lg:col-span-7 ${flip ? "lg:order-2" : ""}`}>
-          <motion.div
-            initial={{ opacity: reducedMotion ? 1 : 0, scale: reducedMotion ? 1 : 0.97 }}
-            whileInView={{ opacity: 1, scale: 1 }}
-            viewport={{ once: false, amount: 0.3 }}
-            transition={{ duration: 0.9, ease: "easeOut" }}
-            className="group relative overflow-hidden rounded-[24px] border border-[#e5e7eb] shadow-[0_24px_64px_-30px_rgba(19,19,19,.18)]"
-          >
-            <img
-              src={service.src}
-              alt={service.title}
-              loading="lazy"
-              decoding="async"
-              className={`aspect-[16/10] w-full object-cover ${service.position} transition-transform duration-[1200ms] ease-out group-hover:scale-105`}
-            />
-            <div className="absolute inset-0 bg-gradient-to-t from-black/25 via-transparent to-transparent transition-opacity duration-700 group-hover:opacity-40" aria-hidden="true" />
-          </motion.div>
+    <article
+      id={service.slug}
+      className={`relative scroll-mt-[calc(5rem+1px)] overflow-hidden ${index % 2 === 1 ? "bg-[#fafaf8]" : "bg-white"}`}
+    >
+      {/* Formas abstractas detrás de la tarjeta */}
+      <div aria-hidden="true" className="pointer-events-none absolute inset-0">
+        <div className={`absolute -left-40 top-16 size-[480px] rounded-full bg-[#d2d943]/25 blur-[110px] ${flip ? "md:left-auto md:-right-40" : ""}`} />
+        <div className={`absolute bottom-10 size-[560px] rounded-full bg-[#e9ebee] blur-[90px] ${flip ? "-left-48" : "-right-48"}`} />
+        <div className={`absolute top-[14%] size-60 rounded-full border-[26px] border-[#6e7a10]/15 ${flip ? "left-[7%]" : "right-[7%]"}`} />
+        <div className={`absolute bottom-[12%] size-52 rounded-[44px] bg-[#131313]/[.05] ${flip ? "right-[9%] -rotate-12" : "left-[9%] rotate-12"}`} />
+        <span className={`display absolute top-10 select-none text-[22vw] leading-none text-[#131313]/[.04] lg:text-[13vw] ${flip ? "left-6" : "right-6"}`}>{number}</span>
+      </div>
+
+      <div className="section-pad relative mx-auto max-w-[1200px]">
+        <motion.p
+          initial={{ opacity: reducedMotion ? 1 : 0, y: reducedMotion ? 0 : 24 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: false, amount: 0.5 }}
+          transition={{ duration: 0.7, ease: "easeOut" }}
+          className="eyebrow flex items-center justify-center gap-2 text-[#6e7a10]"
+        >
+          <span aria-hidden="true">◆</span> Servicio {number}
+        </motion.p>
+
+        <div className="relative mx-auto mt-12 max-w-3xl md:mt-16">
+          {/* Hoja blanca desplazada: profundidad */}
+          <div aria-hidden="true" className={`absolute inset-0 rounded-[44px] bg-white shadow-[0_32px_80px_-32px_rgba(19,19,19,.18)] ${flip ? "-rotate-2 -translate-x-3 translate-y-4" : "rotate-2 translate-x-3 translate-y-4"}`} />
+
           <PopCard
-            title={service.badgeTitle}
+            title="Personal seleccionado y entrenado"
             sub={service.badgeSub}
             reducedMotion={reducedMotion}
-            rotateClass="rotate-2"
-            className="-bottom-7 right-5 md:-right-5 lg:-bottom-8"
+            rotateClass={flip ? "rotate-2" : "-rotate-2"}
+            className={flip ? "-top-10 right-2 md:-right-8" : "-top-10 left-2 md:-left-8"}
           />
-        </div>
-        <motion.div
-          initial={{ opacity: reducedMotion ? 1 : 0, x: reducedMotion ? 0 : flip ? 60 : -60 }}
-          whileInView={{ opacity: 1, x: 0 }}
-          viewport={{ once: false, amount: 0.3 }}
-          transition={{ duration: 0.9, ease: "easeOut" }}
-          className={`lg:col-span-5 ${flip ? "lg:order-1 lg:pr-10" : "lg:pl-10"}`}
-        >
-          <p className="eyebrow flex items-center gap-2 text-[#6e7a10]"><span aria-hidden="true">◆</span> {number}</p>
-          <h3 className="display mt-5 text-[clamp(2.2rem,4.5vw,3.8rem)] text-[#131313]">{service.title}</h3>
-          <p className="mt-5 max-w-md text-base leading-7 text-[#4a5264]">{service.copy}</p>
-          <a href={`/solicitar-servicio?servicio=${service.slug}`} className="btn btn-dark mt-7">Solicitar este servicio <ArrowRight size={18} aria-hidden="true" /></a>
-        </motion.div>
-      </div>
-    </article>
-  );
-}
 
-function EditorialArticle({ service, index, reducedMotion }: { service: (typeof services)[number]; index: number; reducedMotion: boolean | null }) {
-  const number = String(index + 1).padStart(2, "0");
-  return (
-    <article id={service.slug} className="scroll-mt-[calc(5rem+1px)] bg-white">
-      <div className="mx-auto max-w-[1600px] px-5 py-20 md:px-8 lg:px-10 lg:py-28">
-        <div className="divider-lime mb-12 lg:mb-16" aria-hidden="true" />
-        <div className="grid items-center gap-10 lg:grid-cols-12 lg:gap-8">
-          <motion.p
-            initial={{ opacity: reducedMotion ? 1 : 0, y: reducedMotion ? 0 : 30 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: false, amount: 0.3 }}
-            transition={{ duration: 0.8, ease: "easeOut" }}
-            aria-hidden="true"
-            className="display text-[clamp(4rem,9vw,7rem)] leading-none text-[#d2d943] lg:col-span-2"
-          >
-            {number}
-          </motion.p>
+          {/* Tarjeta principal */}
           <motion.div
-            initial={{ opacity: reducedMotion ? 1 : 0, y: reducedMotion ? 0 : 30 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: false, amount: 0.3 }}
-            transition={{ duration: 0.8, delay: 0.08, ease: "easeOut" }}
-            className="lg:col-span-5"
+            initial={{ opacity: reducedMotion ? 1 : 0, y: reducedMotion ? 0 : 56, scale: reducedMotion ? 1 : 0.97 }}
+            whileInView={{ opacity: 1, y: 0, scale: 1 }}
+            viewport={{ once: false, amount: 0.25 }}
+            transition={{ duration: 0.9, ease: "easeOut" }}
+            className="relative rounded-[40px] border border-black/5 bg-white px-6 py-12 text-center shadow-[0_56px_110px_-36px_rgba(19,19,19,.3)] md:px-14 md:py-16"
           >
-            <h3 className="display text-[clamp(2rem,4vw,3.2rem)] text-[#131313]">{service.title}</h3>
-            <p className="mt-4 max-w-md text-base leading-7 text-[#4a5264]">{service.copy}</p>
-            <a href={`/solicitar-servicio?servicio=${service.slug}`} className="btn-link mt-6">Solicitar este servicio <ArrowRight size={18} aria-hidden="true" /></a>
-          </motion.div>
-          <motion.div
-            initial={{ opacity: reducedMotion ? 1 : 0, y: reducedMotion ? 0 : 30 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: false, amount: 0.3 }}
-            transition={{ duration: 0.8, delay: 0.16, ease: "easeOut" }}
-            className="relative lg:col-span-5"
-          >
-            <div className="card group relative overflow-hidden">
+            <motion.div
+              initial={{ opacity: reducedMotion ? 1 : 0, scale: reducedMotion ? 1 : 0.8 }}
+              whileInView={{ opacity: 1, scale: 1 }}
+              viewport={{ once: false, amount: 0.5 }}
+              transition={{ type: "spring", stiffness: 220, damping: 18, delay: 0.15 }}
+              className="relative mx-auto size-36 md:size-44"
+            >
+              <span aria-hidden="true" className="absolute -inset-3 rounded-full bg-[#d2d943]/30 blur-xl" />
               <img
                 src={service.src}
                 alt={service.title}
                 loading="lazy"
                 decoding="async"
-                className={`aspect-[4/3] w-full object-cover ${service.position} transition-transform duration-[1200ms] ease-out group-hover:scale-105`}
+                className={`relative size-36 rounded-full object-cover shadow-[0_24px_48px_-16px_rgba(19,19,19,.35)] ring-4 ring-white md:size-44 ${service.position}`}
               />
+            </motion.div>
+
+            <p className="mt-8 inline-flex items-center gap-1.5 rounded-full bg-[#f2f6d8] px-4 py-1.5 text-[11px] font-extrabold uppercase tracking-[.12em] text-[#5c6b0e]">
+              <span aria-hidden="true">◆</span> {service.badgeTitle}
+            </p>
+
+            <h3 className="display mt-4 text-[clamp(2.6rem,6vw,4.5rem)] text-[#131313]">{service.title}</h3>
+
+            <div className="mt-6 flex flex-wrap justify-center gap-2">
+              {service.tags.map((tag) => (
+                <span key={tag} className="rounded-full border border-[#e2e2e8] bg-white px-4 py-1.5 text-xs font-bold text-[#4a5264]">
+                  {tag}
+                </span>
+              ))}
             </div>
-            <PopCard
-              title={service.badgeTitle}
-              sub={service.badgeSub}
-              reducedMotion={reducedMotion}
-              className="-bottom-7 left-5 md:-left-4 lg:-bottom-8"
-            />
+
+            <p className="mx-auto mt-6 max-w-xl text-base leading-7 text-[#4a5264]">{service.copy}</p>
+
+            <a href={`/solicitar-servicio?servicio=${service.slug}`} className="btn btn-dark mt-8 !rounded-full">
+              Solicitar este servicio <ArrowRight size={18} aria-hidden="true" />
+            </a>
           </motion.div>
         </div>
       </div>
@@ -314,13 +258,11 @@ export function Features() {
         </p>
       </div>
 
-      {/* DESKTOP - RITMO EDITORIAL ALTERNADO */}
+      {/* SERVICIOS — TARJETAS FLOTANTES */}
       <div className="w-full">
-        {services.map((service, index) => {
-          if (service.layout === "cinematic") return <CinematicArticle key={service.slug} service={service} index={index} reducedMotion={reducedMotion} />;
-          if (service.layout === "split") return <SplitArticle key={service.slug} service={service} index={index} reducedMotion={reducedMotion} />;
-          return <EditorialArticle key={service.slug} service={service} index={index} reducedMotion={reducedMotion} />;
-        })}
+        {services.map((service, index) => (
+          <ServiceShowcase key={service.slug} service={service} index={index} reducedMotion={reducedMotion} />
+        ))}
       </div>
     </section>
   );
