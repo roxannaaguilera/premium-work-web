@@ -35,8 +35,8 @@ export function ClientForm({ sector = "", service = "" }: { sector?: string; ser
     finally { setBusy(false); }
   }
   return <form noValidate onBlur={validation.onBlur} onChange={validation.onChange} onSubmit={submit} className="integrated-form" aria-busy={busy}>
-    <p className="mb-6 text-sm text-[#4a5264]">* Campos obligatorios.</p>
-    <fieldset disabled={busy} className="grid gap-6 sm:grid-cols-2">
+    <p className="mb-4 text-sm text-[#4a5264]">* Campos obligatorios.</p>
+    <fieldset disabled={busy} className="grid gap-x-6 gap-y-4 sm:grid-cols-2">
       <label className="text-sm font-bold">Nombre y apellidos *<input required name="name" {...validation.props("name")} autoComplete="name" maxLength={200} className={field} />{validation.error("name")}</label>
       <label className="text-sm font-bold">Empresa *<input required name="company" {...validation.props("company")} autoComplete="organization" maxLength={200} className={field} />{validation.error("company")}</label>
       <label className="text-sm font-bold">Email *<input required type="email" name="email" {...validation.props("email")} autoComplete="email" maxLength={200} className={field} />{validation.error("email")}</label>
@@ -47,7 +47,7 @@ export function ClientForm({ sector = "", service = "" }: { sector?: string; ser
       <label className="text-sm font-bold">Fecha del evento (opcional)<input type="date" name="event_date" {...validation.props("event_date")} className={field} />{validation.error("event_date")}</label>
       <label className="text-sm font-bold">Profesionales necesarios (opcional)<input type="number" min="1" max="10000" step="1" name="staff_count" {...validation.props("staff_count")} className={field} />{validation.error("staff_count")}</label>
       <label className="text-sm font-bold">Presupuesto estimado en € (opcional)<input type="number" min="0" max="100000000" step="0.01" name="budget" {...validation.props("budget")} className={field} />{validation.error("budget")}</label>
-      <label className="text-sm font-bold sm:col-span-2">¿En qué podemos ayudarte? *<textarea required name="message" {...validation.props("message")} rows={5} maxLength={5000} className={field} />{validation.error("message")}</label>
+      <label className="text-sm font-bold sm:col-span-2">¿En qué podemos ayudarte? *<textarea required name="message" {...validation.props("message")} rows={3} maxLength={5000} className={field} />{validation.error("message")}</label>
       <FormConsent validation={validation} />
       <button type="submit" className="rounded-full bg-[#131313] px-6 py-4 text-sm font-bold text-white transition hover:bg-[#2b2b2b] disabled:opacity-60 sm:col-span-2">{busy ? "GUARDANDO SOLICITUD…" : "ENVIAR SOLICITUD"}</button>
     </fieldset>
