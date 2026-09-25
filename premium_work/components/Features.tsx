@@ -111,12 +111,14 @@ const services: Service[] = [
 const mobileActions = [
   {
     title: "Regístrate como candidato",
+    blurb: "Forma parte de nuestro equipo de profesionales.",
     href: "/registro",
     src: "/images/serv-1-display.webp",
     position: "object-[52%_center]",
   },
   {
     title: "Soluciones para empresas",
+    blurb: "Personal seleccionado a medida para tu evento.",
     href: "/solicitar-servicio",
     src: "/images/serv-6-display.webp",
     position: "object-[50%_center]",
@@ -408,53 +410,45 @@ function ServiceShowcase() {
 }
 
 export function Features() {
-  const reducedMotion = useReducedMotion();
   return (
     <section id="servicios" className="w-full scroll-mt-[calc(5rem+1px)] overflow-hidden bg-white">
-      {/* MOBILE — bloque de acciones (sin cambios) */}
-      <div className="relative overflow-hidden py-20 lg:hidden">
+      {/* MOBILE — bloque de acciones con tarjetas estilo perfil */}
+      <div className="relative overflow-hidden bg-white py-16 lg:hidden">
         <h2 id="que-necesitas" className="display scroll-mt-20 px-5 text-[2.6rem] text-[#131313]">
           ¿Qué necesitas?
         </h2>
 
-        <div className="hide-scrollbar mt-9 flex snap-x snap-mandatory gap-3 overflow-x-auto px-[12vw] pb-3">
+        <div className="mt-8 flex flex-col gap-4 px-5">
           {mobileActions.map((action) => (
             <a
               key={action.title}
               href={action.href}
-              className="group relative aspect-[1.08] w-[76vw] shrink-0 snap-center overflow-hidden rounded-[20px] border border-[#e5e7eb] bg-[#131313] text-white shadow-md"
+              className="group flex items-center gap-5 rounded-[24px] bg-white p-5 shadow-[0_30px_70px_rgba(0,0,0,0.12)]"
             >
-              <img
-                src={action.src}
-                alt=""
-                aria-hidden="true"
-                className={`absolute inset-0 h-full w-full object-cover ${action.position} transition duration-500 group-hover:scale-105`}
-              />
-
-              <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/10 to-transparent" />
-
-              <div className="absolute inset-x-0 bottom-0 p-5">
-                <motion.p
-                  initial={{ opacity: reducedMotion ? 1 : 0, x: reducedMotion ? 0 : -80 }}
-                  whileInView={{ opacity: 1, x: 0 }}
-                  viewport={{ once: false, amount: 0.3 }}
-                  transition={{ duration: 0.8, ease: "easeOut" }}
-                  className="display max-w-[15ch] text-2xl font-semibold leading-tight"
-                >
+              <span className="relative shrink-0" aria-hidden="true">
+                <span className="absolute -inset-1.5 rounded-full bg-[#d2d943]/30 blur-md" />
+                <img
+                  src={action.src}
+                  alt=""
+                  loading="lazy"
+                  decoding="async"
+                  className={`relative size-20 rounded-full object-cover ring-4 ring-white ${action.position}`}
+                />
+              </span>
+              <span className="min-w-0 flex-1">
+                <span className="display block text-[1.35rem] leading-tight text-[#131313]">
                   {action.title}
-                </motion.p>
-
-                <span className="mt-4 inline-flex size-10 items-center justify-center rounded-full border border-white/50 transition group-hover:border-[#d2d943] group-hover:bg-[#d2d943] group-hover:text-[#131313]">
-                  <ArrowRight size={22} aria-hidden="true" />
                 </span>
-              </div>
+                <span className="mt-1 block text-sm leading-6 text-[#4a5264]">
+                  {action.blurb}
+                </span>
+              </span>
+              <span className="flex size-11 shrink-0 items-center justify-center rounded-full bg-[#131313] text-white transition group-hover:bg-[#d2d943] group-hover:text-[#131313]">
+                <ArrowRight size={20} aria-hidden="true" />
+              </span>
             </a>
           ))}
         </div>
-
-        <p className="mt-4 px-5 text-xs font-semibold uppercase tracking-[.14em] text-[#131313]/55">
-          Desliza para ver las opciones
-        </p>
       </div>
 
       {/* SERVICIOS — composición en una pantalla con carrusel */}
