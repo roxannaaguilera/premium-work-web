@@ -8,7 +8,7 @@ import { useFormValidation } from "@/components/useFormValidation";
 import { useState, type FormEvent } from "react";
 import { sectorLabels, serviceLabels } from "@/lib/service-options";
 
-const field = "mt-2 w-full border-b border-[#131313]/30 bg-transparent py-3 font-normal outline-none focus:border-[#6e7a10]";
+const field = "mt-2 w-full border-b border-[#131313]/30 bg-transparent py-3 font-normal outline-none focus:border-[#173aab]";
 export function ClientForm({ sector = "", service = "" }: { sector?: string; service?: string }) {
   const phone = usePhoneValue();
   const validation = useFormValidation("client");

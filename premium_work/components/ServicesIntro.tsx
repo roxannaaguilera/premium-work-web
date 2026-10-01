@@ -17,15 +17,15 @@ export function ServicesIntro() {
 
   return (
     <section className="relative flex flex-col items-center justify-center overflow-hidden bg-white px-5 pb-16 pt-28 text-center md:min-h-[100svh] md:px-8 md:pb-20 md:pt-32">
-      <div className="lime-marquee group absolute inset-x-0 top-0 overflow-hidden border-y border-[#131313]/10">
+      <div className="lime-marquee group absolute inset-x-0 top-0 overflow-hidden border-y border-white/15">
         <div className="marquee-track flex w-max group-hover:[animation-play-state:paused]">
           {loop.map((service, index) => (
             <div key={`${service.slug}-${index}`} className="shrink-0">
-              <a href={`/#${service.slug}`} className="flex h-12 w-max items-center justify-center gap-3 whitespace-nowrap border-r border-[#131313]/15 px-7 text-center text-xs font-bold uppercase tracking-[.12em] text-[#131313] transition-colors hover:bg-[#131313] hover:text-white md:text-sm lg:hidden">
-                <span aria-hidden="true">◆</span> {service.title}
+              <a href={`/#${service.slug}`} className="flex h-12 w-max items-center justify-center gap-3 whitespace-nowrap border-r border-white/20 px-7 text-center text-xs font-bold uppercase tracking-[.12em] text-white transition-colors hover:bg-white/15 md:text-sm lg:hidden">
+                <span aria-hidden="true" className="text-[#eab308]">◆</span> {service.title}
               </a>
-              <a href={`/#${service.slug}`} className="hidden h-12 w-max items-center justify-center gap-3 whitespace-nowrap border-r border-[#131313]/15 px-7 text-center text-xs font-bold uppercase tracking-[.12em] text-[#131313] transition-colors hover:bg-[#131313] hover:text-white md:text-sm lg:flex">
-                <span aria-hidden="true">◆</span> {service.title}
+              <a href={`/#${service.slug}`} className="hidden h-12 w-max items-center justify-center gap-3 whitespace-nowrap border-r border-white/20 px-7 text-center text-xs font-bold uppercase tracking-[.12em] text-white transition-colors hover:bg-white/15 md:text-sm lg:flex">
+                <span aria-hidden="true" className="text-[#eab308]">◆</span> {service.title}
               </a>
             </div>
           ))}
@@ -39,7 +39,7 @@ export function ServicesIntro() {
         className="relative mx-auto max-w-5xl"
       >
         <p className="eyebrow mt-6 text-[#4a5264]">Cuidamos cada detalle</p>
-        <h2 className="display mx-auto mt-7 max-w-5xl text-[clamp(2.8rem,9vw,5.6rem)] text-[#131313]">Mucho más que personal: <em className="box-decoration-clone bg-[#d2d943] px-2 not-italic">un servicio completo.</em></h2>
+        <h2 className="display mx-auto mt-7 max-w-5xl text-[clamp(2.8rem,9vw,5.6rem)] text-[#131313]">Mucho más que personal: <em className="box-decoration-clone bg-[#2451e6] px-2 not-italic text-white">un servicio completo.</em></h2>
       </motion.div>
     </section>
   );

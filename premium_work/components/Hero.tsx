@@ -16,7 +16,7 @@ export function Hero() {
 
     <div className="relative mx-auto max-w-[1100px] px-5 text-center md:px-8">
       <motion.div initial={{ opacity: 0, y: 24 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: .6 }}>
-        <span className="pill-badge pill-badge--lime"><span aria-hidden="true">◆</span> Hospitality · Eventos · Hoteles</span>
+        <span className="pill-badge pill-badge--lime"><span aria-hidden="true" className="text-[#eab308]">◆</span> Hospitality · Eventos · Hoteles</span>
       </motion.div>
       <h1 className="display mx-auto mt-6 max-w-[14ch] text-[clamp(2.6rem,9vw,4.6rem)]">
         {headlineLines.map((line, index) => (
@@ -27,7 +27,7 @@ export function Hero() {
               animate={reducedMotion ? { opacity: 1 } : { y: "0%" }}
               transition={{ duration: reducedMotion ? .5 : .9, delay: reducedMotion ? .1 * index : .2 + index * .14, ease: [0.22, 1, 0.36, 1] }}
             >
-              {line.accent ? <span className="box-decoration-clone bg-[#d2d943] px-3">{line.text}</span> : line.text}
+              {line.accent ? <span className="box-decoration-clone bg-[#2451e6] px-3 text-white">{line.text}</span> : line.text}
             </motion.span>
           </span>
         ))}

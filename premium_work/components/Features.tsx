@@ -137,7 +137,7 @@ function MiniBadge() {
     >
       <div className="rounded-2xl border border-black/5 bg-white px-4 py-3 shadow-[0_20px_45px_-12px_rgba(0,0,0,.25)]">
         <p className="flex items-center gap-1.5 text-[13px] font-extrabold leading-5 text-[#131313]">
-          <span className="text-[#9db31c]">◆</span>
+          <span className="text-[#eab308]">◆</span>
           <span>
             Personal seleccionado
             <br />
@@ -155,13 +155,13 @@ function ProfileCard({ service, clone, eager }: { service: Service; clone?: bool
     <article
       id={clone ? undefined : service.slug}
       aria-hidden={clone || undefined}
-      className="w-full shrink-0 scroll-mt-24 px-6 pb-16 pt-20"
+      className="w-full shrink-0 scroll-mt-[calc(5rem+1px)] px-6 pb-16 pt-20"
     >
       <div className="card-float relative mx-auto flex min-h-[440px] w-full max-w-[380px] flex-col justify-center rounded-[24px] bg-white px-6 pb-10 text-center shadow-[0_30px_70px_rgba(0,0,0,0.12)]">
         <MiniBadge />
         <div className="-mt-[68px] mb-7 flex justify-center">
           <div className="relative">
-            <span aria-hidden="true" className="absolute -inset-2 rounded-full bg-[#d2d943]/25 blur-lg" />
+            <span aria-hidden="true" className="absolute -inset-2 rounded-full bg-[#2451e6]/25 blur-lg" />
             <img
               src={service.src}
               alt={clone ? "" : `Fotografía de ${service.name}`}
@@ -189,6 +189,13 @@ function ProfileCard({ service, clone, eager }: { service: Service; clone?: bool
             </span>
           ))}
         </div>
+
+        <a
+          href={`/solicitar-servicio?servicio=${service.slug}`}
+          className="btn btn-dark mt-8 inline-flex items-center justify-center gap-2 !rounded-full"
+        >
+          Solicitar este servicio <ArrowRight size={18} aria-hidden="true" />
+        </a>
       </div>
     </article>
   );
@@ -286,24 +293,24 @@ function ServiceShowcase() {
     <div className="relative flex items-center overflow-hidden bg-white lg:h-[calc(100vh-5rem)] lg:max-h-[800px] lg:min-h-[650px]">
       {/* Formas abstractas suaves detrás */}
       <div aria-hidden="true" className="pointer-events-none absolute inset-0">
-        <div className="absolute -left-32 top-1/4 size-[380px] rounded-full bg-[#d2d943]/20 blur-[100px]" />
+        <div className="absolute -left-32 top-1/4 size-[380px] rounded-full bg-[#2451e6]/20 blur-[100px]" />
         {/* Detrás de la tarjeta: solo verde oliva muy sutil */}
-        <div className="absolute right-[2%] top-1/2 size-[460px] -translate-y-1/2 rounded-full bg-[#6e7a10]/[.07] blur-[90px]" />
-        <div className="absolute right-[9%] top-[14%] hidden size-40 rounded-full border-[20px] border-[#6e7a10]/10 lg:block" />
+        <div className="absolute right-[2%] top-1/2 size-[460px] -translate-y-1/2 rounded-full bg-[#173aab]/[.07] blur-[90px]" />
+        <div className="absolute right-[9%] top-[14%] hidden size-40 rounded-full border-[20px] border-[#173aab]/10 lg:block" />
         <div className="absolute bottom-[8%] left-[4%] hidden size-36 rotate-12 rounded-[36px] bg-[#131313]/[.04] lg:block" />
       </div>
 
       <div className="relative mx-auto grid w-full max-w-[1280px] grid-cols-1 items-center gap-12 px-5 py-16 md:px-10 lg:grid-cols-[45%_55%] lg:gap-8 lg:px-[clamp(2rem,4vw,4rem)] lg:py-0">
-        {/* IZQUIERDA — información del servicio */}
-        <div className="flex flex-col justify-center" aria-live="polite" aria-atomic="true">
+        {/* IZQUIERDA — información del servicio (altura estable para no desplazar el carrusel al cambiar de servicio) */}
+        <div className="flex min-h-[300px] flex-col justify-center" aria-live="polite" aria-atomic="true">
           <motion.div
             key={service.slug}
             initial={reducedMotion ? false : { opacity: 0, y: 18 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.45, ease: "easeOut" }}
           >
-            <p className="eyebrow flex items-center gap-2 text-[#6e7a10]">
-              <span aria-hidden="true">◆</span> Servicio {number} · {service.badgeTitle}
+            <p className="eyebrow flex items-center gap-2 text-[#173aab]">
+              <span aria-hidden="true" className="text-[#eab308]">◆</span> Servicio {number} · {service.badgeTitle}
             </p>
             <h2 className="display mt-4 text-[clamp(2.1rem,3.6vw,3.1rem)] text-[#131313]">
               {service.title}
@@ -337,7 +344,7 @@ function ServiceShowcase() {
               onKeyDown={onKeyDown}
               onTouchStart={onTouchStart}
               onTouchEnd={onTouchEnd}
-              className="overflow-hidden focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#6e7a10]"
+              className="overflow-hidden focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#173aab]"
             >
               <div
                 ref={trackRef}
@@ -366,7 +373,7 @@ function ServiceShowcase() {
               type="button"
               onClick={prev}
               aria-label="Servicio anterior"
-              className="absolute -left-1 top-1/2 z-10 flex size-10 -translate-y-1/2 items-center justify-center rounded-full border border-black/10 bg-white text-[#131313] shadow-[0_10px_25px_-8px_rgba(0,0,0,.25)] transition hover:bg-[#131313] hover:text-white focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#6e7a10]"
+              className="absolute -left-1 top-1/2 z-10 flex size-10 -translate-y-1/2 items-center justify-center rounded-full border border-black/10 bg-white text-[#131313] shadow-[0_10px_25px_-8px_rgba(0,0,0,.25)] transition hover:bg-[#131313] hover:text-white focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#173aab]"
             >
               <ChevronLeft size={20} aria-hidden="true" />
             </button>
@@ -374,7 +381,7 @@ function ServiceShowcase() {
               type="button"
               onClick={next}
               aria-label="Servicio siguiente"
-              className="absolute -right-1 top-1/2 z-10 flex size-10 -translate-y-1/2 items-center justify-center rounded-full border border-black/10 bg-white text-[#131313] shadow-[0_10px_25px_-8px_rgba(0,0,0,.25)] transition hover:bg-[#131313] hover:text-white focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#6e7a10]"
+              className="absolute -right-1 top-1/2 z-10 flex size-10 -translate-y-1/2 items-center justify-center rounded-full border border-black/10 bg-white text-[#131313] shadow-[0_10px_25px_-8px_rgba(0,0,0,.25)] transition hover:bg-[#131313] hover:text-white focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#173aab]"
             >
               <ChevronRight size={20} aria-hidden="true" />
             </button>
@@ -426,7 +433,7 @@ export function Features() {
               className="group flex items-center gap-5 rounded-[24px] bg-white p-5 shadow-[0_30px_70px_rgba(0,0,0,0.12)]"
             >
               <span className="relative shrink-0" aria-hidden="true">
-                <span className="absolute -inset-1.5 rounded-full bg-[#d2d943]/30 blur-md" />
+                <span className="absolute -inset-1.5 rounded-full bg-[#2451e6]/30 blur-md" />
                 <img
                   src={action.src}
                   alt=""
@@ -443,7 +450,7 @@ export function Features() {
                   {action.blurb}
                 </span>
               </span>
-              <span className="flex size-11 shrink-0 items-center justify-center rounded-full bg-[#131313] text-white transition group-hover:bg-[#d2d943] group-hover:text-[#131313]">
+              <span className="flex size-11 shrink-0 items-center justify-center rounded-full bg-[#131313] text-white transition group-hover:bg-[#2451e6] group-hover:text-white">
                 <ArrowRight size={20} aria-hidden="true" />
               </span>
             </a>

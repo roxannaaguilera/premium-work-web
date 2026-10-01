@@ -1,7 +1,8 @@
 @import "tailwindcss";
 
-/* ——— Sistema de diseño: Premium Work × Contra ———
-   Lienzo blanco editorial, negro cálido, acento lima.
+/* ——— Sistema de diseño: Premium Work ———
+   Lienzo blanco editorial, azul medianoche, acento azul royal.
+   Elegancia y exclusividad: azul profundo + royal vibrante.
    Grutesca compacta (DM Sans 800, tracking negativo),
    píldoras totalmente redondeadas, bordes finos 1px,
    tarjetas blancas y ritmo generoso entre secciones. */
@@ -9,14 +10,14 @@
   --paper: #ffffff;
   --paper-warm: #faf8f5;
   --ink: #131313;
-  --ink-deep: #0b0b0b;
+  --ink-deep: #0a1428;
   --ink-soft: #4a5264;
   --muted: #8b8b8b;
   --line: #e5e7eb;
-  --lime: #d2d943;
-  --lime-deep: #6e7a10;
-  --lime-wash: #f2f6d8;
-  --selection: #fedf89;
+  --lime: #2451e6;
+  --lime-deep: #173aab;
+  --lime-wash: #e9eefd;
+  --selection: #cfdcff;
   /* Compatibilidad con componentes heredados no migrados */
   --navy: #0b1f3a;
   --gold: #c9a227;
@@ -40,6 +41,11 @@ body {
   letter-spacing: -.035em;
   line-height: 1.02;
 }
+/* Footer: en móvil pequeño el titular separa sus líneas (em en bloque) */
+@media (max-width: 480px) {
+  .footer-title { line-height: 1.3; }
+  .footer-title em { display: block; }
+}
 /* Rótulo de sección: 11px mayúsculas, tracking amplio */
 .eyebrow {
   font-size: 11px;
@@ -59,7 +65,7 @@ body {
 .hide-scrollbar { scrollbar-width: none; }
 .hide-scrollbar::-webkit-scrollbar { display: none; }
 
-/* ——— Marquesina lima ——— */
+/* ——— Marquesina azul ——— */
 @keyframes marquee { from { transform: translateX(0); } to { transform: translateX(-50%); } }
 .marquee-track { animation: marquee 36s linear infinite; }
 .lime-marquee { isolation: isolate; background: var(--lime); }
@@ -115,7 +121,7 @@ body {
   inset: -45%;
   z-index: 0;
   pointer-events: none;
-  background: radial-gradient(ellipse at center, rgba(210,217,67,.22) 0%, rgba(210,217,67,.08) 34%, transparent 62%);
+  background: radial-gradient(ellipse at center, rgba(80,130,255,.22) 0%, rgba(80,130,255,.08) 34%, transparent 62%);
   filter: blur(40px);
   animation: panel-glow-drift 14s ease-in-out infinite alternate;
   will-change: transform;
@@ -152,7 +158,7 @@ body {
   font-weight: 700;
   letter-spacing: .02em;
 }
-.pill-badge--lime { background: var(--lime); color: var(--ink); }
+.pill-badge--lime { background: var(--lime); color: #fff; }
 .pill-badge--ink { background: var(--ink); color: #fff; }
 .pill-badge--ghost { background: #fff; color: var(--ink); border: 1px solid var(--line); }
 
@@ -198,7 +204,7 @@ body {
 .integrated-form select:focus,
 .integrated-form textarea:focus {
   border-color: var(--lime-deep);
-  box-shadow: 0 0 0 3px rgba(210,217,67,.25);
+  box-shadow: 0 0 0 3px rgba(80,130,255,.25);
 }
 
 /* ——— Footer claro ——— */
@@ -237,13 +243,13 @@ body {
   box-shadow: 0 12px 28px rgba(19,19,19,.22);
 }
 .btn-dark:hover { background: #2b2b2b; }
-/* Acento: lima */
+/* Acento: azul royal */
 .btn-lime {
   background: var(--lime);
-  color: var(--ink);
-  box-shadow: 0 12px 28px rgba(210,217,67,.35);
+  color: #fff;
+  box-shadow: 0 12px 28px rgba(80,130,255,.35);
 }
-.btn-lime:hover { background: #dde455; }
+.btn-lime:hover { background: #1b45c4; }
 /* Secundario: blanco con borde fino */
 .btn-outline {
   border: 1px solid #cfd4da;
@@ -260,7 +266,7 @@ body {
   backdrop-filter: blur(6px);
 }
 .btn-outline-on-dark:hover { background: #fff; border-color: #fff; color: var(--ink); }
-/* Enlace de texto con subrayado lima */
+/* Enlace de texto con subrayado azul */
 .btn-link {
   display: inline-flex;
   align-items: center;
@@ -276,13 +282,13 @@ body {
 }
 .btn-link:hover { color: var(--lime-deep); text-decoration-color: var(--lime-deep); }
 
-/* Divisor hairline con acento lima */
+/* Divisor hairline con acento azul */
 .divider-lime {
   height: 1px;
-  background: linear-gradient(90deg, transparent, rgba(210,217,67,.8), transparent);
+  background: linear-gradient(90deg, transparent, rgba(80,130,255,.8), transparent);
 }
 
-/* Hero claro: puntos sutiles + resplandor lima */
+/* Hero claro: puntos sutiles + resplandor azul */
 .hero-dots {
   background-image: radial-gradient(rgba(19,19,19,.08) 1px, transparent 1.3px);
   background-size: 14px 14px;
@@ -296,7 +302,7 @@ body {
   width: 62vmax;
   height: 62vmax;
   pointer-events: none;
-  background: radial-gradient(circle, rgba(210,217,67,.4) 0%, rgba(210,217,67,.15) 38%, transparent 68%);
+  background: radial-gradient(circle, rgba(80,130,255,.4) 0%, rgba(80,130,255,.15) 38%, transparent 68%);
   filter: blur(50px);
   animation: hero-glow-drift 14s ease-in-out infinite alternate;
   will-change: transform;

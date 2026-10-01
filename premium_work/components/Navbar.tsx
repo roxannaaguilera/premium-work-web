@@ -48,7 +48,7 @@ export function Navbar() {
           className="shrink-0 rounded-full border border-[#e5e7eb] bg-white px-5 py-2.5 shadow-sm transition-shadow hover:shadow-md"
         >
           <span className="flex items-center gap-2">
-            <span aria-hidden="true" className="text-[15px] leading-none text-[#9db31c]">◆</span>
+            <span aria-hidden="true" className="text-[15px] leading-none text-[#eab308]">◆</span>
             <span className="text-[13px] font-extrabold lowercase tracking-[.28em] text-[#131313]">premium work</span>
           </span>
         </a>
@@ -79,7 +79,7 @@ export function Navbar() {
                       key={slug}
                       href={`/#${slug}`}
                       onClick={() => setServicesOpen(false)}
-                      className="block rounded-xl px-4 py-3 text-sm font-semibold text-[#131313] transition-colors hover:bg-[#f2f6d8]"
+                      className="block rounded-xl px-4 py-3 text-sm font-semibold text-[#131313] transition-colors hover:bg-[#e9eefd]"
                     >
                       {label}
                     </a>

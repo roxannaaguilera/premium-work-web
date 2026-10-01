@@ -55,7 +55,7 @@ export function SectorsAccordion() {
       <div className="relative z-10 mx-auto grid w-full max-w-[1600px] gap-6 px-5 md:gap-12 md:px-8 lg:grid-cols-[1fr_1.5fr] lg:gap-24 lg:px-10">
         <div className="lg:sticky lg:top-28 lg:self-start">
           <p className="eyebrow flex items-center gap-2 text-[#131313]/60">
-            <span className="text-[#6e7a10]" aria-hidden="true">◆</span> Sectores
+            <span className="text-[#eab308]" aria-hidden="true">◆</span> Sectores
           </p>
           <h2 className="display mt-4 text-3xl leading-[1.02] text-[#131313] md:mt-6 md:text-[clamp(2.5rem,5vw,4.5rem)]">
             ¿Dónde<br />trabajamos?
@@ -65,7 +65,7 @@ export function SectorsAccordion() {
           </p>
           <a
             href="/solicitar-servicio"
-            className="mt-6 inline-flex items-center gap-2 rounded-full bg-[#d2d943] px-6 py-3.5 text-sm font-bold text-[#131313] transition hover:-translate-y-0.5 hover:bg-[#e0e753] md:mt-8"
+            className="mt-6 inline-flex items-center gap-2 rounded-full bg-[#2451e6] px-6 py-3.5 text-sm font-bold text-white transition hover:-translate-y-0.5 hover:bg-[#1b45c4] md:mt-8"
           >
             Solicitar servicio <ArrowRight size={18} aria-hidden="true" />
           </a>
@@ -83,10 +83,10 @@ export function SectorsAccordion() {
                   onClick={() => setOpen(isOpen ? null : index)}
                   className="group flex w-full items-center justify-between gap-6 py-3 text-left md:py-4"
                 >
-                  <span className={`display text-xl transition-colors md:text-[1.75rem] ${isOpen ? "text-[#6e7a10]" : "text-[#131313] group-hover:text-[#6e7a10]"}`}>
+                  <span className={`display text-xl transition-colors md:text-[1.75rem] ${isOpen ? "text-[#173aab]" : "text-[#131313] group-hover:text-[#173aab]"}`}>
                     {sector.title}
                   </span>
-                  <span className={`flex size-9 shrink-0 items-center justify-center rounded-full border transition-all md:size-10 ${isOpen ? "rotate-180 border-[#d2d943] bg-[#d2d943] text-[#131313]" : "border-[#131313]/25 text-[#131313]/70 group-hover:border-[#6e7a10]/60"}`}>
+                  <span className={`flex size-9 shrink-0 items-center justify-center rounded-full border transition-all md:size-10 ${isOpen ? "rotate-180 border-[#2451e6] bg-[#2451e6] text-white" : "border-[#131313]/25 text-[#131313]/70 group-hover:border-[#173aab]/60"}`}>
                     <ChevronDown size={20} aria-hidden="true" />
                   </span>
                 </button>
@@ -100,7 +100,7 @@ export function SectorsAccordion() {
                       <p className="max-w-xl text-base leading-7 text-[#131313]/70">{sector.copy}</p>
                       <a
                         href={`/solicitar-servicio?sector=${sector.slug}`}
-                        className="mt-4 inline-flex items-center gap-2 text-sm font-bold text-[#6e7a10] transition hover:gap-3"
+                        className="mt-4 inline-flex items-center gap-2 text-sm font-bold text-[#173aab] transition hover:gap-3"
                       >
                         Solicitar servicio para {sector.title.toLowerCase()} <ArrowRight size={16} aria-hidden="true" />
                       </a>

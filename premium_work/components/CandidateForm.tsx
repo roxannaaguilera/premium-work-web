@@ -9,7 +9,7 @@ import { PhoneField, usePhoneValue } from "@/components/PhoneField";
 import { useFormValidation } from "@/components/useFormValidation";
 import { useRef, useState, type ChangeEvent, type FormEvent } from "react";
 
-const field = "mt-2 w-full border-b border-[#131313]/30 bg-transparent py-3 font-normal outline-none focus:border-[#6e7a10]";
+const field = "mt-2 w-full border-b border-[#131313]/30 bg-transparent py-3 font-normal outline-none focus:border-[#173aab]";
 export function CandidateForm() {
   const phone = usePhoneValue();
   const validation = useFormValidation("candidate");
@@ -91,13 +91,13 @@ export function CandidateForm() {
   return <form noValidate onBlur={validation.onBlur} onChange={validation.onChange} onSubmit={submit} className="integrated-form" aria-busy={busy || reading}>
     <p className="mb-6 text-sm text-[#4a5264]">* Campos obligatorios.</p>
     <fieldset disabled={busy || reading} className="grid gap-6 sm:grid-cols-2">
-      <div className="rounded-2xl border border-[#6e7a10]/50 bg-[#f2f6d8]/70 p-5 sm:col-span-2">
+      <div className="rounded-2xl border border-[#173aab]/50 bg-[#e9eefd]/70 p-5 sm:col-span-2">
         <label className="block text-base font-bold">1. Carga tu CV para completar tus datos *
           <input required type="file" accept=".pdf,application/pdf" name="cv" onChange={loadCv} {...validation.props("cv")} className="mt-4 block w-full text-sm file:mr-3 file:rounded-full file:border-0 file:bg-[#131313] file:px-4 file:py-3 file:text-white" />
           <span className="mt-3 block text-sm font-normal text-[#4a5264]">PDF de hasta 4 MB. La lectura se realiza en tu dispositivo; el CV se envía al presentar tu candidatura.</span>
           {validation.error("cv")}
         </label>
-        <p role="status" aria-live="polite" className="mt-3 text-sm text-[#6e7a10]">{cvStatus}</p>
+        <p role="status" aria-live="polite" className="mt-3 text-sm text-[#173aab]">{cvStatus}</p>
       </div>
       <p className="text-base font-bold sm:col-span-2">2. Revisa y completa tus datos</p>
       <label className="text-sm font-bold">Nombre y apellidos *<input required maxLength={200} autoComplete="name" name="name" {...validation.props("name")} className={field} />{validation.error("name")}</label>
