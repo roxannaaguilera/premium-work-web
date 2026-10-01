@@ -18,11 +18,13 @@ export function CandidateForm() {
   const [success, setSuccess] = useState(false);
   const [reading, setReading] = useState(false);
   const [cvStatus, setCvStatus] = useState("");
+  const [cvName, setCvName] = useState<string | null>(null);
   const imported = useRef<Record<string, string>>({});
   async function loadCv(event: ChangeEvent<HTMLInputElement>) {
     const file = event.currentTarget.files?.[0];
     const form = event.currentTarget.form;
     if (!file || !form) return;
+    setCvName(file.name);
     setReading(true); setCvStatus("Leyendo tu CV…"); setStatus(""); setSuccess(false);
     validation.setErrors(previous => ({ ...previous, cv: "" }));
     const canImportPhone = !phone.number.trim() || imported.current.phone === phone.fingerprint;
@@ -83,6 +85,7 @@ export function CandidateForm() {
       setStatus("Hemos recibido tus datos y tu currículum. Gracias por presentar tu candidatura.");
       form.reset();
       phone.clear();
+      setCvName(null);
       setCvStatus(""); imported.current = {};
       validation.setErrors({});
     } catch (error) { setStatus(error instanceof Error ? error.message : "No se ha podido conectar. Inténtalo de nuevo."); }
@@ -93,7 +96,11 @@ export function CandidateForm() {
     <fieldset disabled={busy || reading} className="grid gap-6 sm:grid-cols-2">
       <div className="rounded-2xl border border-[#173aab]/50 bg-[#e9eefd]/70 p-5 sm:col-span-2">
         <label className="block text-base font-bold">1. Carga tu CV para completar tus datos *
-          <input required type="file" accept=".pdf,application/pdf" name="cv" onChange={loadCv} {...validation.props("cv")} className="mt-4 block w-full text-sm file:mr-3 file:rounded-full file:border-0 file:bg-[#131313] file:px-4 file:py-3 file:text-white" />
+          <input required type="file" accept=".pdf,application/pdf" name="cv" onChange={loadCv} {...validation.props("cv")} className="peer sr-only" />
+          <span className="mt-4 flex w-full cursor-pointer items-center gap-3 text-sm font-normal peer-focus-visible:outline peer-focus-visible:outline-2 peer-focus-visible:outline-offset-4 peer-focus-visible:outline-[#173aab]">
+            <span className="shrink-0 rounded-full bg-[#131313] px-4 py-3 font-bold text-white">Seleccionar archivo</span>
+            <span className="min-w-0 flex-1 truncate text-[#4a5264]">{cvName ?? "Ningún archivo seleccionado"}</span>
+          </span>
           <span className="mt-3 block text-sm font-normal text-[#4a5264]">PDF de hasta 4 MB. La lectura se realiza en tu dispositivo; el CV se envía al presentar tu candidatura.</span>
           {validation.error("cv")}
         </label>
