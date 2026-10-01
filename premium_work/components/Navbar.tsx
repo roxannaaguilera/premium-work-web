@@ -98,12 +98,14 @@ export function Navbar() {
 
         {/* Desktop CTA — disappears on mobile */}
         {!menu && (
-          <a
-            href="/solicitar-servicio"
-            className="btn btn-dark hidden !min-h-0 !px-6 !py-3 text-sm lg:inline-flex"
-          >
-            Solicitar servicio
-          </a>
+          <div className="hidden lg:block">
+            <a
+              href="/solicitar-servicio"
+              className="btn btn-dark !min-h-0 !px-6 !py-3 text-sm"
+            >
+              Solicitar servicio
+            </a>
+          </div>
         )}
 
         {/* Hamburger */}
