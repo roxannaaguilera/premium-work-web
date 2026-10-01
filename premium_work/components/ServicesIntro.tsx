@@ -39,7 +39,7 @@ export function ServicesIntro() {
         className="relative mx-auto max-w-5xl"
       >
         <p className="eyebrow mt-6 text-[#4a5264]">Cuidamos cada detalle</p>
-        <h2 className="display mx-auto mt-7 max-w-5xl text-[clamp(2.8rem,9vw,5.6rem)] text-[#131313]">Mucho más que personal: <em className="box-decoration-clone bg-[#2451e6] px-2 not-italic text-white">un servicio completo.</em></h2>
+        <h2 className="display mx-auto mt-7 max-w-5xl text-[clamp(2.8rem,9vw,5.6rem)] text-[#131313]">Mucho más que personal:<br /><em className="box-decoration-clone bg-[#2451e6] px-2 not-italic text-white">un servicio completo.</em></h2>
       </motion.div>
     </section>
   );
