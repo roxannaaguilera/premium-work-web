@@ -5,7 +5,7 @@ test("mobile profession links reach visible sections and retain the correct requ
   await page.setViewportSize({ width: 390, height: 844 });
   await page.emulateMedia({ reducedMotion: "reduce" });
   await page.goto("/");
-  await page.getByRole("region", { name: "Aviso de cookies y almacenamiento" }).getByRole("button", { name: "Rechazar", exact: true }).click();
+  await expect(page.getByRole("region", { name: "Aviso de cookies y almacenamiento" })).toHaveCount(0);
   for (const slug of professions) {
     await page.getByRole("button", { name: "Abrir menú", exact: true }).click();
     await page.locator(`#mobile-navigation a[href="/#${slug}"]`).click();
@@ -16,7 +16,7 @@ test("mobile profession links reach visible sections and retain the correct requ
     await expect.poll(async () => Math.round((await section.boundingBox())!.y)).toBeGreaterThanOrEqual(79);
     await expect.poll(async () => Math.round((await section.boundingBox())!.y)).toBeLessThanOrEqual(83);
     await expect(section.getByRole("link", { name: "Solicitar este servicio" })).toHaveAttribute("href", `/solicitar-servicio?servicio=${slug}`);
-    await expect(page.locator(`.gold-marquee a[href="/#${slug}"]`).first()).toHaveAttribute("href", `/#${slug}`);
+    await expect(page.locator(`.lime-marquee a[href="/#${slug}"]`).first()).toHaveAttribute("href", `/#${slug}`);
   }
   await page.locator("#supervisores").getByRole("link", { name: "Solicitar este servicio" }).click();
   await expect(page.locator('select[name="service"]')).toHaveValue("supervisores");
@@ -25,7 +25,7 @@ test("mobile profession links reach visible sections and retain the correct requ
 test("small mobile footer stays within the screen and separates its title lines", async ({ page }) => {
   await page.setViewportSize({ width: 360, height: 800 });
   await page.goto("/#contacto");
-  await page.getByRole("region", { name: "Aviso de cookies y almacenamiento" }).getByRole("button", { name: "Rechazar", exact: true }).click();
+  await expect(page.getByRole("region", { name: "Aviso de cookies y almacenamiento" })).toHaveCount(0);
   const footer = page.locator("footer");
   await expect(footer.getByRole("heading", { level: 2 })).toBeVisible();
   const typography = await footer.locator("h2").evaluate(element => ({ size: parseFloat(getComputedStyle(element).fontSize), line: parseFloat(getComputedStyle(element).lineHeight), emDisplay: getComputedStyle(element.querySelector("em")!).display }));

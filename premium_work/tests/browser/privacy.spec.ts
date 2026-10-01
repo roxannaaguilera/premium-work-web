@@ -1,41 +1,31 @@
 import { test, expect } from "@playwright/test";
 
-test("banner respects rejection and only loads local resources", async ({ page }) => {
+test("no cookie banner is shown and only local resources load", async ({ page }) => {
   const remote: string[] = [];
   page.on("request", request => { if (/^https?:/.test(request.url()) && new URL(request.url()).hostname !== "127.0.0.1") remote.push(request.url()); });
   await page.goto("/");
   const banner = page.getByRole("region", { name: "Aviso de cookies y almacenamiento" });
-  await expect(banner).toBeVisible();
+  await expect(banner).toHaveCount(0);
   expect(await page.evaluate(() => localStorage.getItem("pw_cookie_preferences"))).toBeNull();
-  await banner.getByRole("button", { name: "Rechazar", exact: true }).click();
-  await expect(banner).toHaveCount(0);
   await page.reload();
-  await expect(banner).toBeVisible();
-  // Let the hero advance: neither hydration nor carousel timers dismiss the notice.
-  await page.waitForTimeout(6500);
-  await expect(banner).toBeVisible();
-  await banner.getByRole("button", { name: "Rechazar", exact: true }).click();
   await expect(banner).toHaveCount(0);
-  expect(JSON.parse((await page.evaluate(() => localStorage.getItem("pw_cookie_preferences")))!).choice).toBe("reject");
+  // Let the hero advance: neither hydration nor carousel timers may show a notice or write storage.
+  await page.waitForTimeout(6500);
+  await expect(banner).toHaveCount(0);
+  expect(await page.evaluate(() => localStorage.getItem("pw_cookie_preferences"))).toBeNull();
   expect(remote).toEqual([]);
 });
 
-test("preferences can be reopened, changed, and applied without storage on mobile", async ({ page }) => {
+test("no cookie preferences UI is shown and no storage is used on mobile", async ({ page }) => {
   await page.setViewportSize({ width: 390, height: 844 });
   await page.goto("/politica-de-cookies");
   await expect(page.getByRole("region", { name: "Aviso de cookies y almacenamiento" })).toHaveCount(0);
-  await page.getByRole("button", { name: "Preferencias de cookies", exact: true }).click();
-  const dialog = page.getByRole("dialog");
-  await expect(dialog).toBeVisible();
-  await dialog.getByRole("checkbox").uncheck();
-  await dialog.getByRole("button", { name: "Guardar preferencias" }).click();
+  await expect(page.getByRole("button", { name: "Preferencias de cookies", exact: true })).toHaveCount(0);
   expect(await page.evaluate(() => localStorage.getItem("pw_cookie_preferences"))).toBeNull();
   await page.reload();
   await expect(page.getByRole("region", { name: "Aviso de cookies y almacenamiento" })).toHaveCount(0);
-  await page.getByRole("button", { name: "Preferencias de cookies", exact: true }).click();
-  await expect(dialog).toBeVisible();
-  await page.keyboard.press("Escape");
-  await expect(dialog).not.toBeVisible();
+  await expect(page.getByRole("button", { name: "Preferencias de cookies", exact: true })).toHaveCount(0);
+  expect(await page.evaluate(() => localStorage.getItem("pw_cookie_preferences"))).toBeNull();
 });
 
 test("legal routes exist, forms link to privacy and production validates submissions", async ({ page, request }) => {
