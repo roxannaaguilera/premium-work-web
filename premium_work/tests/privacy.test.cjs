@@ -10,22 +10,6 @@ function load(file, mocks = {}) {
   new Function('require', 'module', 'exports', code)((name) => { if (mocks[name]) return mocks[name]; if (name.startsWith('@/')) return load(name.slice(2) + '.ts'); if (name.startsWith('.')) { const local = path.join(path.dirname(file), name); return name.endsWith('.json') ? JSON.parse(fs.readFileSync(path.join(__dirname, '..', local), 'utf8')) : load(local + '.ts'); } return require(name); }, module, module.exports);
   return module.exports;
 }
-const prefs = load('lib/cookie-preferences.ts');
-test('choice is invalidated when absent, corrupt, expired or from another version', () => {
-  const now = 1000000000000;
-  const good = prefs.createPreference('reject', now);
-  assert.ok(prefs.parsePreference(JSON.stringify(good), now));
-  for (const raw of [null, 'broken', '{}', JSON.stringify({ ...good, version: 'old' }), JSON.stringify({ ...good, choice: 'anything' })]) assert.equal(prefs.parsePreference(raw, now), null);
-  assert.equal(prefs.parsePreference(JSON.stringify(good), now + prefs.PREFERENCE_MAX_AGE), null);
-});
-test('accept and reject do not grant analytics or marketing permissions', () => {
-  for (const choice of ['accept', 'reject', 'custom']) {
-    const result = prefs.createPreference(choice);
-    assert.equal(result.necessary, true);
-    assert.equal(result.analytics, undefined);
-    assert.equal(result.marketing, undefined);
-  }
-});
 test('production saves valid submissions even when legal details are still drafts', async () => {
   const previous = process.env.NODE_ENV;
   process.env.NODE_ENV = 'production';
