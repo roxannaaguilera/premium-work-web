@@ -30,12 +30,6 @@ export function Footer() {
 
   return (
     <footer id="contacto" className="scroll-mt-[calc(5rem+1px)] border-t border-white/10 bg-[#0a1428] text-white">
-      <div className="mx-auto max-w-[1600px] px-5 pt-10 text-center md:px-8 lg:px-10">
-        <p className="eyebrow flex items-center justify-center gap-2 text-[#9db8ff]">
-          <span aria-hidden="true" className="text-[#eab308]">◆</span> Estancia VI · La Salida
-        </p>
-        <p className="mt-2 text-sm text-white/50">Gracias por la visita. La puerta queda abierta.</p>
-      </div>
       <div className="mx-auto flex h-full max-w-[1600px] flex-col px-5 py-10 md:px-8 lg:px-10">
         <div className="grid min-h-0 flex-1 gap-8 py-10 md:gap-14 lg:grid-cols-[1.35fr_.65fr] lg:py-14">
           <div className="flex min-h-0 flex-col justify-center">
