@@ -4,9 +4,9 @@ import { useEffect, useRef } from "react";
 import * as THREE from "three";
 
 /**
- * Pulsera VIP en 3D real (Three.js).
+ * Entrada de festival en 3D real (Three.js).
  * Misma luz, cámara, flotación y giro que la campana y el cloche.
- * Correa oscura y placa de oro, con el mismo peso en pantalla.
+ * Cartulina gruesa en pie: cara oscura, canto de oro y talón perforado.
  */
 export default function Festival3D() {
   const mountRef = useRef<HTMLDivElement>(null);
@@ -77,57 +77,42 @@ export default function Festival3D() {
       m.castShadow = true; m.receiveShadow = true; return m;
     };
 
-    const band = new THREE.Group();
+    const ticket = new THREE.Group();
 
-    // Correa oscura, aro vertical del tamaño de la campana
-    const strap = shadowed(new THREE.Mesh(
-      new THREE.TorusGeometry(0.34, 0.055, 18, 72),
-      blackBase
-    ));
-    strap.scale.set(1, 1.08, 1);
-    strap.position.y = 0.40;
-    band.add(strap);
-
-    // Filete de oro por el borde exterior de la correa
-    const strapTrim = shadowed(new THREE.Mesh(
-      new THREE.TorusGeometry(0.39, 0.012, 12, 72),
+    // Canto de oro: cartulina gruesa, de pie, mismo ancho que el sobre
+    const edge = shadowed(new THREE.Mesh(
+      new THREE.BoxGeometry(0.98, 0.58, 0.06),
       goldMat()
     ));
-    strapTrim.scale.set(1, 1.05, 1);
-    strapTrim.position.y = 0.40;
-    band.add(strapTrim);
+    edge.position.y = 0.34;
+    ticket.add(edge);
 
-    // Placa de oro sobre el frente de la correa
-    const plate = shadowed(new THREE.Mesh(
-      new THREE.BoxGeometry(0.46, 0.28, 0.04),
-      goldMat()
-    ));
-    plate.position.set(0, 0.30, 0.07);
-    band.add(plate);
-    const plateRim = shadowed(new THREE.Mesh(
-      new THREE.TorusGeometry(0.16, 0.012, 10, 4),
-      goldMat()
-    ));
-    plateRim.scale.set(1.35, 0.82, 1);
-    plateRim.position.set(0, 0.30, 0.09);
-    band.add(plateRim);
+    // Cara oscura del cuerpo y del talón, con el oro a la vista en el corte
+    const addFace = (width: number, x: number, z: number) => {
+      const panel = shadowed(new THREE.Mesh(
+        new THREE.BoxGeometry(width, 0.50, 0.012),
+        blackBase
+      ));
+      panel.position.set(x, 0.34, z);
+      ticket.add(panel);
+    };
+    addFace(0.58, -0.16, 0.026);
+    addFace(0.58, -0.16, -0.026);
+    addFace(0.20, 0.36, 0.026);
+    addFace(0.20, 0.36, -0.026);
 
-    // Cierre oscuro en el centro de la placa
-    const clasp = shadowed(new THREE.Mesh(
-      new THREE.CylinderGeometry(0.055, 0.055, 0.02, 28),
-      blackBase
-    ));
-    clasp.rotation.x = Math.PI / 2;
-    clasp.position.set(0, 0.30, 0.1);
-    band.add(clasp);
-    const claspRing = shadowed(new THREE.Mesh(
-      new THREE.TorusGeometry(0.055, 0.008, 8, 28),
-      goldMat()
-    ));
-    claspRing.position.set(0, 0.30, 0.108);
-    band.add(claspRing);
+    // Perforación entre el cuerpo y el talón
+    for (let i = 0; i < 7; i++) {
+      const hole = shadowed(new THREE.Mesh(
+        new THREE.CylinderGeometry(0.016, 0.016, 0.072, 16),
+        blackBase
+      ));
+      hole.rotation.x = Math.PI / 2;
+      hole.position.set(0.18, 0.12 + i * 0.072, 0);
+      ticket.add(hole);
+    }
 
-    scene.add(band);
+    scene.add(ticket);
 
     // ---------- Interacción: un giro 360° por hover, termina de cara ----------
     let spinT = -1; // -1 = quieto; >=0 = girando (0→1)
@@ -155,18 +140,18 @@ export default function Festival3D() {
       const dt = Math.min(clock.getDelta(), 0.05);
       elapsed += dt;
       // Flotación suave
-      band.position.y = Math.sin(elapsed * 1.4) * 0.035;
+      ticket.position.y = Math.sin(elapsed * 1.4) * 0.035;
       if (spinT >= 0) {
         spinT += dt / 1.0; // un giro 360° en 1 segundo
         const k = Math.min(spinT, 1);
         const e = easeInOut(k);
-        band.rotation.y = e * Math.PI * 2;
-        band.rotation.z =
+        ticket.rotation.y = e * Math.PI * 2;
+        ticket.rotation.z =
           Math.sin(k * Math.PI * 6) * 0.09 * Math.sin(k * Math.PI) +
           Math.sin(elapsed * 0.9) * 0.02;
-        if (spinT >= 1) { spinT = -1; band.rotation.y = 0; }
+        if (spinT >= 1) { spinT = -1; ticket.rotation.y = 0; }
       } else {
-        band.rotation.z = Math.sin(elapsed * 0.9) * 0.02;
+        ticket.rotation.z = Math.sin(elapsed * 0.9) * 0.02;
       }
       renderer.render(scene, camera);
     };
