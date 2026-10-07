@@ -127,16 +127,6 @@ export default function Envelope3D() {
     env3d.scale.setScalar(1.32);
     scene.add(env3d);
 
-    // Sombra de contacto
-    const floor = new THREE.Mesh(
-      new THREE.CircleGeometry(3, 48),
-      new THREE.ShadowMaterial({ opacity: 0.2 })
-    );
-    floor.rotation.x = -Math.PI / 2;
-    floor.position.y = -0.002;
-    floor.receiveShadow = true;
-    scene.add(floor);
-
     // ---------- Interacción: girar al hover ----------
     let hovering = false;
     let spinSpeed = 0;

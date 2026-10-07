@@ -112,16 +112,6 @@ export default function Bell3D() {
 
     scene.add(bell);
 
-    // Sombra de contacto
-    const floor = new THREE.Mesh(
-      new THREE.CircleGeometry(3, 48),
-      new THREE.ShadowMaterial({ opacity: 0.22 })
-    );
-    floor.rotation.x = -Math.PI / 2;
-    floor.position.y = -0.002;
-    floor.receiveShadow = true;
-    scene.add(floor);
-
     // ---------- Interacción: repique al hover ----------
     let hovering = false;
     let spinSpeed = 0;
