@@ -1,7 +1,10 @@
 "use client";
 
+import Bell3D from "@/components/three/Bell3D";
+import Rings3D from "@/components/three/Rings3D";
+
 /**
- * Hero: mancha orgánica azul con texto curvo dorado,
+ * Hero: campana 3D flotante que gira al hover,
  * mensaje de scroll y botón de privacidad — como Agrumea.
  */
 export default function AgrumeaHero() {
@@ -15,13 +18,14 @@ export default function AgrumeaHero() {
         Premium Work — Profesionales de hospitality para eventos en Madrid
       </h1>
 
-      {/* Campana 3D flotante */}
-      <div aria-hidden="true" className="absolute left-1/2 top-[32%] z-[1] animate-[floatY_6s_ease-in-out_infinite]">
-        <img
-          src="/images/elementos/campana-3d.png"
-          alt=""
-          className="w-64 md:w-96 drop-shadow-[0_30px_40px_rgba(19,24,52,0.25)]"
-        />
+      {/* Campana 3D al centro: gira al pasar el cursor */}
+      <div className="absolute left-[43%] top-[30%] z-[2] -translate-x-1/2">
+        <Bell3D />
+      </div>
+
+      {/* Argollas 3D a un lado, simulando un círculo */}
+      <div className="absolute left-[68%] top-[22%] z-[1] -translate-x-1/2 scale-75 opacity-95">
+        <Rings3D />
       </div>
 
       {/* Mensaje de scroll */}
