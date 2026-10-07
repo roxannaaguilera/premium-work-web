@@ -80,19 +80,28 @@ export default function FixedHeader() {
             <img
               src="/images/logo-premium-work.png"
               alt="Premium Work"
-              className="h-16 md:h-20 w-auto"
+              className="h-24 md:h-28 w-auto"
             />
           </a>
-          <div className="flex items-center gap-3 justify-self-end">
+          <div className="flex items-center gap-2 justify-self-end">
             <button
               type="button"
               onClick={() => setOpen(true)}
               aria-haspopup="dialog"
               aria-expanded={open}
-              className="inline-flex items-center gap-2 rounded-full bg-[#131834] px-5 py-2 text-sm font-semibold tracking-wide text-[#faf6ee] hover:bg-[#1e2450] transition-colors"
+              className="inline-flex items-center rounded-full bg-[#131834] px-5 py-2 text-sm font-semibold tracking-wide text-[#faf6ee] hover:bg-[#1e2450] transition-colors"
             >
               MENÚ
-              <span aria-hidden="true" className="inline-block h-2 w-2 rotate-45 bg-[#eab308]" />
+            </button>
+            <button
+              type="button"
+              onClick={() => setOpen(true)}
+              aria-haspopup="dialog"
+              aria-expanded={open}
+              aria-label="Abrir menú"
+              className="flex h-9 w-9 items-center justify-center rounded-full bg-[#131834] hover:bg-[#1e2450] transition-colors"
+            >
+              <span aria-hidden="true" className="inline-block h-2.5 w-2.5 rotate-45 bg-[#eab308]" />
             </button>
           </div>
         </div>
@@ -107,19 +116,21 @@ export default function FixedHeader() {
         style={{ display: "none", opacity: 0 }}
         className="fixed inset-0 z-[70] flex-col bg-[#131834] text-[#faf6ee]"
       >
-        <div className="flex items-center justify-between px-5 md:px-8 py-3">
-          <span className="font-serif text-xl md:text-2xl tracking-[0.25em] font-semibold">
+        <div className="grid grid-cols-[1fr_auto_1fr] items-center px-5 md:px-8 pt-7 md:pt-9 pb-3">
+          <div aria-hidden="true" />
+          <span className="font-serif text-xl md:text-2xl tracking-[0.25em] font-semibold justify-self-center">
             PREMIUM WORK
           </span>
-          <button
-            type="button"
-            onClick={close}
-            aria-label="Cerrar menú"
-            className="inline-flex items-center gap-2 rounded-full border border-[#faf6ee]/30 px-5 py-2 text-sm font-semibold tracking-wide hover:bg-[#faf6ee] hover:text-[#131834] transition-colors"
-          >
-            CERRAR
-            <span aria-hidden="true" className="text-lg leading-none">✕</span>
-          </button>
+          <div className="flex items-center justify-self-end">
+            <button
+              type="button"
+              onClick={close}
+              aria-label="Cerrar menú"
+              className="flex h-9 w-9 items-center justify-center rounded-full border border-[#faf6ee]/40 text-[#faf6ee] hover:bg-[#faf6ee] hover:text-[#131834] transition-colors"
+            >
+              <span aria-hidden="true" className="text-lg leading-none">✕</span>
+            </button>
+          </div>
         </div>
         <nav className="flex flex-1 items-center px-5 md:px-16">
           <ul ref={linksRef} className="space-y-2 md:space-y-4">
