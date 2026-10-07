@@ -124,6 +124,7 @@ export default function Envelope3D() {
     // Ligera inclinación elegante
     env3d.rotation.x = -0.12;
     env3d.rotation.z = 0.04;
+    env3d.scale.setScalar(1.32);
     scene.add(env3d);
 
     // Sombra de contacto
