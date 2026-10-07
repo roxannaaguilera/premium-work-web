@@ -193,7 +193,7 @@ export default function ElementsCarousel() {
   }, []);
 
   return (
-    <main className="relative flex min-h-screen flex-col bg-[#fdf3eb] text-[#131834]">
+    <div className="relative flex h-full min-h-full flex-col bg-[#fdf3eb] text-[#131834]">
       <div ref={mountRef} className="w-full flex-1 [&_canvas]:block [&_canvas]:h-full [&_canvas]:w-full" />
       <div className="pointer-events-none pb-10 text-center">
         <h1
@@ -206,6 +206,6 @@ export default function ElementsCarousel() {
           Desplaza o arrastra
         </p>
       </div>
-    </main>
+    </div>
   );
 }
