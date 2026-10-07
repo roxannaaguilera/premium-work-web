@@ -1,7 +1,6 @@
 "use client";
 
 import Bell3D from "@/components/three/Bell3D";
-import Rings3D from "@/components/three/Rings3D";
 
 /**
  * Hero: campana 3D flotante que gira al hover,
@@ -19,13 +18,8 @@ export default function AgrumeaHero() {
       </h1>
 
       {/* Campana 3D al centro: gira al pasar el cursor */}
-      <div className="absolute left-[43%] top-[30%] z-[2] -translate-x-1/2">
+      <div className="absolute left-1/2 top-[30%] z-[2] -translate-x-1/2">
         <Bell3D />
-      </div>
-
-      {/* Argollas 3D a un lado, simulando un círculo */}
-      <div className="absolute left-[68%] top-[22%] z-[1] -translate-x-1/2 scale-75 opacity-95">
-        <Rings3D />
       </div>
 
       {/* Mensaje de scroll */}

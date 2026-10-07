@@ -122,9 +122,10 @@ export default function Bell3D() {
     floor.receiveShadow = true;
     scene.add(floor);
 
-    // ---------- Interacción: girar al hover ----------
+    // ---------- Interacción: repique al hover ----------
     let hovering = false;
     let spinSpeed = 0;
+    let rockAmp = 0;
     const onEnter = () => { hovering = true; };
     const onLeave = () => { hovering = false; };
     mount.addEventListener("pointerenter", onEnter);
@@ -146,11 +147,13 @@ export default function Bell3D() {
       const t = clock.getElapsedTime();
       // Flotación suave
       bell.position.y = Math.sin(t * 1.4) * 0.035;
-      bell.rotation.z = Math.sin(t * 0.9) * 0.02;
       // Giro al hover, con arranque/parada suaves
       const target = hovering ? 2.2 : 0;
       spinSpeed += (target - spinSpeed) * 0.06;
       bell.rotation.y += spinSpeed * 0.016;
+      // Repique visible (la campana es simétrica y el giro solo no se nota)
+      rockAmp += ((hovering ? 0.09 : 0) - rockAmp) * 0.06;
+      bell.rotation.z = Math.sin(t * 9) * rockAmp + Math.sin(t * 0.9) * 0.02;
       renderer.render(scene, camera);
     };
     animate();
