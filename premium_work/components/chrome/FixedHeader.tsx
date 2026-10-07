@@ -74,7 +74,7 @@ export default function FixedHeader() {
             : "bg-transparent border-b border-transparent"
         }`}
       >
-        <div className="grid grid-cols-[1fr_auto_1fr] items-center px-5 md:px-8 py-2">
+        <div className="grid grid-cols-[1fr_auto_1fr] items-center px-5 md:px-8 pt-7 md:pt-9 pb-3">
           <div aria-hidden="true" />
           <a href="#inicio" aria-label="Premium Work — inicio" className="block justify-self-center">
             <img
