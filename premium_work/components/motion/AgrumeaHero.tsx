@@ -37,31 +37,6 @@ export default function AgrumeaHero() {
         </svg>
       </div>
 
-      {/* Insignia giratoria: ¿servicio perfecto? equipo correcto */}
-      <div aria-hidden="true" className="absolute left-1/2 top-[19%] z-[3] animate-[floatY_5s_ease-in-out_infinite] will-change-transform">
-        <div className="relative h-72 w-72 md:h-96 md:w-96">
-          <div className="absolute inset-0 animate-[spin_16s_linear_infinite]">
-            <svg viewBox="0 0 200 200" className="h-full w-full drop-shadow-[0_25px_50px_rgba(19,24,52,0.35)]">
-              <path
-                d="M100,10 C138,8 176,30 188,68 C200,106 188,148 152,170 C116,192 70,186 40,158 C10,130 8,86 26,50 C44,14 62,12 100,10 Z"
-                fill="#fdf3eb"
-                stroke="#131834"
-                strokeWidth="2.5"
-              />
-              <defs>
-                <path id="pw-spin-circle" d="M100,34 a66,66 0 1,1 -0.01,0" fill="none" />
-              </defs>
-              <text fill="#131834" fontSize="17" letterSpacing="3" fontFamily="Georgia, serif" fontWeight="700">
-                <textPath href="#pw-spin-circle">
-                  ¿SERVICIO PERFECTO? · EQUIPO CORRECTO ·
-                </textPath>
-              </text>
-            </svg>
-          </div>
-          <span className="absolute left-1/2 top-1/2 inline-block h-4 w-4 -translate-x-1/2 -translate-y-1/2 rotate-45 bg-[#eab308]" />
-        </div>
-      </div>
-
       {/* Mensaje de scroll */}
       <p className="absolute inset-x-0 bottom-8 z-[2] text-center text-[11px] font-semibold uppercase tracking-[0.4em] text-[#faf6ee]/90 pointer-events-none">
         Desliza para descubrir
