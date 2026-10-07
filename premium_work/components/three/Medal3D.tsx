@@ -44,8 +44,8 @@ export default function Medal3D() {
     scene.environment = envTex;
 
     const camera = new THREE.PerspectiveCamera(40, W / H, 0.1, 60);
-    camera.position.set(0.15, 0.58, 2.0);
-    camera.lookAt(0, 0.45, 0);
+    camera.position.set(0.15, 0.72, 2.3);
+    camera.lookAt(0, 0.58, 0);
 
     // ---------- Luces ----------
     scene.add(new THREE.HemisphereLight(0xfff2e0, 0x2a1f16, 0.4));
@@ -94,22 +94,22 @@ export default function Medal3D() {
     loop.castShadow = true;
     medal.add(loop);
 
-    // Cinta ondulada (plano deformado con senos suaves)
-    const ribbonGeo = new THREE.PlaneGeometry(0.2, 0.58, 1, 32);
+    // Cinta ondulada y prolongada (plano deformado con senos suaves)
+    const ribbonGeo = new THREE.PlaneGeometry(0.2, 0.95, 1, 40);
     const pos = ribbonGeo.attributes.position;
     for (let i = 0; i < pos.count; i++) {
       const y = pos.getY(i);
-      const k = (y + 0.29) / 0.58; // 0 abajo → 1 arriba
-      pos.setX(i, pos.getX(i) + Math.sin(k * Math.PI * 1.6) * 0.05);
-      pos.setZ(i, Math.sin(k * Math.PI * 1.2 + 0.6) * 0.05);
+      const k = (y + 0.475) / 0.95; // 0 abajo → 1 arriba
+      pos.setX(i, pos.getX(i) + Math.sin(k * Math.PI * 1.6) * 0.06);
+      pos.setZ(i, Math.sin(k * Math.PI * 1.2 + 0.6) * 0.06);
     }
     ribbonGeo.computeVertexNormals();
     const ribbon = new THREE.Mesh(ribbonGeo, ribbonMat);
-    ribbon.position.y = 0.98;
+    ribbon.position.y = 1.18;
     ribbon.castShadow = true;
     medal.add(ribbon);
 
-    medal.scale.setScalar(1.05);
+    medal.scale.setScalar(0.85);
     scene.add(medal);
 
     // ---------- Interacción: un giro 360° por hover, termina de cara ----------

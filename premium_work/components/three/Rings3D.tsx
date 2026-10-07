@@ -44,7 +44,7 @@ export default function Rings3D() {
     scene.environment = envTex;
 
     const camera = new THREE.PerspectiveCamera(40, W / H, 0.1, 60);
-    camera.position.set(0.3, 0.68, 1.9);
+    camera.position.set(0.3, 0.7, 2.6);
     camera.lookAt(0, 0.42, 0);
 
     // ---------- Luces ----------
@@ -70,15 +70,15 @@ export default function Rings3D() {
     });
     const rings = new THREE.Group();
 
-    const band1 = new THREE.Mesh(new THREE.TorusGeometry(0.42, 0.085, 40, 96), gold);
-    band1.position.set(-0.13, 0.44, 0.02);
-    band1.rotation.set(0.06, -0.12, 0.05);
+    const band1 = new THREE.Mesh(new THREE.TorusGeometry(0.36, 0.075, 40, 96), gold);
+    band1.position.set(-0.48, 0.44, 0.02);
+    band1.rotation.set(0.05, -0.14, 0.04);
     band1.castShadow = band1.receiveShadow = true;
     rings.add(band1);
 
-    const band2 = new THREE.Mesh(new THREE.TorusGeometry(0.42, 0.085, 40, 96), gold);
-    band2.position.set(0.15, 0.42, -0.07);
-    band2.rotation.set(-0.05, 0.38, -0.04);
+    const band2 = new THREE.Mesh(new THREE.TorusGeometry(0.36, 0.075, 40, 96), gold);
+    band2.position.set(0.48, 0.42, -0.02);
+    band2.rotation.set(-0.04, 0.16, -0.05);
     band2.castShadow = band2.receiveShadow = true;
     rings.add(band2);
 
@@ -94,11 +94,10 @@ export default function Rings3D() {
     floor.receiveShadow = true;
     scene.add(floor);
 
-    // ---------- Interacción: girar al hover ----------
-    let hovering = false;
-    let spinSpeed = 0;
-    const onEnter = () => { hovering = true; };
-    const onLeave = () => { hovering = false; };
+    // ---------- Interacción: un giro 360° por hover, termina de cara ----------
+    let spinT = -1; // -1 = quieto; >=0 = girando (0→1)
+    const onEnter = () => { if (spinT < 0) spinT = 0; };
+    const onLeave = () => { /* al salir ya está de cara; el próximo hover gira de nuevo */ };
     mount.addEventListener("pointerenter", onEnter);
     mount.addEventListener("pointerleave", onLeave);
 
@@ -113,14 +112,20 @@ export default function Rings3D() {
 
     const clock = new THREE.Clock();
     let raf = 0;
+    let elapsed = 0;
+    const easeInOut = (k: number) =>
+      k < 0.5 ? 4 * k * k * k : 1 - Math.pow(-2 * k + 2, 3) / 2;
     const animate = () => {
       raf = requestAnimationFrame(animate);
-      const t = clock.getElapsedTime();
-      rings.position.y = Math.sin(t * 1.4) * 0.03;
-      rings.rotation.z = Math.sin(t * 0.9) * 0.015;
-      const target = hovering ? 2.2 : 0;
-      spinSpeed += (target - spinSpeed) * 0.06;
-      rings.rotation.y += spinSpeed * 0.016;
+      const dt = Math.min(clock.getDelta(), 0.05);
+      elapsed += dt;
+      rings.position.y = Math.sin(elapsed * 1.4) * 0.03;
+      if (spinT >= 0) {
+        spinT += dt / 1.0; // un giro 360° en 1 segundo
+        const k = Math.min(spinT, 1);
+        rings.rotation.y = easeInOut(k) * Math.PI * 2;
+        if (spinT >= 1) { spinT = -1; rings.rotation.y = 0; }
+      }
       renderer.render(scene, camera);
     };
     animate();
