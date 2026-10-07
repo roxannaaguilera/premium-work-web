@@ -66,11 +66,11 @@ export default function Medal3D() {
 
     // ---------- Materiales ----------
     const gold = new THREE.MeshStandardMaterial({
-      color: 0xd8a93c, metalness: 1.0, roughness: 0.26, envMapIntensity: 1.15,
+      color: 0xd8a93c, metalness: 0.85, roughness: 0.3, envMapIntensity: 1.2,
     });
     const ribbonMat = new THREE.MeshStandardMaterial({
-      color: 0x1c2333, roughness: 0.75, metalness: 0.05,
-      side: THREE.DoubleSide, envMapIntensity: 0.4,
+      color: 0x2a3550, roughness: 0.7, metalness: 0.1,
+      side: THREE.DoubleSide, envMapIntensity: 0.5,
     });
 
     const medal = new THREE.Group();
@@ -94,29 +94,28 @@ export default function Medal3D() {
     loop.castShadow = true;
     medal.add(loop);
 
-    // Cinta ondulada (plano deformado con senos)
-    const ribbonGeo = new THREE.PlaneGeometry(0.17, 0.62, 1, 32);
+    // Cinta ondulada (plano deformado con senos suaves)
+    const ribbonGeo = new THREE.PlaneGeometry(0.2, 0.58, 1, 32);
     const pos = ribbonGeo.attributes.position;
     for (let i = 0; i < pos.count; i++) {
       const y = pos.getY(i);
-      const k = (y + 0.31) / 0.62; // 0 abajo → 1 arriba
-      pos.setX(i, pos.getX(i) + Math.sin(k * Math.PI * 2.2) * 0.09);
-      pos.setZ(i, Math.sin(k * Math.PI * 1.4 + 0.6) * 0.07);
+      const k = (y + 0.29) / 0.58; // 0 abajo → 1 arriba
+      pos.setX(i, pos.getX(i) + Math.sin(k * Math.PI * 1.6) * 0.05);
+      pos.setZ(i, Math.sin(k * Math.PI * 1.2 + 0.6) * 0.05);
     }
     ribbonGeo.computeVertexNormals();
     const ribbon = new THREE.Mesh(ribbonGeo, ribbonMat);
-    ribbon.position.y = 1.0;
+    ribbon.position.y = 0.98;
     ribbon.castShadow = true;
     medal.add(ribbon);
 
     medal.scale.setScalar(1.05);
     scene.add(medal);
 
-    // ---------- Interacción: girar al hover ----------
-    let hovering = false;
-    let spinSpeed = 0;
-    const onEnter = () => { hovering = true; };
-    const onLeave = () => { hovering = false; };
+    // ---------- Interacción: un giro 360° por hover, termina de cara ----------
+    let spinT = -1; // -1 = quieto; >=0 = girando (0→1)
+    const onEnter = () => { if (spinT < 0) spinT = 0; };
+    const onLeave = () => { /* al salir ya está de cara; el próximo hover gira de nuevo */ };
     mount.addEventListener("pointerenter", onEnter);
     mount.addEventListener("pointerleave", onLeave);
 
@@ -131,13 +130,20 @@ export default function Medal3D() {
 
     const clock = new THREE.Clock();
     let raf = 0;
+    let elapsed = 0;
+    const easeInOut = (k: number) =>
+      k < 0.5 ? 4 * k * k * k : 1 - Math.pow(-2 * k + 2, 3) / 2;
     const animate = () => {
       raf = requestAnimationFrame(animate);
-      const t = clock.getElapsedTime();
-      medal.position.y = Math.sin(t * 1.4) * 0.03;
-      const target = hovering ? 2.2 : 0;
-      spinSpeed += (target - spinSpeed) * 0.06;
-      medal.rotation.y += spinSpeed * 0.016;
+      const dt = Math.min(clock.getDelta(), 0.05);
+      elapsed += dt;
+      medal.position.y = Math.sin(elapsed * 1.4) * 0.03;
+      if (spinT >= 0) {
+        spinT += dt / 1.0; // un giro 360° en 1 segundo
+        const k = Math.min(spinT, 1);
+        medal.rotation.y = easeInOut(k) * Math.PI * 2;
+        if (spinT >= 1) { spinT = -1; medal.rotation.y = 0; }
+      }
       renderer.render(scene, camera);
     };
     animate();
