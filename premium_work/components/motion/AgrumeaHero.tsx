@@ -38,10 +38,10 @@ export default function AgrumeaHero() {
       </div>
 
       {/* Insignia giratoria: ¿servicio perfecto? equipo correcto */}
-      <div aria-hidden="true" className="absolute left-1/2 top-[27%] z-[3] animate-[floatY_5s_ease-in-out_infinite] will-change-transform">
-        <div className="relative h-60 w-60 md:h-72 md:w-72">
+      <div aria-hidden="true" className="absolute left-1/2 top-[19%] z-[3] animate-[floatY_5s_ease-in-out_infinite] will-change-transform">
+        <div className="relative h-72 w-72 md:h-96 md:w-96">
           <div className="absolute inset-0 animate-[spin_16s_linear_infinite]">
-            <svg viewBox="0 0 200 200" className="h-full w-full drop-shadow-[0_18px_35px_rgba(19,24,52,0.25)]">
+            <svg viewBox="0 0 200 200" className="h-full w-full drop-shadow-[0_25px_50px_rgba(19,24,52,0.35)]">
               <path
                 d="M100,10 C138,8 176,30 188,68 C200,106 188,148 152,170 C116,192 70,186 40,158 C10,130 8,86 26,50 C44,14 62,12 100,10 Z"
                 fill="#fdf3eb"
@@ -51,7 +51,7 @@ export default function AgrumeaHero() {
               <defs>
                 <path id="pw-spin-circle" d="M100,34 a66,66 0 1,1 -0.01,0" fill="none" />
               </defs>
-              <text fill="#131834" fontSize="14.5" letterSpacing="2.5" fontFamily="Georgia, serif" fontWeight="700">
+              <text fill="#131834" fontSize="17" letterSpacing="3" fontFamily="Georgia, serif" fontWeight="700">
                 <textPath href="#pw-spin-circle">
                   ¿SERVICIO PERFECTO? · EQUIPO CORRECTO ·
                 </textPath>
