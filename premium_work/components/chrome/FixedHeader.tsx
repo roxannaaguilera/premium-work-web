@@ -70,25 +70,20 @@ export default function FixedHeader() {
       <header
         className={`fixed inset-x-0 top-0 z-[60] transition-all duration-300 ${
           scrolled
-            ? "bg-[#faf6ee]/90 backdrop-blur-md border-b border-[#131834]/10"
+            ? "bg-[#fdf3eb]/90 backdrop-blur-md border-b border-[#131834]/10"
             : "bg-transparent border-b border-transparent"
         }`}
       >
-        <div className="flex items-center justify-between px-5 md:px-8 py-3">
-          <a href="#inicio" aria-label="Premium Work — inicio" className="block">
+        <div className="grid grid-cols-[1fr_auto_1fr] items-center px-5 md:px-8 py-2">
+          <div aria-hidden="true" />
+          <a href="#inicio" aria-label="Premium Work — inicio" className="block justify-self-center">
             <img
               src="/images/logo-premium-work.png"
               alt="Premium Work"
-              className="h-10 md:h-11 w-auto"
+              className="h-16 md:h-20 w-auto"
             />
           </a>
-          <div className="flex items-center gap-3">
-            <a
-              href="#contacto"
-              className="hidden md:inline-flex rounded-full border border-[#131834]/25 px-5 py-2 text-sm font-semibold text-[#131834] hover:bg-[#131834] hover:text-[#faf6ee] transition-colors"
-            >
-              Solicitar servicio
-            </a>
+          <div className="flex items-center gap-3 justify-self-end">
             <button
               type="button"
               onClick={() => setOpen(true)}
