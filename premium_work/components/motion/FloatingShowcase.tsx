@@ -3,6 +3,7 @@
 import { useLayoutEffect, useRef, useState } from "react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
+import Cloche3D from "@/components/three/Cloche3D";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -16,7 +17,6 @@ const CARDS = [  { src: "/images/escaparate-flotante/camareros.jpg", label: "Cam
 
 /** Objetos 3D renderizados flotando sin marco, como acentos entre las tarjetas. */
 const OBJECTS = [
-  { src: "/images/elementos/cloche.png", alt: "Campana de servicio", x: "28%", y: "6%", r: -10, speed: 110, size: "w-36 md:w-44", mobile: true },
   { src: "/images/elementos/copa-champagne.png", alt: "Copa de champán", x: "60%", y: "10%", r: 8, speed: -90, size: "w-28 md:w-36", mobile: true },
   { src: "/images/elementos/pajarita.png", alt: "Pajarita", x: "30%", y: "50%", r: 6, speed: -110, size: "w-32 md:w-40", mobile: false },
   { src: "/images/elementos/gorro-chef.png", alt: "Gorro de chef", x: "62%", y: "72%", r: -8, speed: 100, size: "w-36 md:w-44", mobile: false },
@@ -193,6 +193,22 @@ export function FloatingShowcase() {
               </div>
             </div>
           ))}
+
+          {/* Cloche 3D: sustituye al PNG plano, con giro 360° al hover */}
+          {!reduced && (
+            <div
+              data-float-card
+              data-speed={110}
+              className="absolute z-[2] w-36 md:w-44"
+              style={{ left: "28%", top: "6%", transform: "rotate(-10deg)" }}
+            >
+              <div data-float-bob>
+                <div className="origin-top-left scale-[0.55] cursor-pointer">
+                  <Cloche3D />
+                </div>
+              </div>
+            </div>
+          )}
 
           {/* CTA */}
           <div className={`relative z-10 mx-auto pb-16 text-center ${reduced ? "mt-10" : "mt-auto"}`}>
