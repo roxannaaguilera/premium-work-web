@@ -112,12 +112,10 @@ export default function Bell3D() {
 
     scene.add(bell);
 
-    // ---------- Interacción: repique al hover ----------
-    let hovering = false;
-    let spinSpeed = 0;
-    let rockAmp = 0;
-    const onEnter = () => { hovering = true; };
-    const onLeave = () => { hovering = false; };
+    // ---------- Interacción: un giro 360° por hover, termina de cara ----------
+    let spinT = -1; // -1 = quieto; >=0 = girando (0→1)
+    const onEnter = () => { if (spinT < 0) spinT = 0; };
+    const onLeave = () => { /* al salir ya está de cara; el próximo hover gira de nuevo */ };
     mount.addEventListener("pointerenter", onEnter);
     mount.addEventListener("pointerleave", onLeave);
 
@@ -132,18 +130,28 @@ export default function Bell3D() {
 
     const clock = new THREE.Clock();
     let raf = 0;
+    let elapsed = 0;
+    const easeInOut = (k: number) =>
+      k < 0.5 ? 4 * k * k * k : 1 - Math.pow(-2 * k + 2, 3) / 2;
     const animate = () => {
       raf = requestAnimationFrame(animate);
-      const t = clock.getElapsedTime();
+      const dt = Math.min(clock.getDelta(), 0.05);
+      elapsed += dt;
       // Flotación suave
-      bell.position.y = Math.sin(t * 1.4) * 0.035;
-      // Giro al hover, con arranque/parada suaves
-      const target = hovering ? 2.2 : 0;
-      spinSpeed += (target - spinSpeed) * 0.06;
-      bell.rotation.y += spinSpeed * 0.016;
-      // Repique visible (la campana es simétrica y el giro solo no se nota)
-      rockAmp += ((hovering ? 0.09 : 0) - rockAmp) * 0.06;
-      bell.rotation.z = Math.sin(t * 9) * rockAmp + Math.sin(t * 0.9) * 0.02;
+      bell.position.y = Math.sin(elapsed * 1.4) * 0.035;
+      if (spinT >= 0) {
+        spinT += dt / 1.0; // un giro 360° en 1 segundo
+        const k = Math.min(spinT, 1);
+        const e = easeInOut(k);
+        bell.rotation.y = e * Math.PI * 2;
+        // Repique visible durante el giro (la campana es simétrica)
+        bell.rotation.z =
+          Math.sin(k * Math.PI * 6) * 0.09 * Math.sin(k * Math.PI) +
+          Math.sin(elapsed * 0.9) * 0.02;
+        if (spinT >= 1) { spinT = -1; bell.rotation.y = 0; }
+      } else {
+        bell.rotation.z = Math.sin(elapsed * 0.9) * 0.02;
+      }
       renderer.render(scene, camera);
     };
     animate();

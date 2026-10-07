@@ -127,11 +127,10 @@ export default function Envelope3D() {
     env3d.scale.setScalar(1.32);
     scene.add(env3d);
 
-    // ---------- Interacción: girar al hover ----------
-    let hovering = false;
-    let spinSpeed = 0;
-    const onEnter = () => { hovering = true; };
-    const onLeave = () => { hovering = false; };
+    // ---------- Interacción: un giro 360° por hover, termina de cara ----------
+    let spinT = -1; // -1 = quieto; >=0 = girando (0→1)
+    const onEnter = () => { if (spinT < 0) spinT = 0; };
+    const onLeave = () => { /* al salir ya está de cara; el próximo hover gira de nuevo */ };
     mount.addEventListener("pointerenter", onEnter);
     mount.addEventListener("pointerleave", onLeave);
 
@@ -146,13 +145,20 @@ export default function Envelope3D() {
 
     const clock = new THREE.Clock();
     let raf = 0;
+    let elapsed = 0;
+    const easeInOut = (k: number) =>
+      k < 0.5 ? 4 * k * k * k : 1 - Math.pow(-2 * k + 2, 3) / 2;
     const animate = () => {
       raf = requestAnimationFrame(animate);
-      const t = clock.getElapsedTime();
-      env3d.position.y = Math.sin(t * 1.4) * 0.03;
-      const target = hovering ? 2.2 : 0;
-      spinSpeed += (target - spinSpeed) * 0.06;
-      env3d.rotation.y += spinSpeed * 0.016;
+      const dt = Math.min(clock.getDelta(), 0.05);
+      elapsed += dt;
+      env3d.position.y = Math.sin(elapsed * 1.4) * 0.03;
+      if (spinT >= 0) {
+        spinT += dt / 1.0; // un giro 360° en 1 segundo
+        const k = Math.min(spinT, 1);
+        env3d.rotation.y = easeInOut(k) * Math.PI * 2;
+        if (spinT >= 1) { spinT = -1; env3d.rotation.y = 0; }
+      }
       renderer.render(scene, camera);
     };
     animate();
