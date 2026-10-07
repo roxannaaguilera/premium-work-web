@@ -1,6 +1,7 @@
 "use client";
 
 import Bell3D from "@/components/three/Bell3D";
+import Envelope3D from "@/components/three/Envelope3D";
 
 /**
  * Hero: campana 3D flotante que gira al hover,
@@ -17,9 +18,14 @@ export default function AgrumeaHero() {
         Premium Work — Profesionales de hospitality para eventos en Madrid
       </h1>
 
-      {/* Campana 3D al centro: gira al pasar el cursor */}
-      <div className="absolute left-1/2 top-[30%] z-[2] -translate-x-1/2">
+      {/* Campana 3D: gira y repica al pasar el cursor */}
+      <div className="absolute left-[42%] top-[30%] z-[2] -translate-x-1/2">
         <Bell3D />
+      </div>
+
+      {/* Sobre 3D al mismo nivel, simulando un círculo */}
+      <div className="absolute left-[68%] top-[30%] z-[1] -translate-x-1/2">
+        <Envelope3D />
       </div>
 
       {/* Mensaje de scroll */}
