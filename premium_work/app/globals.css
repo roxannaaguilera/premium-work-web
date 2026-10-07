@@ -6,6 +6,11 @@
    Grutesca compacta (DM Sans 800, tracking negativo),
    píldoras totalmente redondeadas, bordes finos 1px,
    tarjetas blancas y ritmo generoso entre secciones. */
+@keyframes floatY {
+  0%, 100% { transform: translate(-50%, 0); }
+  50% { transform: translate(-50%, -14px); }
+}
+
 :root {
   --paper: #ffffff;
   --paper-warm: #faf8f5;
