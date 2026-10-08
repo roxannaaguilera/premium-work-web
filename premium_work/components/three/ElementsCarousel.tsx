@@ -29,6 +29,8 @@ const ITEM_SIZE = 1.45;
  */
 export default function ElementsCarousel() {
   const mountRef = useRef<HTMLDivElement>(null);
+  const tagRef = useRef<HTMLDivElement>(null);
+  const tagNameRef = useRef<HTMLSpanElement>(null);
 
   useEffect(() => {
     const mount = mountRef.current;
@@ -64,7 +66,8 @@ export default function ElementsCarousel() {
     // ---------- Fotos reales en planos, en diagonal ----------
     const loader = new THREE.TextureLoader();
     const items: THREE.Group[] = [];
-    SECTORS.forEach(({ src }) => {
+    const planeMeshes: THREE.Mesh[] = [];
+    SECTORS.forEach(({ src }, idx) => {
       const wrap = new THREE.Group();
       const tex = loader.load(src, (t) => {
         const aspect = t.image.width / t.image.height;
@@ -74,6 +77,8 @@ export default function ElementsCarousel() {
           new THREE.PlaneGeometry(w, h),
           new THREE.MeshBasicMaterial({ map: t, transparent: true, alphaTest: 0.02 })
         );
+        mesh.userData.sectorIndex = idx;
+        planeMeshes.push(mesh);
         wrap.add(mesh);
       });
       tex.colorSpace = THREE.SRGBColorSpace;
@@ -90,6 +95,17 @@ export default function ElementsCarousel() {
     let wheelAcc = 0;
     const el = renderer.domElement;
 
+    // ---------- Hover en el objeto principal: avanza + etiqueta ----------
+    const raycaster = new THREE.Raycaster();
+    const pointerNDC = new THREE.Vector2(-10, -10);
+    let hovered = false;
+    let hoverT = 0;
+    let tagX = 0;
+    let tagY = 0;
+    let tagTX = 0;
+    let tagTY = 0;
+    let shownTag = -1;
+
     const onDown = (e: PointerEvent) => {
       dragging = true;
       lastX = e.clientX;
@@ -97,6 +113,13 @@ export default function ElementsCarousel() {
       el.style.cursor = "grabbing";
     };
     const onMove = (e: PointerEvent) => {
+      const rect = el.getBoundingClientRect();
+      pointerNDC.set(
+        ((e.clientX - rect.left) / rect.width) * 2 - 1,
+        -((e.clientY - rect.top) / rect.height) * 2 + 1
+      );
+      tagTX = e.clientX - rect.left;
+      tagTY = e.clientY - rect.top;
       if (!dragging) return;
       const dx = e.clientX - lastX;
       lastX = e.clientX;
@@ -156,8 +179,10 @@ export default function ElementsCarousel() {
         // Solo 3 en pantalla: principal (t=0), uno que entra y otro que sale.
         const ad = Math.abs(t);
         const inView = ad < 1.6;
+        const isFront = ad < 0.5;
         const reach = Math.max(-1, Math.min(1, t));
-        const distF = camera.position.z - 2.15;
+        // El principal avanza un poco hacia adelante al hover, como en Agrumea.
+        const distF = camera.position.z - 2.15 - (isFront ? 0.4 * hoverT : 0);
         const dist = distF + ad * 1.0;
         const halfH = Math.tan(vFov / 2) * dist;
         const halfW = halfH * Math.max(camera.aspect, 1);
@@ -177,10 +202,35 @@ export default function ElementsCarousel() {
         wrap.rotation.z = -reach * 0.08;
         // El principal entra entero en pantalla; los laterales más pequeños.
         const fit = (halfH0 * 1.15) / ITEM_SIZE;
-        wrap.scale.setScalar(!inView ? 0.001 : ad < 0.5 ? fit : fit * 0.66);
+        const boost = isFront ? 1 + 0.14 * hoverT : 1;
+        wrap.scale.setScalar(!inView ? 0.001 : isFront ? fit * boost : fit * 0.66);
         wrap.visible = inView;
       });
       const index = ((Math.round(rotation / STEP) % COUNT) + COUNT) % COUNT;
+
+      // Hover solo sobre el objeto principal: avanza un poco hacia adelante.
+      if (!dragging && planeMeshes.length === COUNT) {
+        raycaster.setFromCamera(pointerNDC, camera);
+        const hits = raycaster.intersectObjects(planeMeshes, false);
+        hovered = hits.length > 0 && hits[0].object.userData.sectorIndex === index;
+      } else {
+        hovered = false;
+      }
+      hoverT += ((hovered ? 1 : 0) - hoverT) * (1 - Math.exp(-dt * 10));
+      el.style.cursor = dragging ? "grabbing" : hovered ? "pointer" : "grab";
+
+      // Etiqueta que sigue al cursor.
+      tagX += (tagTX - tagX) * (1 - Math.exp(-dt * 14));
+      tagY += (tagTY - tagY) * (1 - Math.exp(-dt * 14));
+      if (tagRef.current) {
+        tagRef.current.style.transform = `translate(${tagX + 20}px, ${tagY - 18}px)`;
+        tagRef.current.style.opacity = hovered ? "1" : "0";
+      }
+      if (tagNameRef.current && index !== shownTag) {
+        shownTag = index;
+        tagNameRef.current.textContent = SECTORS[index].name;
+      }
+
       items[index].updateMatrixWorld(true);
       items[index].getWorldPosition(focusPoint);
       focusPoint.applyMatrix4(camera.matrixWorldInverse);
@@ -231,6 +281,16 @@ export default function ElementsCarousel() {
   return (
     <div className="relative h-full min-h-full bg-[#fdf3eb] text-[#131834]">
       <div ref={mountRef} className="h-full w-full [&_canvas]:block [&_canvas]:h-full [&_canvas]:w-full" />
+      {/* Etiqueta que aparece al posar el cursor sobre el objeto principal */}
+      <div
+        ref={tagRef}
+        className="pointer-events-none absolute left-0 top-0 z-[3] opacity-0 transition-opacity duration-200"
+        aria-hidden="true"
+      >
+        <span className="whitespace-nowrap rounded-full bg-[#131834] px-4 py-2 text-[11px] font-semibold uppercase tracking-[0.2em] text-[#f3ead6] shadow-lg">
+          <span ref={tagNameRef}>Hoteles</span> · Descubre el servicio
+        </span>
+      </div>
     </div>
   );
 }
