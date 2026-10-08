@@ -64,11 +64,12 @@ export default function ServiceDetail({ slug }: { slug: string }) {
     setReady(true);
   }, [slug]);
 
-  // El scroll sube el elemento y lo encoge hasta posarlo sobre las letras.
+  // El scroll sube el elemento y lo encoge hasta centrarlo en las letras,
+  // a un tamaño proporcionado con la tipografía.
   const secRef = useRef<HTMLElement>(null);
   const { scrollYProgress } = useScroll({ target: secRef, offset: ["start start", "end end"] });
-  const riseY = useTransform(scrollYProgress, [0, 0.6], ["0vh", "-38vh"]);
-  const riseS = useTransform(scrollYProgress, [0, 0.6], [1, 0.52]);
+  const riseY = useTransform(scrollYProgress, [0, 0.6], ["0vh", "-50vh"]);
+  const riseS = useTransform(scrollYProgress, [0, 0.6], [1, 0.35]);
 
   return (
     <>
@@ -90,8 +91,8 @@ export default function ServiceDetail({ slug }: { slug: string }) {
               ))}
             </motion.h1>
             {/* Entrada desde el hero (fuera) + subida con scroll (dentro).
-                En reposo queda abajo, sin verse completo, tapando el nombre. */}
-            <div className="pointer-events-none absolute inset-x-0 -bottom-[8vh] z-20 flex justify-center">
+                En reposo asoma la mitad del objeto sin tapar el nombre. */}
+            <div className="pointer-events-none absolute inset-x-0 -bottom-[32vh] z-20 flex justify-center">
               {ready && (
                 <motion.div
                   initial={{ x: from?.dx ?? 0, y: from?.dy ?? 0, scale: 1.14, rotate: -22 }}
