@@ -25,12 +25,17 @@ export default function AgrumeaHero() {
 
       {/* Carrusel 3D de los 8 sectores: aparece tras las cortinas */}
       <motion.div
-        className="h-full"
+        className="relative h-full"
         initial={{ opacity: 0, scale: 0.97 }}
         animate={{ opacity: 1, scale: 1 }}
         transition={{ delay: 1.5, duration: 0.9, ease: "easeOut" }}
       >
         <ElementsCarousel />
+
+        {/* Desliza para descubrir, como Agrumea */}
+        <p className="pointer-events-none absolute inset-x-0 bottom-8 z-[2] text-center text-[11px] font-semibold uppercase tracking-[0.4em] text-[#131834]/70">
+          Desliza para descubrir
+        </p>
       </motion.div>
 
       {/* Privacidad y cookies */}

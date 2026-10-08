@@ -19,8 +19,6 @@ const SECTORS = [
 
 const COUNT = SECTORS.length;
 const STEP = (Math.PI * 2) / COUNT;
-/** Casillas desde el objeto nítido del centro hasta la esquina de la pantalla. */
-const CORNER = 2.05;
 const ITEM_SIZE = 1.45;
 
 /**
@@ -155,27 +153,32 @@ export default function ElementsCarousel() {
         t = ((t % COUNT) + COUNT) % COUNT;
         if (t > COUNT / 2) t -= COUNT;
 
+        // Solo 3 en pantalla: principal (t=0), uno que entra y otro que sale.
         const ad = Math.abs(t);
-        const along = t / CORNER;
-        const reach = Math.max(-1, Math.min(1, along));
-        const frontness = Math.max(0, 1 - ad / CORNER);
-        const dist = Math.max(0.55, camera.position.z - (1.45 + frontness * 0.7));
+        const inView = ad < 1.6;
+        const reach = Math.max(-1, Math.min(1, t));
+        const distF = camera.position.z - 2.15;
+        const dist = distF + ad * 1.0;
         const halfH = Math.tan(vFov / 2) * dist;
         const halfW = halfH * Math.max(camera.aspect, 1);
+        const halfH0 = Math.tan(vFov / 2) * distF;
 
         slotCenter.copy(camera.position).addScaledVector(viewDir, dist);
         wrap.position.copy(slotCenter);
-        wrap.position.addScaledVector(camRight, reach * halfW * 0.9);
-        // Diagonal suavizada: entra por arriba-izquierda, sale por abajo-derecha.
-        wrap.position.addScaledVector(camUp, -reach * halfH * 0.45 - 0.25 + Math.sin(elapsed * 1.3 + i * 0.9) * 0.02);
+        wrap.position.addScaledVector(camRight, reach * halfW * 0.62);
+        // Diagonal suave: entra por arriba-izquierda, sale por abajo-derecha.
+        // Aire entre el logo y el objeto, y entre el objeto y el final del header.
+        wrap.position.addScaledVector(camUp, -halfH0 * 0.08 - reach * halfH * 0.30 + Math.sin(elapsed * 1.3 + i * 0.9) * 0.02);
 
-        // Las fotos miran a cámara; leve giro en los laterales.
+        // De frente a cámara, leve giro en los laterales.
         wrap.rotation.order = "YXZ";
-        wrap.rotation.y = reach * 0.5;
-        wrap.rotation.x = reach * 0.12;
-        wrap.rotation.z = -reach * 0.22;
-        wrap.scale.setScalar(ad > CORNER + 0.4 ? 0.001 : 1.05 + frontness * 0.45);
-        wrap.visible = ad < CORNER + 0.45;
+        wrap.rotation.y = reach * 0.18;
+        wrap.rotation.x = 0;
+        wrap.rotation.z = -reach * 0.08;
+        // El principal entra entero en pantalla; los laterales más pequeños.
+        const fit = (halfH0 * 1.15) / ITEM_SIZE;
+        wrap.scale.setScalar(!inView ? 0.001 : ad < 0.5 ? fit : fit * 0.66);
+        wrap.visible = inView;
       });
       const index = ((Math.round(rotation / STEP) % COUNT) + COUNT) % COUNT;
       items[index].updateMatrixWorld(true);
