@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import gsap from "gsap";
 import { getLenis } from "@/lib/lenis-instance";
 
@@ -9,21 +9,34 @@ import { getLenis } from "@/lib/lenis-instance";
  * 1. Ventana beige #fdf3eb con % de carga en azul.
  * 2. Al 100%, dos cortinas azules suben desde abajo y cubren la pantalla.
  * 3. Las cortinas se abren hacia los lados revelando la web.
+ *
+ * La carga con porcentajes solo se muestra en la primera visita de la sesión;
+ * al volver, solo aparece la cortina azul del hero. El flag se resuelve en un
+ * efecto (no en el inicializador de useState) para que el HTML del servidor y
+ * la hidratación coincidan: así React retira el overlay con una actualización
+ * normal en vez de dejar un div huérfano tapando la pantalla. La comprobación
+ * va en un layout effect para que al volver no se pinte ni un fotograma beige.
  */
 export default function Preloader() {
   const rootRef = useRef<HTMLDivElement>(null);
-  // La carga con porcentajes solo se muestra en la primera visita;
-  // al volver, solo aparece la cortina azul del hero.
-  const [done, setDone] = useState(
-    () => typeof window !== "undefined" && sessionStorage.getItem("pw-booted") === "1"
-  );
+  const [done, setDone] = useState(false);
   const reduced =
     typeof window !== "undefined" &&
     window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
+  useLayoutEffect(() => {
+    // Al volver, marcar como hecho antes del primer pintado: sin parpadeo beige.
+    try {
+      if (sessionStorage.getItem("pw-booted") === "1") setDone(true);
+    } catch {
+      /* sin almacenamiento: se muestra la carga */
+    }
+  }, []);
+
   useEffect(() => {
+    if (done) return;
     const root = rootRef.current;
-    if (!root || done) return;
+    if (!root) return;
     const lenis = getLenis();
     lenis?.stop();
     document.body.style.overflow = "hidden";
