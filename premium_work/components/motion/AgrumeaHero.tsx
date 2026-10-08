@@ -3,6 +3,7 @@
 import { motion } from "framer-motion";
 import ElementsCarousel from "@/components/three/ElementsCarousel";
 import CurtainIntro from "./CurtainIntro";
+import { useLang } from "@/components/i18n/lang";
 
 /**
  * Hero: carrusel 360° con los 8 elementos reales de Premium Work.
@@ -10,14 +11,15 @@ import CurtainIntro from "./CurtainIntro";
  * aparecen detrás. Arrastra o desplaza para girar entre sectores.
  */
 export default function AgrumeaHero() {
+  const { t } = useLang();
   return (
     <section
       id="inicio"
-      aria-label="Premium Work — inicio"
+      aria-label={t("hero.aria")}
       className="relative h-screen overflow-hidden bg-[#fdf3eb]"
     >
       <h1 className="sr-only">
-        Premium Work — Profesionales de hospitality para eventos en Madrid
+        {t("hero.title")}
       </h1>
 
       {/* Cortinas de presentación */}
@@ -34,7 +36,7 @@ export default function AgrumeaHero() {
 
         {/* Desliza para descubrir, como Agrumea */}
         <p className="pointer-events-none absolute inset-x-0 bottom-8 z-[2] text-center text-[11px] font-semibold uppercase tracking-[0.4em] text-[#131834]/70">
-          Desliza para descubrir
+          {t("hero.hint")}
         </p>
       </motion.div>
 
@@ -43,7 +45,7 @@ export default function AgrumeaHero() {
         href="/privacidad"
         className="absolute bottom-6 left-6 z-[2] text-xs text-[#131834]/70 underline underline-offset-4 hover:text-[#131834]"
       >
-        Privacidad y Cookies
+        {t("hero.privacy")}
       </a>
     </section>
   );

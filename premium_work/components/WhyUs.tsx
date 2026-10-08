@@ -1,17 +1,12 @@
 "use client";
 
 import { motion, useReducedMotion } from "framer-motion";
-
-const benefits = [
-  { title: "Selección con criterio", copy: "El perfil que su marca merece." },
-  { title: "Equipos que encajan", copy: "Preparados para su forma de trabajar." },
-  { title: "Supervisión que responde", copy: "Control cuando más importa." },
-  { title: "Una gestión sin fricción", copy: "Un responsable. Una dirección clara." },
-  { title: "Respuesta sin demoras", copy: "Sustitución ágil ante imprevistos." },
-];
+import { useLang } from "@/components/i18n/lang";
 
 export function WhyUs() {
+  const { t, dict } = useLang();
   const reducedMotion = useReducedMotion();
+  const benefits = dict.why.benefits;
 
   return (
     <section id="nosotros" className="relative scroll-mt-[calc(5rem+1px)] overflow-hidden bg-[linear-gradient(165deg,#0a1428_0%,#0a1428_58%,#060d1f_100%)] py-14 text-white md:py-28">
@@ -24,8 +19,8 @@ export function WhyUs() {
           transition={{ duration: 0.5 }}
           className="grid gap-4 md:grid-cols-[.65fr_1.35fr] md:items-end md:gap-12"
         >
-          <p className="eyebrow flex items-center gap-2 text-white/60"><span className="text-[#eab308]" aria-hidden="true">◆</span> La diferencia Premium Work</p>
-          <h2 className="display max-w-4xl text-[clamp(2.5rem,5.4vw,5.4rem)] text-white">La diferencia está en <em className="box-decoration-clone bg-[#2451e6] px-2 not-italic text-white">cómo lo hacemos.</em></h2>
+          <p className="eyebrow flex items-center gap-2 text-white/60"><span className="text-[#eab308]" aria-hidden="true">◆</span> {t("why.eyebrow")}</p>
+          <h2 className="display max-w-4xl text-[clamp(2.5rem,5.4vw,5.4rem)] text-white">{t("why.titleA")}<em className="box-decoration-clone bg-[#2451e6] px-2 not-italic text-white">{t("why.titleB")}</em></h2>
         </motion.header>
 
         <div className="mt-8 grid gap-3 md:mt-16 md:grid-cols-2 md:gap-4 lg:grid-cols-3 xl:grid-cols-5">

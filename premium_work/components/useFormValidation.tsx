@@ -2,14 +2,16 @@
 
 import { useId, useState, type FocusEvent, type FormEvent } from "react";
 import { validateForm, type FieldErrors, type FormKind } from "@/lib/form-validation";
+import { useLang } from "@/components/i18n/lang";
 
 export function useFormValidation(kind: FormKind) {
+  const { t, lang } = useLang();
   const id = useId();
   const [errors, setErrors] = useState<FieldErrors>({});
   function validate(form: HTMLFormElement) {
-    const next = validateForm(kind, Object.fromEntries(new FormData(form)));
+    const next = validateForm(kind, Object.fromEntries(new FormData(form)), lang);
     for (const control of form.elements) {
-      if (control instanceof HTMLInputElement && control.validity.badInput) next[control.name] = "Introduce un valor válido.";
+      if (control instanceof HTMLInputElement && control.validity.badInput) next[control.name] = t("validation.badInput");
     }
     setErrors(next);
     const first = Object.keys(next)[0];
@@ -20,13 +22,13 @@ export function useFormValidation(kind: FormKind) {
     const target = event.target;
     if (!(target instanceof HTMLInputElement || target instanceof HTMLTextAreaElement || target instanceof HTMLSelectElement)) return;
     if (!target.name) return;
-    const next = validateForm(kind, Object.fromEntries(new FormData(event.currentTarget)));
+    const next = validateForm(kind, Object.fromEntries(new FormData(event.currentTarget)), lang);
     setErrors(previous => ({ ...previous, [target.name]: next[target.name] || "" }));
   }
   function onChange(event: FormEvent<HTMLFormElement>) {
     const target = event.target;
     if (!(target instanceof HTMLInputElement || target instanceof HTMLTextAreaElement || target instanceof HTMLSelectElement) || !target.name || !errors[target.name]) return;
-    const next = validateForm(kind, Object.fromEntries(new FormData(event.currentTarget)));
+    const next = validateForm(kind, Object.fromEntries(new FormData(event.currentTarget)), lang);
     setErrors(previous => ({ ...previous, [target.name]: next[target.name] || "" }));
   }
   return {

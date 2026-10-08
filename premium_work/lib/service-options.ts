@@ -1,14 +1,14 @@
-export const serviceLabels: Record<string, string> = {
-  camareros: "Camareros/as", maitres: "Maîtres", "office-y-housekeeping": "Office y Housekeeping",
-  hostess: "Hostess", "personal-de-cocina": "Personal de cocina", supervisores: "Supervisores",
-};
-export const sectorLabels: Record<string, string> = {
-  hoteles: "Hoteles", restaurantes: "Restaurantes", catering: "Catering",
-  "eventos-corporativos": "Eventos corporativos", congresos: "Congresos", ferias: "Ferias",
-  "eventos-deportivos": "Eventos deportivos", festivales: "Festivales",
-  "bodas-y-celebraciones": "Bodas y celebraciones", "espacios-culturales": "Espacios culturales",
-  "clubs-y-ocio": "Clubs y ocio", "experiencias-privadas": "Experiencias privadas", otro: "Otro",
-};
+import { dicts, type Lang } from "@/components/i18n/dict";
+
+export function serviceLabels(lang: Lang): Record<string, string> {
+  return dicts[lang].serviceLabels;
+}
+export function sectorLabels(lang: Lang): Record<string, string> {
+  return dicts[lang].sectorLabels;
+}
+export function candidateSectors(lang: Lang): string[] {
+  return dicts[lang].candidateSectors;
+}
 
 export function validDate(value: string) {
   if (!/^\d{4}-\d{2}-\d{2}$/.test(value)) return false;

@@ -3,50 +3,15 @@
 import { useLayoutEffect, useRef, useState } from "react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
+import { useLang } from "@/components/i18n/lang";
 
 gsap.registerPlugin(ScrollTrigger);
 
-const CHAPTERS = [
-  {
-    time: "06:00",
-    label: "Mañana",
-    title: "Housekeeping y montaje",
-    text: "El día empieza antes que el sol. Habitaciones impecables y salas listas cuando se abre la puerta.",
-    sectors: "Hoteles",
-    bg: "#f7e8d3",
-    ink: "#131313",
-    sub: "#4a5264",
-  },
-  {
-    time: "12:00",
-    label: "Mediodía",
-    title: "Cocina en plena acción",
-    text: "Fuego, ritmo y precisión. Nuestro personal de cocina sostiene el servicio en la hora punta.",
-    sectors: "Restaurantes · Catering",
-    bg: "#e9f1fb",
-    ink: "#131313",
-    sub: "#4a5264",
-  },
-  {
-    time: "18:00",
-    label: "Tarde",
-    title: "El evento toma forma",
-    text: "Recepción, sala llena, todo en su sitio. Maîtres, hostess y camareros trabajando en sincronía.",
-    sectors: "Corporativos · Deportivos",
-    bg: "#f3cf8e",
-    ink: "#131313",
-    sub: "#5a4a2a",
-  },
-  {
-    time: "22:00",
-    label: "Noche",
-    title: "La gala",
-    text: "Bodas, galas y festivales bajo las luces. El equipo que hace posible la noche.",
-    sectors: "Bodas · Festivales · Privados",
-    bg: "#0a1428",
-    ink: "#ffffff",
-    sub: "#c6d4f5",
-  },
+const CHAPTER_STYLE = [
+  { bg: "#f7e8d3", ink: "#131313", sub: "#4a5264" },
+  { bg: "#e9f1fb", ink: "#131313", sub: "#4a5264" },
+  { bg: "#f3cf8e", ink: "#131313", sub: "#5a4a2a" },
+  { bg: "#0a1428", ink: "#ffffff", sub: "#c6d4f5" },
 ];
 
 /**
@@ -55,10 +20,12 @@ const CHAPTERS = [
  * ligado al scroll (scrub) y un dial marca el progreso.
  */
 export function DayJourney() {
+  const { t, dict } = useLang();
   const root = useRef<HTMLElement>(null);
   const [reduced] = useState(
     () => typeof window !== "undefined" && window.matchMedia("(prefers-reduced-motion: reduce)").matches
   );
+  const CHAPTERS = dict.journey.chapters.map((c, i) => ({ ...c, ...CHAPTER_STYLE[i] }));
 
   useLayoutEffect(() => {
     if (!root.current || reduced) return;
@@ -125,7 +92,7 @@ export function DayJourney() {
   }, [reduced]);
 
   return (
-    <section ref={root} className="relative" style={{ height: reduced ? "auto" : "420vh" }} aria-label="El día del evento">
+    <section ref={root} className="relative" style={{ height: reduced ? "auto" : "420vh" }} aria-label={t("journey.aria")}>
       <div className={reduced ? "relative" : "sticky top-0 flex h-screen items-center overflow-hidden"}>
         <div data-journey-bg className="absolute inset-0" style={{ backgroundColor: CHAPTERS[0].bg }} aria-hidden="true" />
         {/* Dial sol/reloj */}
@@ -180,7 +147,7 @@ export function DayJourney() {
         </div>
 
         <p data-journey-hint aria-hidden="true" className="absolute bottom-8 left-1/2 z-20 -translate-x-1/2 eyebrow" style={{ color: CHAPTERS[0].sub }}>
-          Sigue bajando · el día avanza
+          {t("journey.hint")}
         </p>
       </div>
     </section>

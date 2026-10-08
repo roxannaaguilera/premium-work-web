@@ -61,7 +61,7 @@ export default function ClientsPage() {
     <p role="status" className="my-6 text-sm">{status}</p>
     <div className="overflow-x-auto"><table className="w-full text-left text-sm"><thead><tr>{["Empresa y contacto", "Sector y servicio", "Evento", "Personal", "Presupuesto", "Solicitud"].map((label) => <th key={label} scope="col" className="border-b border-[#0B1F3A]/20 p-3">{label}</th>)}</tr></thead><tbody>{rows.map((row) => <tr key={row.id} className="border-b border-[#0B1F3A]/10 align-top">
       <td className="p-3"><strong>{row.company}</strong><p>{row.name}</p><p>{row.email}</p><p>{row.phone || "Sin teléfono"}</p></td>
-      <td className="p-3">{sectorLabels[row.sector] || row.sector}<p>{serviceLabels[row.service] || row.service}</p></td>
+      <td className="p-3">{sectorLabels("es")[row.sector] || row.sector}<p>{serviceLabels("es")[row.service] || row.service}</p></td>
       <td className="p-3">{row.city}<p>{row.event_date ? row.event_date.split("-").reverse().join("/") : "Fecha por definir"}</p></td>
       <td className="p-3">{row.staff_count ?? "Por definir"}</td>
       <td className="p-3">{row.budget === null ? "Por definir" : new Intl.NumberFormat("es-ES", { style: "currency", currency: "EUR" }).format(row.budget)}</td>

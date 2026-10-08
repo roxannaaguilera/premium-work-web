@@ -2,72 +2,34 @@
 
 import { ArrowRight, ChevronDown } from "lucide-react";
 import { useState } from "react";
+import { useLang } from "@/components/i18n/lang";
 
-const sectors = [
-  {
-    title: "Hoteles",
-    slug: "hoteles",
-    copy: "Camareros, maîtres, hostess y personal de housekeeping seleccionados y supervisados para el día a día del hotel y sus eventos.",
-  },
-  {
-    title: "Restaurantes",
-    slug: "restaurantes",
-    copy: "Refuerzos de sala y cocina que se integran con agilidad en tu equipo, trabajando con los estándares de tu casa.",
-  },
-  {
-    title: "Catering",
-    slug: "catering",
-    copy: "Equipos completos de sala, cocina y office para servicios dentro y fuera de tus instalaciones.",
-  },
-  {
-    title: "Eventos corporativos",
-    slug: "eventos-corporativos",
-    copy: "Personal de recepción, sala y coordinación para congresos, convenciones y actos de empresa.",
-  },
-  {
-    title: "Eventos deportivos",
-    slug: "eventos-deportivos",
-    copy: "Equipos ágiles para hospitality, palcos y zonas VIP en competiciones y torneos.",
-  },
-  {
-    title: "Festivales",
-    slug: "festivales",
-    copy: "Refuerzos numerosos y supervisados para barras, accesos y zonas de restauración.",
-  },
-  {
-    title: "Bodas y celebraciones",
-    slug: "bodas-y-celebraciones",
-    copy: "Maîtres, camareros y hostess con la presencia y el cuidado que exige un día único.",
-  },
-  {
-    title: "Eventos privados",
-    slug: "experiencias-privadas",
-    copy: "Discreción y excelencia para celebraciones privadas, con un solo interlocutor.",
-  },
-];
+const SLUGS = ["hoteles", "restaurantes", "catering", "eventos-corporativos", "eventos-deportivos", "festivales", "bodas-y-celebraciones", "experiencias-privadas"];
 
 export function SectorsAccordion() {
+  const { t, dict } = useLang();
   const [open, setOpen] = useState<number | null>(0);
+  const sectors = dict.sectors.items.map((s, i) => ({ ...s, slug: SLUGS[i] }));
 
   return (
-    <section aria-label="Sectores en los que trabajamos" className="relative overflow-hidden bg-white py-10 md:py-16">
+    <section aria-label={t("sectors.aria")} className="relative overflow-hidden bg-white py-10 md:py-16">
       <div aria-hidden="true" className="hero-dots pointer-events-none absolute inset-0" />
       <div className="relative z-10 mx-auto grid w-full max-w-[1600px] gap-6 px-5 md:gap-12 md:px-8 lg:grid-cols-[1fr_1.5fr] lg:gap-24 lg:px-10">
         <div className="lg:sticky lg:top-28 lg:self-start">
           <p className="eyebrow flex items-center gap-2 text-[#131313]/60">
-            <span className="text-[#eab308]" aria-hidden="true">◆</span> Sectores
+            <span className="text-[#eab308]" aria-hidden="true">◆</span> {t("sectors.eyebrow")}
           </p>
           <h2 className="display mt-4 text-3xl leading-[1.02] text-[#131313] md:mt-6 md:text-[clamp(2.5rem,5vw,4.5rem)]">
-            ¿Dónde<br />trabajamos?
+            {t("sectors.titleA")}<br />{t("sectors.titleB")}
           </h2>
           <p className="mt-6 hidden max-w-md text-base leading-7 text-[#131313]/70 md:block">
-            Llevamos profesionales seleccionados, formados y supervisados a cada tipo de espacio y evento.
+            {t("sectors.copy")}
           </p>
           <a
             href="/solicitar-servicio"
             className="mt-6 inline-flex items-center gap-2 rounded-full bg-[#2451e6] px-6 py-3.5 text-sm font-bold text-white transition hover:-translate-y-0.5 hover:bg-[#1b45c4] md:mt-8"
           >
-            Solicitar servicio <ArrowRight size={18} aria-hidden="true" />
+            {t("sectors.cta")} <ArrowRight size={18} aria-hidden="true" />
           </a>
         </div>
 
@@ -102,7 +64,7 @@ export function SectorsAccordion() {
                         href={`/solicitar-servicio?sector=${sector.slug}`}
                         className="mt-4 inline-flex items-center gap-2 text-sm font-bold text-[#173aab] transition hover:gap-3"
                       >
-                        Solicitar servicio para {sector.title.toLowerCase()} <ArrowRight size={16} aria-hidden="true" />
+                        {t("sectors.requestFor")} {sector.title.toLowerCase()} <ArrowRight size={16} aria-hidden="true" />
                       </a>
                     </div>
                   </div>

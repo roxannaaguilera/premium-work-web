@@ -5,6 +5,7 @@ import * as THREE from "three";
 import { EffectComposer } from "three/addons/postprocessing/EffectComposer.js";
 import { RenderPass } from "three/addons/postprocessing/RenderPass.js";
 import { BokehPass } from "three/addons/postprocessing/BokehPass.js";
+import { useLang } from "@/components/i18n/lang";
 
 const SECTORS = [
   { name: "Hoteles", src: "/images/elementos-reales/hoteles.png" },
@@ -28,6 +29,7 @@ const ITEM_SIZE = 1.45;
  * Arrastra o desplaza para girar 360° entre sectores.
  */
 export default function ElementsCarousel() {
+  const { t } = useLang();
   const mountRef = useRef<HTMLDivElement>(null);
   const tagRef = useRef<HTMLDivElement>(null);
 
@@ -283,7 +285,7 @@ export default function ElementsCarousel() {
       >
         <span className="inline-flex items-center gap-3 whitespace-nowrap rounded-full bg-[#131834] px-4 py-2 text-[11px] font-semibold uppercase tracking-[0.2em] text-[#f3ead6] shadow-lg">
           <span className="inline-block h-2 w-2 rotate-45 bg-[#d9a83f]" />
-          Descubre el servicio
+          {t("hero.discoverTag")}
         </span>
       </div>
     </div>

@@ -4,15 +4,16 @@ import { useLayoutEffect, useRef, useState } from "react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import Cloche3D from "@/components/three/Cloche3D";
+import { useLang } from "@/components/i18n/lang";
 
 gsap.registerPlugin(ScrollTrigger);
 
-const CARDS = [  { src: "/images/escaparate-flotante/camareros.jpg", label: "Camareros/as", x: "6%", y: "16%", r: -8, speed: 90, z: 3, mobile: true },
-  { src: "/images/escaparate-flotante/maitres.jpg", label: "Maîtres", x: "70%", y: "10%", r: 7, speed: -70, z: 2, mobile: true },
-  { src: "/images/escaparate-flotante/cocina.jpg", label: "Personal de cocina", x: "38%", y: "30%", r: -3, speed: 50, z: 4, mobile: true },
-  { src: "/images/escaparate-flotante/housekeeping.jpg", label: "Office y Housekeeping", x: "14%", y: "60%", r: 6, speed: -90, z: 2, mobile: false },
-  { src: "/images/escaparate-flotante/hostess.jpg", label: "Hostess", x: "72%", y: "58%", r: -6, speed: 80, z: 3, mobile: false },
-  { src: "/images/escaparate-flotante/supervisores.jpg", label: "Supervisores", x: "42%", y: "66%", r: 4, speed: -50, z: 5, mobile: false },
+const CARD_DEFS = [  { src: "/images/escaparate-flotante/camareros.jpg", x: "6%", y: "16%", r: -8, speed: 90, z: 3, mobile: true },
+  { src: "/images/escaparate-flotante/maitres.jpg", x: "70%", y: "10%", r: 7, speed: -70, z: 2, mobile: true },
+  { src: "/images/escaparate-flotante/cocina.jpg", x: "38%", y: "30%", r: -3, speed: 50, z: 4, mobile: true },
+  { src: "/images/escaparate-flotante/housekeeping.jpg", x: "14%", y: "60%", r: 6, speed: -90, z: 2, mobile: false },
+  { src: "/images/escaparate-flotante/hostess.jpg", x: "72%", y: "58%", r: -6, speed: 80, z: 3, mobile: false },
+  { src: "/images/escaparate-flotante/supervisores.jpg", x: "42%", y: "66%", r: 4, speed: -50, z: 5, mobile: false },
 ];
 
 /** Objetos 3D renderizados flotando sin marco, como acentos entre las tarjetas. */
@@ -28,10 +29,12 @@ const OBJECTS = [
  * tipografía gigante detrás y parallax ligado al scroll.
  */
 export function FloatingShowcase() {
+  const { t, dict } = useLang();
   const root = useRef<HTMLElement>(null);
   const [reduced] = useState(
     () => typeof window !== "undefined" && window.matchMedia("(prefers-reduced-motion: reduce)").matches
   );
+  const CARDS = CARD_DEFS.map((c, i) => ({ ...c, label: dict.showcase.cards[i] }));
 
   useLayoutEffect(() => {
     if (!root.current || reduced) return;
@@ -91,7 +94,7 @@ export function FloatingShowcase() {
   }, [reduced]);
 
   return (
-    <section ref={root} className="relative overflow-hidden bg-[#0a1428] text-white" aria-label="Nuestros servicios">
+    <section ref={root} className="relative overflow-hidden bg-[#0a1428] text-white" aria-label={t("showcase.aria")}>
       <div className={reduced ? "relative px-5 py-20" : "relative h-[220vh]"}>
         <div className={reduced ? "relative" : "sticky top-0 flex h-screen flex-col overflow-hidden"}>
           {/* Palabra gigante detrás */}
@@ -100,7 +103,7 @@ export function FloatingShowcase() {
             className="display pointer-events-none absolute left-1/2 top-1/2 z-0 -translate-x-1/2 -translate-y-1/2 select-none whitespace-nowrap text-[clamp(4rem,18vw,16rem)] leading-none text-transparent"
             style={{ WebkitTextStroke: "1px rgba(255,255,255,0.14)" }}
           >
-            SERVICIOS
+            {t("showcase.giant")}
           </div>
 
           {/* Mancha orgánica azul royal */}
@@ -129,9 +132,9 @@ export function FloatingShowcase() {
 
           {/* Titular */}
           <div data-float-head className="relative z-10 mx-auto w-full max-w-[1100px] px-5 pt-24 text-center md:px-8">
-            <p className="eyebrow text-[#9db8ff]">El equipo</p>
+            <p className="eyebrow text-[#9db8ff]">{t("showcase.eyebrow")}</p>
             <h2 className="display mx-auto mt-4 max-w-[16ch] text-[clamp(2.2rem,6vw,4.2rem)]">
-              Las personas detrás del <span className="text-[#eab308]">servicio perfecto</span>
+              {t("showcase.titleA")}<span className="text-[#eab308]">{t("showcase.titleB")}</span>
             </h2>
           </div>
 
@@ -216,7 +219,7 @@ export function FloatingShowcase() {
               href="/solicitar-servicio"
               className="inline-flex items-center rounded-full bg-[#eab308] px-8 py-4 text-[15px] font-bold text-[#0a1428] transition-transform duration-300 hover:scale-[1.04]"
             >
-              Montemos tu evento
+              {t("showcase.cta")}
             </a>
           </div>
         </div>

@@ -2,20 +2,19 @@
 
 import { ChevronDown, Menu, X } from "lucide-react";
 import { useEffect, useState } from "react";
-import { serviceLabels } from "@/lib/service-options";
-
-const services = Object.entries(serviceLabels);
-
-const links = [
-  ["Inicio", "/#inicio"],
-  ["Profesionales", "/registro"],
-  ["Contacto", "/#contacto"],
-];
+import { useLang } from "@/components/i18n/lang";
 
 export function Navbar() {
+  const { t, dict, lang } = useLang();
   const [menu, setMenu] = useState(false);
   const [servicesOpen, setServicesOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
+  const services = Object.entries(dict.serviceLabels);
+  const links = [
+    [t("navbar.home"), "/#inicio"],
+    [t("navbar.professionals"), "/registro"],
+    [t("navbar.contact"), "/#contacto"],
+  ];
 
   useEffect(() => {
     if (!menu) return;
@@ -44,7 +43,7 @@ export function Navbar() {
         {/* Logo: diamante en rombo + premium work */}
         <a
           href="/#inicio"
-          aria-label="Premium Work, Inicio"
+          aria-label={t("navbar.logoLabel")}
           className="shrink-0 rounded-full border border-[#e5e7eb] bg-white px-5 py-2.5 shadow-sm transition-shadow hover:shadow-md"
         >
           <span className="flex items-center gap-2">
@@ -55,7 +54,7 @@ export function Navbar() {
 
         {/* Desktop menu */}
         <div className="hidden items-center gap-7 lg:flex">
-          <a href="/#inicio" className="nav-link text-sm font-semibold">Inicio</a>
+          <a href="/#inicio" className="nav-link text-sm font-semibold">{t("navbar.home")}</a>
 
           <div
             className="relative"
@@ -68,7 +67,7 @@ export function Navbar() {
               aria-haspopup="true"
               className="nav-link flex items-center gap-1 text-sm font-semibold"
             >
-              Servicios <ChevronDown size={15} aria-hidden="true" />
+              {t("navbar.services")} <ChevronDown size={15} aria-hidden="true" />
             </button>
 
             {servicesOpen && (
@@ -103,7 +102,7 @@ export function Navbar() {
               href="/solicitar-servicio"
               className="btn btn-dark !min-h-0 !px-6 !py-3 text-sm"
             >
-              Solicitar servicio
+              {t("navbar.request")}
             </a>
           </div>
         )}
@@ -112,7 +111,7 @@ export function Navbar() {
         <button
           aria-expanded={menu}
           aria-controls="mobile-navigation"
-          aria-label={menu ? "Cerrar menú" : "Abrir menú"}
+          aria-label={menu ? t("navbar.closeMenu") : t("navbar.openMenu")}
           onClick={() => setMenu(!menu)}
           className="flex h-11 w-11 items-center justify-center rounded-full border border-[#e5e7eb] bg-white text-[#131313] lg:hidden"
         >
@@ -130,7 +129,7 @@ export function Navbar() {
 
             {/* Close button */}
             <button
-              aria-label="Cerrar menú"
+              aria-label={t("navbar.closeMenu")}
               onClick={() => setMenu(false)}
               className="absolute right-5 top-5 flex h-11 w-11 items-center justify-center rounded-full border border-[#e5e7eb]"
             >
@@ -154,7 +153,7 @@ export function Navbar() {
               {/* Services */}
               <div className="pt-4">
                 <p className="text-xs font-bold uppercase tracking-[.18em] text-[#8b8b8b]">
-                  Servicios
+                  {t("navbar.services")}
                 </p>
 
                 <div className="mt-3 grid gap-1 sm:grid-cols-2">
@@ -177,19 +176,19 @@ export function Navbar() {
                 onClick={() => setMenu(false)}
                 className="btn btn-dark mt-6 w-full"
               >
-                Solicitar servicio
+                {t("navbar.request")}
               </a>
               <a
                 href="/registro"
                 onClick={() => setMenu(false)}
                 className="btn btn-outline w-full"
               >
-                Soy profesional
+                {t("navbar.imPro")}
               </a>
 
               {/* Footer */}
               <div className="mt-10 border-t border-[#e5e7eb] pt-6 text-sm">
-                <p className="mb-3 font-bold">Contacto</p>
+                <p className="mb-3 font-bold">{t("navbar.contactTitle")}</p>
 
                 <a
                   href="https://api.whatsapp.com/send/?phone=34604858113"

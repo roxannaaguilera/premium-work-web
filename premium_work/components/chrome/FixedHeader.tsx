@@ -3,19 +3,42 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import gsap from "gsap";
 import { getLenis } from "@/lib/lenis-instance";
+import { useLang } from "@/components/i18n/lang";
 
-const LINKS = [
-  { href: "#inicio", label: "Inicio" },
-  { href: "#servicios", label: "Servicios" },
-  { href: "#nosotros", label: "Nosotros" },
-  { href: "#contacto", label: "Contacto" },
-];
+const LINK_HREFS = ["#inicio", "#servicios", "#nosotros", "#contacto"];
+
+function LangToggle() {
+  const { lang, setLang } = useLang();
+  return (
+    <div
+      role="group"
+      aria-label="Language / Idioma"
+      className="flex items-center overflow-hidden rounded-full border border-[#131834]/20 text-xs font-bold"
+    >
+      {(["es", "en"] as const).map((l) => (
+        <button
+          key={l}
+          type="button"
+          onClick={() => setLang(l)}
+          aria-pressed={lang === l}
+          className={`px-3 py-2 uppercase tracking-wider transition-colors ${
+            lang === l ? "bg-[#131834] text-[#faf6ee]" : "text-[#131834]/60 hover:text-[#131834]"
+          }`}
+        >
+          {l}
+        </button>
+      ))}
+    </div>
+  );
+}
 
 export default function FixedHeader() {
+  const { t, dict } = useLang();
   const [scrolled, setScrolled] = useState(false);
   const [open, setOpen] = useState(false);
   const overlayRef = useRef<HTMLDivElement>(null);
   const linksRef = useRef<HTMLUListElement>(null);
+  const LINKS = LINK_HREFS.map((href, i) => ({ href, label: dict.header.nav[i] }));
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 40);
@@ -76,14 +99,15 @@ export default function FixedHeader() {
       >
         <div className="grid grid-cols-[1fr_auto_1fr] items-center px-5 md:px-8 pt-7 md:pt-9 pb-3">
           <div aria-hidden="true" />
-          <a href="#inicio" aria-label="Premium Work — inicio" className="block justify-self-center">
+          <a href="#inicio" aria-label={t("header.logoLabel")} className="block justify-self-center">
             <img
               src="/images/logo-premium-work.png"
               alt="Premium Work"
-              className="h-24 md:h-28 w-auto"
+              className="h-28 md:h-36 w-auto"
             />
           </a>
           <div className="flex items-center gap-2 justify-self-end">
+            <LangToggle />
             <button
               type="button"
               onClick={() => setOpen(true)}
@@ -91,14 +115,14 @@ export default function FixedHeader() {
               aria-expanded={open}
               className="inline-flex items-center rounded-full bg-[#131834] px-5 py-2 text-sm font-semibold tracking-wide text-[#faf6ee] hover:bg-[#1e2450] transition-colors"
             >
-              MENÚ
+              {t("header.menu")}
             </button>
             <button
               type="button"
               onClick={() => setOpen(true)}
               aria-haspopup="dialog"
               aria-expanded={open}
-              aria-label="Abrir menú"
+              aria-label={t("header.openMenu")}
               className="flex h-9 w-9 items-center justify-center rounded-full bg-[#131834] hover:bg-[#1e2450] transition-colors"
             >
               <span aria-hidden="true" className="inline-block h-2.5 w-2.5 rotate-45 bg-[#eab308]" />
@@ -112,7 +136,7 @@ export default function FixedHeader() {
         ref={overlayRef}
         role="dialog"
         aria-modal="true"
-        aria-label="Menú principal"
+        aria-label={t("header.menuLabel")}
         style={{ display: "none", opacity: 0 }}
         className="fixed inset-0 z-[70] flex-col bg-[#131834] text-[#faf6ee]"
       >
@@ -125,7 +149,7 @@ export default function FixedHeader() {
             <button
               type="button"
               onClick={close}
-              aria-label="Cerrar menú"
+              aria-label={t("header.closeMenu")}
               className="flex h-9 w-9 items-center justify-center rounded-full border border-[#faf6ee]/40 text-[#faf6ee] hover:bg-[#faf6ee] hover:text-[#131834] transition-colors"
             >
               <span aria-hidden="true" className="text-lg leading-none">✕</span>
@@ -153,9 +177,9 @@ export default function FixedHeader() {
           </ul>
         </nav>
         <div className="flex flex-col md:flex-row gap-2 md:items-center md:justify-between px-5 md:px-16 pb-8 text-sm text-[#faf6ee]/70">
-          <span>Personal de hospitality para eventos en Madrid</span>
+          <span>{t("header.tagline")}</span>
           <a href="#contacto" onClick={close} className="underline underline-offset-4 hover:text-[#eab308]">
-            Solicitar servicio →
+            {t("header.requestService")} →
           </a>
         </div>
       </div>
