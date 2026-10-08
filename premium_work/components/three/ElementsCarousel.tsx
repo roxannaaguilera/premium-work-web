@@ -2,12 +2,15 @@
 
 import { useEffect, useRef } from "react";
 import * as THREE from "three";
+import { EffectComposer } from "three/addons/postprocessing/EffectComposer.js";
+import { RenderPass } from "three/addons/postprocessing/RenderPass.js";
+import { BokehPass } from "three/addons/postprocessing/BokehPass.js";
 import { SECTOR_ELEMENTS } from "./elementBuilders";
 
 const COUNT = SECTOR_ELEMENTS.length;
 const STEP = (Math.PI * 2) / COUNT;
-const RADIUS_X = 2.85;
-const RADIUS_Z = 1.55;
+const RADIUS_X = 1.7;
+const DEPTH = 2.15;
 
 function wrapAngle(angle: number) {
   let v = angle % (Math.PI * 2);
@@ -18,8 +21,8 @@ function wrapAngle(angle: number) {
 
 /**
  * Carrusel 3D de los 8 elementos de Premium Work.
+ * El del frente sale de la pantalla, nítido; los laterales se inclinan y se desenfocan.
  * Arrastra o desplaza para girar; encaja en el sector más cercano.
- * Misma luz y materiales que los elementos del hero.
  */
 export default function ElementsCarousel() {
   const mountRef = useRef<HTMLDivElement>(null);
@@ -32,7 +35,7 @@ export default function ElementsCarousel() {
     const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
     renderer.setPixelRatio(Math.min(window.devicePixelRatio, 1.75));
     renderer.setSize(mount.clientWidth || 800, mount.clientHeight || 600);
-    renderer.setClearColor(0x000000, 0);
+    renderer.setClearColor(0xfdf3eb, 1);
     renderer.shadowMap.enabled = true;
     renderer.shadowMap.type = THREE.PCFSoftShadowMap;
     renderer.outputColorSpace = THREE.SRGBColorSpace;
@@ -42,6 +45,7 @@ export default function ElementsCarousel() {
     mount.appendChild(renderer.domElement);
 
     const scene = new THREE.Scene();
+    scene.background = new THREE.Color(0xfdf3eb);
 
     // Entorno para reflejos metálicos
     const envC = document.createElement("canvas");
@@ -56,9 +60,9 @@ export default function ElementsCarousel() {
     envTex.colorSpace = THREE.SRGBColorSpace;
     scene.environment = envTex;
 
-    const camera = new THREE.PerspectiveCamera(32, 1, 0.1, 60);
-    camera.position.set(0, 1.15, 6.6);
-    camera.lookAt(0, 0.85, 0);
+    const camera = new THREE.PerspectiveCamera(52, 1, 0.08, 30);
+    camera.position.set(0, 0.28, 3.35);
+    camera.lookAt(0, 0.22, 0.8);
 
     // ---------- Luces ----------
     scene.add(new THREE.HemisphereLight(0xfff2e0, 0x2a1f16, 0.4));
@@ -76,6 +80,17 @@ export default function ElementsCarousel() {
     const front = new THREE.DirectionalLight(0xfff0dd, 0.55);
     front.position.set(0.5, 1.2, 5);
     scene.add(front);
+
+    const composer = new EffectComposer(renderer);
+    composer.setPixelRatio(Math.min(window.devicePixelRatio, 1.75));
+    composer.addPass(new RenderPass(scene, camera));
+    const bokeh = new BokehPass(scene, camera, {
+      focus: 1.7,
+      aperture: 0.22,
+      maxblur: 0.035,
+    });
+    composer.addPass(bokeh);
+    const focusPoint = new THREE.Vector3();
 
     // ---------- Elementos normalizados en círculo ----------
     const items: THREE.Group[] = [];
@@ -138,6 +153,7 @@ export default function ElementsCarousel() {
       camera.aspect = w / h;
       camera.updateProjectionMatrix();
       renderer.setSize(w, h);
+      composer.setSize(w, h);
     });
     ro.observe(mount);
 
@@ -154,21 +170,29 @@ export default function ElementsCarousel() {
         const angle = wrapAngle(i * STEP - rotation);
         const away = Math.abs(angle);
         const frontness = Math.max(0, Math.cos(angle));
+        const side = Math.sin(angle);
         wrap.position.set(
-          Math.sin(angle) * RADIUS_X,
-          0.55 + Math.sin(elapsed * 1.4 + i * 1.3) * 0.03,
-          Math.cos(angle) * RADIUS_Z
+          side * RADIUS_X,
+          0.08 + (1 - frontness) * 0.28 + Math.sin(elapsed * 1.4 + i * 1.3) * 0.03,
+          -0.35 + Math.cos(angle) * DEPTH
         );
-        wrap.rotation.y = angle;
-        wrap.scale.setScalar(away > 2.35 ? 0.001 : 0.8 + frontness * 0.5);
-        wrap.visible = away < 2.4;
+        wrap.rotation.order = "YXZ";
+        wrap.rotation.y = side * 0.7;
+        wrap.rotation.x = -0.82;
+        wrap.rotation.z = -side * 0.55;
+        wrap.scale.setScalar(away > 1.45 ? 0.001 : 0.36 + frontness * frontness * 1.45);
+        wrap.visible = away < 1.5;
       });
       const index = ((Math.round(rotation / STEP) % COUNT) + COUNT) % COUNT;
       if (index !== shown && captionRef.current) {
         shown = index;
         captionRef.current.textContent = SECTOR_ELEMENTS[index].name;
       }
-      renderer.render(scene, camera);
+      items[index].updateMatrixWorld(true);
+      items[index].getWorldPosition(focusPoint);
+      focusPoint.applyMatrix4(camera.matrixWorldInverse);
+      bokeh.uniforms.focus.value = -focusPoint.z;
+      composer.render();
     };
     animate();
 
@@ -187,6 +211,8 @@ export default function ElementsCarousel() {
         else if (mat) mat.dispose();
       });
       envTex.dispose();
+      bokeh.dispose();
+      composer.dispose();
       renderer.dispose();
       mount.removeChild(el);
     };
