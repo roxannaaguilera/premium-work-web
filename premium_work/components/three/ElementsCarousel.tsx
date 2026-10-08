@@ -30,7 +30,6 @@ const ITEM_SIZE = 1.45;
 export default function ElementsCarousel() {
   const mountRef = useRef<HTMLDivElement>(null);
   const tagRef = useRef<HTMLDivElement>(null);
-  const tagNameRef = useRef<HTMLSpanElement>(null);
 
   useEffect(() => {
     const mount = mountRef.current;
@@ -104,7 +103,6 @@ export default function ElementsCarousel() {
     let tagY = 0;
     let tagTX = 0;
     let tagTY = 0;
-    let shownTag = -1;
 
     const onDown = (e: PointerEvent) => {
       dragging = true;
@@ -226,10 +224,6 @@ export default function ElementsCarousel() {
         tagRef.current.style.transform = `translate(${tagX + 20}px, ${tagY - 18}px)`;
         tagRef.current.style.opacity = hovered ? "1" : "0";
       }
-      if (tagNameRef.current && index !== shownTag) {
-        shownTag = index;
-        tagNameRef.current.textContent = SECTORS[index].name;
-      }
 
       items[index].updateMatrixWorld(true);
       items[index].getWorldPosition(focusPoint);
@@ -287,8 +281,9 @@ export default function ElementsCarousel() {
         className="pointer-events-none absolute left-0 top-0 z-[3] opacity-0 transition-opacity duration-200"
         aria-hidden="true"
       >
-        <span className="whitespace-nowrap rounded-full bg-[#131834] px-4 py-2 text-[11px] font-semibold uppercase tracking-[0.2em] text-[#f3ead6] shadow-lg">
-          <span ref={tagNameRef}>Hoteles</span> · Descubre el servicio
+        <span className="inline-flex items-center gap-3 whitespace-nowrap rounded-full bg-[#131834] px-4 py-2 text-[11px] font-semibold uppercase tracking-[0.2em] text-[#f3ead6] shadow-lg">
+          <span className="inline-block h-2 w-2 rotate-45 bg-[#d9a83f]" />
+          Descubre el servicio
         </span>
       </div>
     </div>
