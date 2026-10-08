@@ -5,20 +5,33 @@ import * as THREE from "three";
 import { EffectComposer } from "three/addons/postprocessing/EffectComposer.js";
 import { RenderPass } from "three/addons/postprocessing/RenderPass.js";
 import { BokehPass } from "three/addons/postprocessing/BokehPass.js";
-import { SECTOR_ELEMENTS } from "./elementBuilders";
 
-const COUNT = SECTOR_ELEMENTS.length;
+const SECTORS = [
+  { name: "Hoteles", src: "/images/elementos-reales/hoteles.png" },
+  { name: "Restaurantes", src: "/images/elementos-reales/restaurantes.png" },
+  { name: "Catering", src: "/images/elementos-reales/catering.png" },
+  { name: "Eventos corporativos", src: "/images/elementos-reales/corporativos.png" },
+  { name: "Eventos deportivos", src: "/images/elementos-reales/deportivos.png" },
+  { name: "Festivales", src: "/images/elementos-reales/festivales.png" },
+  { name: "Bodas y celebraciones", src: "/images/elementos-reales/bodas.png" },
+  { name: "Eventos privados", src: "/images/elementos-reales/privados.png" },
+] as const;
+
+const COUNT = SECTORS.length;
 const STEP = (Math.PI * 2) / COUNT;
 /** Casillas desde el objeto nítido del centro hasta la esquina de la pantalla. */
 const CORNER = 2.05;
+const ITEM_SIZE = 1.9;
 
 /**
- * Los 8 elementos de Premium Work en una diagonal de esquina a esquina.
- * El del centro sale de la pantalla y se queda nítido; hacia las esquinas
- * se inclinan, se alejan y se desenfocan. Arrastra o desplaza para cambiar.
+ * Los 8 elementos reales de Premium Work (fotografía) en diagonal de
+ * esquina a esquina. El del centro sale de la pantalla y se queda nítido;
+ * hacia las esquinas se inclinan, se alejan y se desenfocan (bokeh).
+ * Arrastra o desplaza para girar 360° entre sectores.
  */
 export default function ElementsCarousel() {
   const mountRef = useRef<HTMLDivElement>(null);
+  const captionRef = useRef<HTMLHeadingElement>(null);
 
   useEffect(() => {
     const mount = mountRef.current;
@@ -28,50 +41,17 @@ export default function ElementsCarousel() {
     renderer.setPixelRatio(Math.min(window.devicePixelRatio, 1.75));
     renderer.setSize(mount.clientWidth || 800, mount.clientHeight || 600);
     renderer.setClearColor(0xfdf3eb, 1);
-    renderer.shadowMap.enabled = true;
-    renderer.shadowMap.type = THREE.PCFSoftShadowMap;
     renderer.outputColorSpace = THREE.SRGBColorSpace;
-    renderer.toneMapping = THREE.ACESFilmicToneMapping;
-    renderer.toneMappingExposure = 1.1;
+    renderer.toneMapping = THREE.NoToneMapping;
     renderer.domElement.style.cursor = "grab";
     mount.appendChild(renderer.domElement);
 
     const scene = new THREE.Scene();
     scene.background = new THREE.Color(0xfdf3eb);
 
-    // Entorno para reflejos metálicos
-    const envC = document.createElement("canvas");
-    envC.width = 64; envC.height = 64;
-    const ex = envC.getContext("2d")!;
-    const grd = ex.createLinearGradient(0, 0, 0, 64);
-    grd.addColorStop(0, "#fff6e0"); grd.addColorStop(0.45, "#8a7a5a");
-    grd.addColorStop(0.55, "#2a241c"); grd.addColorStop(1, "#0c0a08");
-    ex.fillStyle = grd; ex.fillRect(0, 0, 64, 64);
-    const envTex = new THREE.CanvasTexture(envC);
-    envTex.mapping = THREE.EquirectangularReflectionMapping;
-    envTex.colorSpace = THREE.SRGBColorSpace;
-    scene.environment = envTex;
-
     const camera = new THREE.PerspectiveCamera(38, 1, 0.08, 40);
     camera.position.set(0, 0.08, 5.2);
     camera.lookAt(0, 0.02, 0.5);
-
-    // ---------- Luces ----------
-    scene.add(new THREE.HemisphereLight(0xfff2e0, 0x2a1f16, 0.4));
-    const key = new THREE.DirectionalLight(0xffe6c4, 1.15);
-    key.position.set(3.5, 6.5, 4.5);
-    key.castShadow = true;
-    key.shadow.mapSize.set(1024, 1024);
-    key.shadow.camera.left = -8; key.shadow.camera.right = 8;
-    key.shadow.camera.top = 8; key.shadow.camera.bottom = -8;
-    key.shadow.bias = -0.0004;
-    scene.add(key);
-    const rim = new THREE.DirectionalLight(0x9db8ff, 0.5);
-    rim.position.set(-4, 2.5, 2);
-    scene.add(rim);
-    const front = new THREE.DirectionalLight(0xfff0dd, 0.55);
-    front.position.set(0.5, 1.2, 5);
-    scene.add(front);
 
     const composer = new EffectComposer(renderer);
     composer.setPixelRatio(Math.min(window.devicePixelRatio, 1.75));
@@ -84,18 +64,23 @@ export default function ElementsCarousel() {
     composer.addPass(bokeh);
     const focusPoint = new THREE.Vector3();
 
-    // ---------- Elementos normalizados, luego en diagonal ----------
+    // ---------- Fotos reales en planos, en diagonal ----------
+    const loader = new THREE.TextureLoader();
     const items: THREE.Group[] = [];
-    SECTOR_ELEMENTS.forEach(({ build }) => {
-      const g = build();
-      const box = new THREE.Box3().setFromObject(g);
-      const size = box.getSize(new THREE.Vector3());
-      const center = box.getCenter(new THREE.Vector3());
-      const s = 1.05 / Math.max(size.x, size.y, size.z);
-      g.scale.setScalar(s);
-      g.position.sub(center.multiplyScalar(s));
+    SECTORS.forEach(({ src }) => {
       const wrap = new THREE.Group();
-      wrap.add(g);
+      const tex = loader.load(src, (t) => {
+        const aspect = t.image.width / t.image.height;
+        const w = aspect >= 1 ? ITEM_SIZE : ITEM_SIZE * aspect;
+        const h = aspect >= 1 ? ITEM_SIZE / aspect : ITEM_SIZE;
+        const mesh = new THREE.Mesh(
+          new THREE.PlaneGeometry(w, h),
+          new THREE.MeshBasicMaterial({ map: t, transparent: true, alphaTest: 0.02 })
+        );
+        wrap.add(mesh);
+      });
+      tex.colorSpace = THREE.SRGBColorSpace;
+      tex.anisotropy = 8;
       scene.add(wrap);
       items.push(wrap);
     });
@@ -152,6 +137,7 @@ export default function ElementsCarousel() {
     const clock = new THREE.Clock();
     let raf = 0;
     let elapsed = 0;
+    let shown = -1;
     const viewDir = new THREE.Vector3();
     const camRight = new THREE.Vector3();
     const camUp = new THREE.Vector3();
@@ -184,15 +170,19 @@ export default function ElementsCarousel() {
         wrap.position.addScaledVector(camRight, reach * halfW * 0.9);
         wrap.position.addScaledVector(camUp, reach * halfH * 0.78 + Math.sin(elapsed * 1.3 + i * 0.9) * 0.02);
 
+        // Las fotos miran a cámara; leve giro en los laterales.
         wrap.rotation.order = "YXZ";
-        wrap.rotation.y = reach * 0.55;
-        // Positivo en X: la cara reconocible (la cúpula) mira a la cámara, no la base.
-        wrap.rotation.x = 0.85;
+        wrap.rotation.y = reach * 0.5;
+        wrap.rotation.x = reach * 0.12;
         wrap.rotation.z = -reach * 0.22;
         wrap.scale.setScalar(ad > CORNER + 0.4 ? 0.001 : 1.2 + frontness * frontness * 0.55);
         wrap.visible = ad < CORNER + 0.45;
       });
       const index = ((Math.round(rotation / STEP) % COUNT) + COUNT) % COUNT;
+      if (index !== shown && captionRef.current) {
+        shown = index;
+        captionRef.current.textContent = SECTORS[index].name;
+      }
       items[index].updateMatrixWorld(true);
       items[index].getWorldPosition(focusPoint);
       focusPoint.applyMatrix4(camera.matrixWorldInverse);
@@ -233,7 +223,6 @@ export default function ElementsCarousel() {
         if (Array.isArray(mat)) mat.forEach((m) => m.dispose());
         else if (mat) mat.dispose();
       });
-      envTex.dispose();
       bokeh.dispose();
       composer.dispose();
       renderer.dispose();
@@ -244,6 +233,17 @@ export default function ElementsCarousel() {
   return (
     <div className="relative h-full min-h-full bg-[#fdf3eb] text-[#131834]">
       <div ref={mountRef} className="h-full w-full [&_canvas]:block [&_canvas]:h-full [&_canvas]:w-full" />
+      <div className="pointer-events-none absolute inset-x-0 bottom-0 pb-8 text-center">
+        <h1
+          ref={captionRef}
+          className="font-serif text-[clamp(2rem,5vw,3.8rem)] font-semibold tracking-wide text-[#c4501e]"
+        >
+          Hoteles
+        </h1>
+        <p className="mt-1 text-[11px] font-semibold uppercase tracking-[0.4em] text-[#131834]/60">
+          Desplaza o arrastra
+        </p>
+      </div>
     </div>
   );
 }
