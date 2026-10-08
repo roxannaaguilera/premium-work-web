@@ -19,7 +19,6 @@ const CORNER = 2.05;
  */
 export default function ElementsCarousel() {
   const mountRef = useRef<HTMLDivElement>(null);
-  const captionRef = useRef<HTMLHeadingElement>(null);
 
   useEffect(() => {
     const mount = mountRef.current;
@@ -78,9 +77,9 @@ export default function ElementsCarousel() {
     composer.setPixelRatio(Math.min(window.devicePixelRatio, 1.75));
     composer.addPass(new RenderPass(scene, camera));
     const bokeh = new BokehPass(scene, camera, {
-      focus: 3.2,
-      aperture: 0.07,
-      maxblur: 0.038,
+      focus: 2.6,
+      aperture: 0.01,
+      maxblur: 0.007,
     });
     composer.addPass(bokeh);
     const focusPoint = new THREE.Vector3();
@@ -153,7 +152,6 @@ export default function ElementsCarousel() {
     const clock = new THREE.Clock();
     let raf = 0;
     let elapsed = 0;
-    let shown = -1;
     const viewDir = new THREE.Vector3();
     const camRight = new THREE.Vector3();
     const camUp = new THREE.Vector3();
@@ -177,27 +175,24 @@ export default function ElementsCarousel() {
         const along = t / CORNER;
         const reach = Math.max(-1, Math.min(1, along));
         const frontness = Math.max(0, 1 - ad / CORNER);
-        const dist = Math.max(0.55, camera.position.z - (0.35 + frontness * 1.55));
+        const dist = Math.max(0.55, camera.position.z - (1.45 + frontness * 0.7));
         const halfH = Math.tan(vFov / 2) * dist;
         const halfW = halfH * Math.max(camera.aspect, 1);
 
         slotCenter.copy(camera.position).addScaledVector(viewDir, dist);
         wrap.position.copy(slotCenter);
-        wrap.position.addScaledVector(camRight, reach * halfW * 0.86);
-        wrap.position.addScaledVector(camUp, reach * halfH * 0.72 + Math.sin(elapsed * 1.3 + i * 0.9) * 0.02);
+        wrap.position.addScaledVector(camRight, reach * halfW * 0.9);
+        wrap.position.addScaledVector(camUp, reach * halfH * 0.78 + Math.sin(elapsed * 1.3 + i * 0.9) * 0.02);
 
         wrap.rotation.order = "YXZ";
-        wrap.rotation.y = reach * 0.78;
-        wrap.rotation.x = -0.66;
-        wrap.rotation.z = -reach * 0.32;
-        wrap.scale.setScalar(ad > CORNER + 0.4 ? 0.001 : 0.55 + frontness * frontness * 0.38);
+        wrap.rotation.y = reach * 0.55;
+        // Positivo en X: la cara reconocible (la cúpula) mira a la cámara, no la base.
+        wrap.rotation.x = 0.85;
+        wrap.rotation.z = -reach * 0.22;
+        wrap.scale.setScalar(ad > CORNER + 0.4 ? 0.001 : 1.2 + frontness * frontness * 0.55);
         wrap.visible = ad < CORNER + 0.45;
       });
       const index = ((Math.round(rotation / STEP) % COUNT) + COUNT) % COUNT;
-      if (index !== shown && captionRef.current) {
-        shown = index;
-        captionRef.current.textContent = SECTOR_ELEMENTS[index].name;
-      }
       items[index].updateMatrixWorld(true);
       items[index].getWorldPosition(focusPoint);
       focusPoint.applyMatrix4(camera.matrixWorldInverse);
@@ -247,19 +242,8 @@ export default function ElementsCarousel() {
   }, []);
 
   return (
-    <div className="relative flex h-full min-h-full flex-col bg-[#fdf3eb] text-[#131834]">
-      <div ref={mountRef} className="w-full flex-1 [&_canvas]:block [&_canvas]:h-full [&_canvas]:w-full" />
-      <div className="pointer-events-none pb-10 text-center">
-        <h1
-          ref={captionRef}
-          className="font-serif text-[clamp(2.4rem,6vw,4.5rem)] font-semibold tracking-wide text-[#c4501e]"
-        >
-          Hoteles
-        </h1>
-        <p className="mt-2 text-[11px] font-semibold uppercase tracking-[0.4em] text-[#131834]/60">
-          Desplaza o arrastra
-        </p>
-      </div>
+    <div className="relative h-full min-h-full bg-[#fdf3eb] text-[#131834]">
+      <div ref={mountRef} className="h-full w-full [&_canvas]:block [&_canvas]:h-full [&_canvas]:w-full" />
     </div>
   );
 }
