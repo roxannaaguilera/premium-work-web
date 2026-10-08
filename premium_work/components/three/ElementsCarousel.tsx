@@ -31,6 +31,34 @@ const ENTRY_TILT = THREE.MathUtils.degToRad(22);
 const SLUGS = ["hoteles", "restaurantes", "catering", "eventos-corporativos", "eventos-deportivos", "festivales", "bodas-y-celebraciones", "experiencias-privadas"];
 
 /**
+ * Caída con un solo rebote. Devuelve altura extra (en fracciones de media
+ * pantalla): positivo arriba, un poco por debajo al aterrizar, y 0 al asentarse.
+ * No es un muelle: termina y se queda quieto.
+ */
+function fallLift(age: number): number {
+  const drop = 0.62;
+  const dip = -0.05;
+  const rebound = 0.028;
+  if (age < 0) return drop;
+  const fall = 0.62;
+  const up = 0.24;
+  const settle = 0.2;
+  if (age < fall) {
+    const e = 1 - Math.pow(1 - age / fall, 3);
+    return drop + (dip - drop) * e;
+  }
+  if (age < fall + up) {
+    const e = 1 - Math.pow(1 - (age - fall) / up, 2);
+    return dip + (rebound - dip) * e;
+  }
+  if (age < fall + up + settle) {
+    const e = 1 - Math.pow(1 - (age - fall - up) / settle, 2);
+    return rebound * (1 - e);
+  }
+  return 0;
+}
+
+/**
  * Los 8 elementos reales de Premium Work (fotografía) en diagonal de
  * esquina a esquina. El del centro sale de la pantalla y se queda nítido;
  * hacia las esquinas se inclinan, se alejan y se desenfocan (bokeh).
@@ -216,6 +244,7 @@ export default function ElementsCarousel() {
     const clock = new THREE.Clock();
     let raf = 0;
     let elapsed = 0;
+    const fallStart = items.map(() => -1);
     const viewDir = new THREE.Vector3();
     const camRight = new THREE.Vector3();
     const camUp = new THREE.Vector3();
@@ -253,7 +282,17 @@ export default function ElementsCarousel() {
         wrap.position.addScaledVector(camRight, reach * halfW * 0.62);
         // Diagonal suave: entra por arriba-izquierda, sale por abajo-derecha.
         // Aire entre el logo y el objeto, y entre el objeto y el final del header.
-        wrap.position.addScaledVector(camUp, -halfH0 * 0.08 - reach * halfH * 0.30 + Math.sin(elapsed * 1.3 + i * 0.9) * 0.02);
+        wrap.position.addScaledVector(camUp, -halfH0 * 0.08 - reach * halfH * 0.30 + Math.sin(elapsed * 1.3 + i * 0.9) * 0.02 * (fallStart[i] < 0 || elapsed - fallStart[i] > 1.1 ? 1 : 0));
+
+        // Entra cayendo desde arriba y se asienta con un rebote corto.
+        if (ad > 2.2) fallStart[i] = -1;
+        else if (inView && fallStart[i] < 0 && planeMeshes.length === COUNT) {
+          const intro = Math.max(elapsed, 1.15);
+          const stagger = elapsed < 1.15 ? (reach + 1) * 0.1 : 0;
+          fallStart[i] = intro + stagger;
+        }
+        const lift = fallLift(fallStart[i] < 0 ? -1 : elapsed - fallStart[i]);
+        if (lift !== 0) wrap.position.addScaledVector(camUp, lift * halfH);
 
         // De frente a cámara, leve giro en los laterales. El principal se inclina
         // al posar el cursor (hoverT), no en reposo.

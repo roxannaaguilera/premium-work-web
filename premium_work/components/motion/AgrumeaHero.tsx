@@ -1,6 +1,5 @@
 "use client";
 
-import { motion } from "framer-motion";
 import ElementsCarousel from "@/components/three/ElementsCarousel";
 import CurtainIntro from "./CurtainIntro";
 import { useLang } from "@/components/i18n/lang";
@@ -26,20 +25,15 @@ export default function AgrumeaHero() {
       {/* Cortinas de presentación */}
       <CurtainIntro />
 
-      {/* Carrusel 3D de los 8 sectores: aparece tras las cortinas */}
-      <motion.div
-        className="relative h-full"
-        initial={{ opacity: 0, scale: 0.97 }}
-        animate={{ opacity: 1, scale: 1 }}
-        transition={{ delay: 1.5, duration: 0.9, ease: "easeOut" }}
-      >
+      {/* Carrusel: cada objeto cae, rebota una vez y se queda */}
+      <div className="relative h-full">
         <ElementsCarousel />
 
         {/* Desliza para descubrir, como Agrumea */}
         <p className="pointer-events-none absolute inset-x-0 bottom-8 z-[2] text-center text-[11px] font-semibold uppercase tracking-[0.4em] text-[#131834]/70">
           {t("hero.hint")}
         </p>
-      </motion.div>
+      </div>
 
       {/* Privacidad y cookies */}
       <a
