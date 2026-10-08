@@ -9,13 +9,13 @@ import { SECTOR_ELEMENTS } from "./elementBuilders";
 
 const COUNT = SECTOR_ELEMENTS.length;
 const STEP = (Math.PI * 2) / COUNT;
-/** Casillas desde el objeto nítido del centro hasta la esquina de la pantalla. */
-const CORNER = 2.05;
+/** Casillas desde el centro hasta el borde, en un recorrido horizontal. */
+const SPAN = 2.15;
 
 /**
- * Los 8 elementos de Premium Work en una diagonal de esquina a esquina.
- * El del centro sale de la pantalla y se queda nítido; hacia las esquinas
- * se inclinan, se alejan y se desenfocan. Arrastra o desplaza para cambiar.
+ * Los 8 elementos recorren la pantalla de izquierda a derecha.
+ * El del centro queda de frente y nítido; los laterales se alejan un poco
+ * y se desenfocan con suavidad. Arrastra o desplaza para moverlos.
  */
 export default function ElementsCarousel() {
   const mountRef = useRef<HTMLDivElement>(null);
@@ -52,9 +52,9 @@ export default function ElementsCarousel() {
     envTex.colorSpace = THREE.SRGBColorSpace;
     scene.environment = envTex;
 
-    const camera = new THREE.PerspectiveCamera(38, 1, 0.08, 40);
-    camera.position.set(0, 0.08, 5.2);
-    camera.lookAt(0, 0.02, 0.5);
+    const camera = new THREE.PerspectiveCamera(36, 1, 0.1, 40);
+    camera.position.set(0, 0, 7.2);
+    camera.lookAt(0, 0, 0);
 
     // ---------- Luces ----------
     scene.add(new THREE.HemisphereLight(0xfff2e0, 0x2a1f16, 0.4));
@@ -77,14 +77,14 @@ export default function ElementsCarousel() {
     composer.setPixelRatio(Math.min(window.devicePixelRatio, 1.75));
     composer.addPass(new RenderPass(scene, camera));
     const bokeh = new BokehPass(scene, camera, {
-      focus: 2.6,
-      aperture: 0.01,
-      maxblur: 0.007,
+      focus: 6.2,
+      aperture: 0.008,
+      maxblur: 0.004,
     });
     composer.addPass(bokeh);
     const focusPoint = new THREE.Vector3();
 
-    // ---------- Elementos normalizados, luego en diagonal ----------
+    // ---------- Elementos normalizados, luego en fila horizontal ----------
     const items: THREE.Group[] = [];
     SECTOR_ELEMENTS.forEach(({ build }) => {
       const g = build();
@@ -130,7 +130,7 @@ export default function ElementsCarousel() {
       e.preventDefault();
       wheelAcc += e.deltaY;
       if (Math.abs(wheelAcc) < 36) return;
-      target += Math.sign(wheelAcc) * STEP;
+      target -= Math.sign(wheelAcc) * STEP;
       target = Math.round(target / STEP) * STEP;
       wheelAcc = 0;
     };
@@ -172,25 +172,23 @@ export default function ElementsCarousel() {
         if (t > COUNT / 2) t -= COUNT;
 
         const ad = Math.abs(t);
-        const along = t / CORNER;
-        const reach = Math.max(-1, Math.min(1, along));
-        const frontness = Math.max(0, 1 - ad / CORNER);
-        const dist = Math.max(0.55, camera.position.z - (1.45 + frontness * 0.7));
+        const along = t / SPAN;
+        const frontness = Math.max(0, 1 - ad / SPAN);
+        const dist = Math.max(0.8, camera.position.z - (0.15 + frontness * 0.85));
         const halfH = Math.tan(vFov / 2) * dist;
         const halfW = halfH * Math.max(camera.aspect, 1);
 
         slotCenter.copy(camera.position).addScaledVector(viewDir, dist);
         wrap.position.copy(slotCenter);
-        wrap.position.addScaledVector(camRight, reach * halfW * 0.9);
-        wrap.position.addScaledVector(camUp, reach * halfH * 0.78 + Math.sin(elapsed * 1.3 + i * 0.9) * 0.02);
+        wrap.position.addScaledVector(camRight, along * halfW * 0.72);
+        wrap.position.addScaledVector(camUp, -halfH * 0.14 + Math.sin(elapsed * 1.3 + i * 0.9) * 0.012);
 
         wrap.rotation.order = "YXZ";
-        wrap.rotation.y = reach * 0.55;
-        // Positivo en X: la cara reconocible (la cúpula) mira a la cámara, no la base.
-        wrap.rotation.x = 0.85;
-        wrap.rotation.z = -reach * 0.22;
-        wrap.scale.setScalar(ad > CORNER + 0.4 ? 0.001 : 1.2 + frontness * frontness * 0.55);
-        wrap.visible = ad < CORNER + 0.45;
+        wrap.rotation.y = Math.max(-0.28, Math.min(0.28, along * 0.2));
+        wrap.rotation.x = 0;
+        wrap.rotation.z = 0;
+        wrap.scale.setScalar(ad > SPAN + 0.65 ? 0.001 : 0.7 + frontness * frontness * 0.48);
+        wrap.visible = ad < SPAN + 0.7;
       });
       const index = ((Math.round(rotation / STEP) % COUNT) + COUNT) % COUNT;
       items[index].updateMatrixWorld(true);
