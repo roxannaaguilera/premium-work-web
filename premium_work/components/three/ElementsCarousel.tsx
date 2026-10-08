@@ -1,6 +1,7 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, type MouseEvent as ReactMouseEvent } from "react";
+import { useRouter } from "next/navigation";
 import * as THREE from "three";
 import { EffectComposer } from "three/addons/postprocessing/EffectComposer.js";
 import { RenderPass } from "three/addons/postprocessing/RenderPass.js";
@@ -33,15 +34,23 @@ const SLUGS = ["hoteles", "restaurantes", "catering", "eventos-corporativos", "e
  */
 export default function ElementsCarousel() {
   const { t } = useLang();
+  const router = useRouter();
   const mountRef = useRef<HTMLDivElement>(null);
   const tagRef = useRef<HTMLDivElement>(null);
-  // Navegación directa desde el manejador nativo (fuera del ciclo de React).
+  // Ida con navegación cliente desde el manejador nativo: se pulsa un <a> oculto
+  // cuyo onClick de React hace router.push (el push imperativo directo no funciona
+  // fuera del ciclo de React). Así no hay flash de recarga y el objeto viaja de
+  // forma continua desde su punto en el hero hasta la página de servicio.
+  const navSlugRef = useRef<string | null>(null);
+  const navAnchorRef = useRef<HTMLAnchorElement | null>(null);
   const goToService = (slug: string) => {
-    const a = document.createElement("a");
-    a.href = `/servicios/${slug}`;
-    a.style.display = "none";
-    document.body.appendChild(a);
-    a.click();
+    navSlugRef.current = slug;
+    navAnchorRef.current?.click();
+  };
+  const onNavAnchorClick = (e: ReactMouseEvent<HTMLAnchorElement>) => {
+    e.preventDefault();
+    const slug = navSlugRef.current;
+    if (slug) router.push(`/servicios/${slug}`);
   };
 
   useEffect(() => {
@@ -335,6 +344,15 @@ export default function ElementsCarousel() {
           {t("hero.discoverTag")}
         </span>
       </div>
+      {/* Ancla oculta para la navegación cliente desde el manejador nativo del canvas */}
+      <a
+        ref={navAnchorRef}
+        href="#"
+        onClick={onNavAnchorClick}
+        className="hidden"
+        aria-hidden="true"
+        tabIndex={-1}
+      />
     </div>
   );
 }

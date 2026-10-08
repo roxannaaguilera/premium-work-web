@@ -79,9 +79,9 @@ export default function ServiceDetail({ slug }: { slug: string }) {
         <section ref={secRef} aria-label={sector.title} className="relative h-[240vh]">
           <div className="sticky top-0 flex h-screen flex-col items-center justify-center overflow-hidden">
             <motion.h1
-              initial={{ opacity: 0, y: 48 }}
+              initial={{ opacity: 0, y: -96 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.9, delay: 0.15, ease: [0.22, 1, 0.36, 1] }}
+              transition={{ duration: 0.9, delay: 0.85, ease: [0.22, 1, 0.36, 1] }}
               className="z-10 px-4 text-center font-serif font-semibold uppercase leading-[0.9] tracking-tight text-[#131834] text-[clamp(3.5rem,13vw,12rem)]"
             >
               {lines.map((l, i) => (
