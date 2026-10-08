@@ -64,12 +64,11 @@ export default function ServiceDetail({ slug }: { slug: string }) {
     setReady(true);
   }, [slug]);
 
-  // El scroll sube el elemento hasta posicionarlo sobre el nombre.
+  // El scroll sube el elemento y lo encoge hasta posarlo sobre las letras.
   const secRef = useRef<HTMLElement>(null);
   const { scrollYProgress } = useScroll({ target: secRef, offset: ["start start", "end end"] });
-  const riseY = useTransform(scrollYProgress, [0, 0.6], ["0vh", "-28vh"]);
-  const riseR = useTransform(scrollYProgress, [0, 0.6], [-10, 0]);
-  const riseS = useTransform(scrollYProgress, [0, 0.6], [1, 1.15]);
+  const riseY = useTransform(scrollYProgress, [0, 0.6], ["0vh", "-38vh"]);
+  const riseS = useTransform(scrollYProgress, [0, 0.6], [1, 0.52]);
 
   return (
     <>
@@ -90,20 +89,32 @@ export default function ServiceDetail({ slug }: { slug: string }) {
                 </span>
               ))}
             </motion.h1>
-            {/* Entrada desde el hero (fuera) + subida con scroll (dentro) */}
-            <div className="pointer-events-none absolute inset-x-0 bottom-[5vh] z-20 flex justify-center">
+            {/* Entrada desde el hero (fuera) + subida con scroll (dentro).
+                En reposo queda abajo, sin verse completo, tapando el nombre. */}
+            <div className="pointer-events-none absolute inset-x-0 -bottom-[8vh] z-20 flex justify-center">
               {ready && (
                 <motion.div
-                  initial={{ x: from?.dx ?? 0, y: from?.dy ?? 0, scale: 0.9, rotate: -10 }}
-                  animate={{ x: 0, y: 0, scale: 1, rotate: -10 }}
-                  transition={{ duration: 1, ease: [0.22, 1, 0.36, 1] }}
+                  initial={{ x: from?.dx ?? 0, y: from?.dy ?? 0, scale: 1.14, rotate: -22 }}
+                  animate={{ x: 0, y: 0, scale: 1, rotate: [-22, -22, 0] }}
+                  transition={{
+                    duration: 1.1,
+                    ease: [0.22, 1, 0.36, 1],
+                    rotate: { duration: 1.1, times: [0, 0.7, 1], ease: "easeOut" },
+                  }}
                 >
-                  <motion.div style={{ y: riseY, rotate: riseR, scale: riseS }}>
-                    <img
-                      src={item.img}
-                      alt={sector.title}
-                      className="h-[42vh] w-auto object-contain drop-shadow-[0_30px_40px_rgba(19,24,52,0.18)]"
-                    />
+                  <motion.div style={{ y: riseY, scale: riseS }} className="pointer-events-auto">
+                    <Link
+                      href="/"
+                      aria-label={dict.header.logoLabel}
+                      title={dict.header.logoLabel}
+                      className="block cursor-pointer"
+                    >
+                      <img
+                        src={item.img}
+                        alt={sector.title}
+                        className="h-[62vh] w-auto object-contain drop-shadow-[0_30px_40px_rgba(19,24,52,0.18)]"
+                      />
+                    </Link>
                   </motion.div>
                 </motion.div>
               )}
