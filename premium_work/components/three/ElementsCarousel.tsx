@@ -21,7 +21,7 @@ const COUNT = SECTORS.length;
 const STEP = (Math.PI * 2) / COUNT;
 /** Casillas desde el objeto nítido del centro hasta la esquina de la pantalla. */
 const CORNER = 2.05;
-const ITEM_SIZE = 1.9;
+const ITEM_SIZE = 1.15;
 
 /**
  * Los 8 elementos reales de Premium Work (fotografía) en diagonal de
@@ -168,14 +168,14 @@ export default function ElementsCarousel() {
         slotCenter.copy(camera.position).addScaledVector(viewDir, dist);
         wrap.position.copy(slotCenter);
         wrap.position.addScaledVector(camRight, reach * halfW * 0.9);
-        wrap.position.addScaledVector(camUp, reach * halfH * 0.78 + Math.sin(elapsed * 1.3 + i * 0.9) * 0.02);
+        wrap.position.addScaledVector(camUp, reach * halfH * 0.78 - 0.22 + Math.sin(elapsed * 1.3 + i * 0.9) * 0.02);
 
         // Las fotos miran a cámara; leve giro en los laterales.
         wrap.rotation.order = "YXZ";
         wrap.rotation.y = reach * 0.5;
         wrap.rotation.x = reach * 0.12;
         wrap.rotation.z = -reach * 0.22;
-        wrap.scale.setScalar(ad > CORNER + 0.4 ? 0.001 : 1.2 + frontness * frontness * 0.55);
+        wrap.scale.setScalar(ad > CORNER + 0.4 ? 0.001 : 0.95 + frontness * 0.35);
         wrap.visible = ad < CORNER + 0.45;
       });
       const index = ((Math.round(rotation / STEP) % COUNT) + COUNT) % COUNT;
