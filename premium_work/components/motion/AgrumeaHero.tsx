@@ -1,5 +1,6 @@
 "use client";
 
+import { useState } from "react";
 import { motion } from "framer-motion";
 import ElementsCarousel from "@/components/three/ElementsCarousel";
 import CurtainIntro from "./CurtainIntro";
@@ -12,6 +13,7 @@ import { useLang } from "@/components/i18n/lang";
  */
 export default function AgrumeaHero() {
   const { t } = useLang();
+  const [selected, setSelected] = useState(false);
   return (
     <section
       id="inicio"
@@ -32,10 +34,14 @@ export default function AgrumeaHero() {
         animate={{ opacity: 1, scale: 1 }}
         transition={{ delay: 1.5, duration: 0.9, ease: "easeOut" }}
       >
-        <ElementsCarousel />
+        <ElementsCarousel onSelectChange={setSelected} />
 
         {/* Desliza para descubrir, como Agrumea */}
-        <p className="pointer-events-none absolute inset-x-0 bottom-8 z-[2] text-center text-[11px] font-semibold uppercase tracking-[0.4em] text-[#131834]/70">
+        <p
+          className={`pointer-events-none absolute inset-x-0 bottom-8 z-[2] text-center text-[11px] font-semibold uppercase tracking-[0.4em] text-[#131834]/70 transition-opacity duration-500 ${
+            selected ? "opacity-0" : "opacity-100"
+          }`}
+        >
           {t("hero.hint")}
         </p>
       </motion.div>

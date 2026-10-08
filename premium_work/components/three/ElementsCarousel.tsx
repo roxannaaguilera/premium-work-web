@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import * as THREE from "three";
 import { EffectComposer } from "three/addons/postprocessing/EffectComposer.js";
 import { RenderPass } from "three/addons/postprocessing/RenderPass.js";
@@ -8,14 +8,14 @@ import { BokehPass } from "three/addons/postprocessing/BokehPass.js";
 import { useLang } from "@/components/i18n/lang";
 
 const SECTORS = [
-  { name: "Hoteles", src: "/images/elementos-reales/hoteles.png" },
-  { name: "Bodas y celebraciones", src: "/images/elementos-reales/bodas.png" },
-  { name: "Catering", src: "/images/elementos-reales/catering.png" },
-  { name: "Eventos corporativos", src: "/images/elementos-reales/corporativos.png" },
-  { name: "Restaurantes", src: "/images/elementos-reales/restaurantes.png" },
-  { name: "Eventos deportivos", src: "/images/elementos-reales/deportivos.png" },
-  { name: "Eventos privados", src: "/images/elementos-reales/privados.png" },
-  { name: "Festivales", src: "/images/elementos-reales/festivales.png" },
+  { name: "Hoteles", src: "/images/elementos-reales/hoteles.png", di: 0 },
+  { name: "Bodas y celebraciones", src: "/images/elementos-reales/bodas.png", di: 6 },
+  { name: "Catering", src: "/images/elementos-reales/catering.png", di: 2 },
+  { name: "Eventos corporativos", src: "/images/elementos-reales/corporativos.png", di: 3 },
+  { name: "Restaurantes", src: "/images/elementos-reales/restaurantes.png", di: 1 },
+  { name: "Eventos deportivos", src: "/images/elementos-reales/deportivos.png", di: 4 },
+  { name: "Eventos privados", src: "/images/elementos-reales/privados.png", di: 7 },
+  { name: "Festivales", src: "/images/elementos-reales/festivales.png", di: 5 },
 ] as const;
 
 const COUNT = SECTORS.length;
@@ -28,10 +28,12 @@ const ITEM_SIZE = 1.45;
  * hacia las esquinas se inclinan, se alejan y se desenfocan (bokeh).
  * Arrastra o desplaza para girar 360° entre sectores.
  */
-export default function ElementsCarousel() {
-  const { t } = useLang();
+export default function ElementsCarousel({ onSelectChange }: { onSelectChange?: (selected: boolean) => void }) {
+  const { t, dict, lang } = useLang();
   const mountRef = useRef<HTMLDivElement>(null);
   const tagRef = useRef<HTMLDivElement>(null);
+  const [selIndex, setSelIndex] = useState<number | null>(null);
+  const selRef = useRef<number | null>(null);
 
   useEffect(() => {
     const mount = mountRef.current;
@@ -106,7 +108,24 @@ export default function ElementsCarousel() {
     let tagTX = 0;
     let tagTY = 0;
 
+    let selectT = 0;
+    let downX = 0;
+    let downY = 0;
+
+    const setSelected = (i: number | null) => {
+      selRef.current = i;
+      setSelIndex(i);
+      onSelectChange?.(i !== null);
+    };
+
     const onDown = (e: PointerEvent) => {
+      downX = e.clientX;
+      downY = e.clientY;
+      // Si hay un elemento seleccionado, el click lo deselecciona (sin arrastrar).
+      if (selRef.current !== null) {
+        setSelected(null);
+        return;
+      }
       dragging = true;
       lastX = e.clientX;
       el.setPointerCapture(e.pointerId);
@@ -125,10 +144,25 @@ export default function ElementsCarousel() {
       lastX = e.clientX;
       target -= dx * 0.0075;
     };
-    const onUp = () => {
+    const onUp = (e: PointerEvent) => {
       if (!dragging) return;
       dragging = false;
       el.style.cursor = "grab";
+      // Click (sin arrastre) sobre el objeto principal: efecto Agrumea.
+      if (Math.hypot(e.clientX - downX, e.clientY - downY) < 6 && planeMeshes.length === COUNT) {
+        const rect = el.getBoundingClientRect();
+        pointerNDC.set(
+          ((e.clientX - rect.left) / rect.width) * 2 - 1,
+          -((e.clientY - rect.top) / rect.height) * 2 + 1
+        );
+        raycaster.setFromCamera(pointerNDC, camera);
+        const hits = raycaster.intersectObjects(planeMeshes, false);
+        const idx = ((Math.round(rotation / STEP) % COUNT) + COUNT) % COUNT;
+        if (hits.length > 0 && hits[0].object.userData.sectorIndex === idx) {
+          setSelected(idx);
+          return;
+        }
+      }
       target = Math.round(target / STEP) * STEP;
     };
     const onWheel = (e: WheelEvent) => {
@@ -161,11 +195,16 @@ export default function ElementsCarousel() {
     const camRight = new THREE.Vector3();
     const camUp = new THREE.Vector3();
     const slotCenter = new THREE.Vector3();
+    const selCenter = new THREE.Vector3();
+    const selPos = new THREE.Vector3();
     const animate = () => {
       raf = requestAnimationFrame(animate);
       const dt = Math.min(clock.getDelta(), 0.05);
       elapsed += dt;
       rotation += (target - rotation) * (1 - Math.exp(-dt * 8));
+      // Transición de selección estilo Agrumea: interpolación amortiguada.
+      selectT += ((selRef.current !== null ? 1 : 0) - selectT) * (1 - Math.exp(-dt * 5));
+      const se = selectT * selectT * (3 - 2 * selectT);
       camera.updateMatrixWorld();
       camera.getWorldDirection(viewDir);
       camRight.setFromMatrixColumn(camera.matrixWorld, 0);
@@ -203,13 +242,30 @@ export default function ElementsCarousel() {
         // El principal entra entero en pantalla; los laterales más pequeños.
         const fit = (halfH0 * 1.15) / ITEM_SIZE;
         const boost = isFront ? 1 + 0.14 * hoverT : 1;
-        wrap.scale.setScalar(!inView ? 0.001 : isFront ? fit * boost : fit * 0.66);
-        wrap.visible = inView;
+        let finalScale = !inView ? 0.001 : isFront ? fit * boost : fit * 0.66;
+
+        if (isFront && se > 0) {
+          // Pose Agrumea: se inclina y baja al fondo; solo se ve su parte superior.
+          const distSel = distF - 0.7;
+          const halfHSel = Math.tan(vFov / 2) * distSel;
+          selCenter.copy(camera.position).addScaledVector(viewDir, distSel);
+          selPos.copy(selCenter).addScaledVector(camUp, -halfHSel * 1.12);
+          wrap.position.lerp(selPos, se);
+          wrap.rotation.y = (1 - se) * (reach * 0.18);
+          wrap.rotation.x = se * 0.38;
+          wrap.rotation.z = (1 - se) * (-reach * 0.08) + se * 0.1;
+          finalScale = finalScale * (1 - se) + fit * 1.05 * se;
+        } else if (!isFront && se > 0) {
+          // Los laterales se desvanecen durante la selección.
+          finalScale *= 1 - se;
+        }
+        wrap.scale.setScalar(finalScale);
+        wrap.visible = inView && (isFront || se < 0.6);
       });
       const index = ((Math.round(rotation / STEP) % COUNT) + COUNT) % COUNT;
 
-      // Hover solo sobre el objeto principal: avanza un poco hacia adelante.
-      if (!dragging && planeMeshes.length === COUNT) {
+      // Hover solo sobre el objeto principal (y no durante la selección).
+      if (!dragging && planeMeshes.length === COUNT && selRef.current === null) {
         raycaster.setFromCamera(pointerNDC, camera);
         const hits = raycaster.intersectObjects(planeMeshes, false);
         hovered = hits.length > 0 && hits[0].object.userData.sectorIndex === index;
@@ -277,6 +333,17 @@ export default function ElementsCarousel() {
   return (
     <div className="relative h-full min-h-full bg-[#fdf3eb] text-[#131834]">
       <div ref={mountRef} className="h-full w-full [&_canvas]:block [&_canvas]:h-full [&_canvas]:w-full" />
+      {/* Nombre del servicio en gigante al seleccionar, estilo Agrumea */}
+      {selIndex !== null && (
+        <div className="pointer-events-none absolute inset-x-0 top-[24%] z-[2] overflow-hidden px-4 text-center">
+          <p
+            key={`${selIndex}-${lang}`}
+            className="animate-rise-in font-serif text-[clamp(3rem,11vw,10rem)] font-semibold uppercase leading-[0.95] tracking-tight text-[#131834]"
+          >
+            {dict.sectors.items[SECTORS[selIndex].di].title}
+          </p>
+        </div>
+      )}
       {/* Etiqueta que aparece al posar el cursor sobre el objeto principal */}
       <div
         ref={tagRef}

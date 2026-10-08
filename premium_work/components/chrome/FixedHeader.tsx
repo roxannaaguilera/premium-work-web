@@ -10,19 +10,18 @@ const LINK_HREFS = ["#inicio", "#servicios", "#nosotros", "#contacto"];
 function LangToggle() {
   const { lang, setLang } = useLang();
   return (
-    <div
-      role="group"
-      aria-label="Language / Idioma"
-      className="flex items-center overflow-hidden rounded-full border border-[#131834]/20 text-xs font-bold"
-    >
+    <div role="group" aria-label="Language / Idioma" className="flex items-center gap-2">
       {(["es", "en"] as const).map((l) => (
         <button
           key={l}
           type="button"
           onClick={() => setLang(l)}
           aria-pressed={lang === l}
-          className={`px-3 py-2 uppercase tracking-wider transition-colors ${
-            lang === l ? "bg-[#131834] text-[#faf6ee]" : "text-[#131834]/60 hover:text-[#131834]"
+          aria-label={l === "es" ? "Español" : "English"}
+          className={`flex h-9 w-9 items-center justify-center rounded-full text-xs font-bold uppercase tracking-wider transition-colors ${
+            lang === l
+              ? "bg-[#131834] text-[#faf6ee]"
+              : "border border-[#131834]/25 text-[#131834]/60 hover:border-[#131834]/60 hover:text-[#131834]"
           }`}
         >
           {l}
