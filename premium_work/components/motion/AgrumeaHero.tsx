@@ -1,6 +1,5 @@
 "use client";
 
-import { useState } from "react";
 import { motion } from "framer-motion";
 import ElementsCarousel from "@/components/three/ElementsCarousel";
 import CurtainIntro from "./CurtainIntro";
@@ -10,10 +9,10 @@ import { useLang } from "@/components/i18n/lang";
  * Hero: carrusel 360° con los 8 elementos reales de Premium Work.
  * Cortinas de presentación de arriba hacia abajo; los elementos
  * aparecen detrás. Arrastra o desplaza para girar entre sectores.
+ * Un click en el objeto principal abre su página de servicio.
  */
 export default function AgrumeaHero() {
   const { t } = useLang();
-  const [selected, setSelected] = useState(false);
   return (
     <section
       id="inicio"
@@ -34,14 +33,10 @@ export default function AgrumeaHero() {
         animate={{ opacity: 1, scale: 1 }}
         transition={{ delay: 1.5, duration: 0.9, ease: "easeOut" }}
       >
-        <ElementsCarousel onSelectChange={setSelected} />
+        <ElementsCarousel />
 
         {/* Desliza para descubrir, como Agrumea */}
-        <p
-          className={`pointer-events-none absolute inset-x-0 bottom-8 z-[2] text-center text-[11px] font-semibold uppercase tracking-[0.4em] text-[#131834]/70 transition-opacity duration-500 ${
-            selected ? "opacity-0" : "opacity-100"
-          }`}
-        >
+        <p className="pointer-events-none absolute inset-x-0 bottom-8 z-[2] text-center text-[11px] font-semibold uppercase tracking-[0.4em] text-[#131834]/70">
           {t("hero.hint")}
         </p>
       </motion.div>

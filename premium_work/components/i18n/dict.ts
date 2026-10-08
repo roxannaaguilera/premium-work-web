@@ -68,6 +68,23 @@ const es = {
       { title: "Eventos privados", copy: "Discreción y excelencia para celebraciones privadas, con un solo interlocutor." },
     ],
   },
+  serviceDetail: {
+    back: "Volver",
+    includesTitle: "Qué incluye",
+    otherTitle: "Los otros servicios",
+    cta: "Solicitar este servicio",
+    items: [
+      { slug: "hoteles", img: "/images/elementos-reales/hoteles.png", tagline: "El hotel nunca duerme; nuestro equipo tampoco.", includes: ["Camareros y maîtres para sala y desayunos", "Personal de housekeeping y pisos", "Hostess y recepción para eventos del hotel", "Supervisión en cada turno"] },
+      { slug: "restaurantes", img: "/images/elementos-reales/restaurantes.png", tagline: "Sala llena, servicio impecable.", includes: ["Refuerzos de sala que se integran en tu equipo", "Apoyo en cocina y office", "Cobertura de picos, fines de semana y festivos", "Los estándares de tu casa, siempre"] },
+      { slug: "catering", img: "/images/elementos-reales/catering.png", tagline: "Tu cocina, donde sea que esté el evento.", includes: ["Equipos completos de sala, cocina y office", "Montaje y desmontaje del servicio", "Maîtres para coordinar cada pase", "Logística dentro y fuera de tus instalaciones"] },
+      { slug: "eventos-corporativos", img: "/images/elementos-reales/corporativos.png", tagline: "La imagen de tu empresa, en buenas manos.", includes: ["Recepción y acreditación de asistentes", "Personal de sala para congresos y convenciones", "Coordinación y protocolo", "Imagen uniforme y profesional"] },
+      { slug: "eventos-deportivos", img: "/images/elementos-reales/deportivos.png", tagline: "El partido también se juega en las gradas VIP.", includes: ["Hospitality y palcos VIP", "Barras y zonas de restauración", "Accesos y control de aforo", "Equipos ágiles para grandes volúmenes"] },
+      { slug: "festivales", img: "/images/elementos-reales/festivales.png", tagline: "Miles de personas, cero improvisación.", includes: ["Refuerzos numerosos para barras", "Accesos y pulseras", "Zonas de restauración", "Supervisores por zona"] },
+      { slug: "bodas-y-celebraciones", img: "/images/elementos-reales/bodas.png", tagline: "Un día único merece un equipo único.", includes: ["Maîtres para coordinar el banquete", "Camareros con presencia impecable", "Hostess para recibir a los invitados", "Cuidado de cada detalle"] },
+      { slug: "experiencias-privadas", img: "/images/elementos-reales/privados.png", tagline: "Discreción absoluta, excelencia visible.", includes: ["Un solo interlocutor", "Personal de máxima confianza", "Servicio a medida", "Confidencialidad garantizada"] },
+    ] as { slug: string; img: string; tagline: string; includes: string[] }[],
+  },
+
   contact: {
     aria: "Solicitar servicio",
     eyebrow: "Contacto",
@@ -294,6 +311,23 @@ const en: Dict = {
       { title: "Private events", copy: "Discretion and excellence for private celebrations, with a single point of contact." },
     ],
   },
+  serviceDetail: {
+    back: "Back",
+    includesTitle: "What's included",
+    otherTitle: "The other services",
+    cta: "Request this service",
+    items: [
+      { slug: "hoteles", img: "/images/elementos-reales/hoteles.png", tagline: "The hotel never sleeps; neither does our team.", includes: ["Waiters and ma\u00eetres d' for dining and breakfast service", "Housekeeping and floor staff", "Hostesses and reception for hotel events", "Supervision on every shift"] },
+      { slug: "restaurantes", img: "/images/elementos-reales/restaurantes.png", tagline: "Full house, flawless service.", includes: ["Floor reinforcements that blend into your team", "Kitchen and back-of-house support", "Peak, weekend and holiday coverage", "Your house standards, always"] },
+      { slug: "catering", img: "/images/elementos-reales/catering.png", tagline: "Your kitchen, wherever the event is.", includes: ["Complete front, kitchen and back-of-house teams", "Service setup and teardown", "Ma\u00eetres d' to coordinate every course", "Logistics in and out of your venues"] },
+      { slug: "eventos-corporativos", img: "/images/elementos-reales/corporativos.png", tagline: "Your company's image, in good hands.", includes: ["Guest reception and accreditation", "Floor staff for congresses and conventions", "Coordination and protocol", "Uniform, professional image"] },
+      { slug: "eventos-deportivos", img: "/images/elementos-reales/deportivos.png", tagline: "The match is also played in the VIP stands.", includes: ["Hospitality and VIP boxes", "Bars and catering areas", "Access and capacity control", "Agile teams for large crowds"] },
+      { slug: "festivales", img: "/images/elementos-reales/festivales.png", tagline: "Thousands of people, zero improvisation.", includes: ["Large reinforcements for bars", "Access and wristbands", "Food & beverage areas", "Supervisors per zone"] },
+      { slug: "bodas-y-celebraciones", img: "/images/elementos-reales/bodas.png", tagline: "A unique day deserves a unique team.", includes: ["Ma\u00eetres d' to coordinate the banquet", "Impeccably presented waiters", "Hostesses to welcome guests", "Care for every detail"] },
+      { slug: "experiencias-privadas", img: "/images/elementos-reales/privados.png", tagline: "Absolute discretion, visible excellence.", includes: ["A single point of contact", "Staff of the utmost trust", "Tailor-made service", "Guaranteed confidentiality"] },
+    ] as { slug: string; img: string; tagline: string; includes: string[] }[],
+  },
+
   contact: {
     aria: "Request a service",
     eyebrow: "Contact",

@@ -97,7 +97,9 @@ export default function FixedHeader() {
         }`}
       >
         <div className="grid grid-cols-[1fr_auto_1fr] items-center px-5 md:px-8 pt-7 md:pt-9 pb-3">
-          <div aria-hidden="true" />
+          <div className="justify-self-start">
+            <LangToggle />
+          </div>
           <a href="#inicio" aria-label={t("header.logoLabel")} className="block justify-self-center">
             <img
               src="/images/logo-premium-work.png"
@@ -106,7 +108,6 @@ export default function FixedHeader() {
             />
           </a>
           <div className="flex items-center gap-2 justify-self-end">
-            <LangToggle />
             <button
               type="button"
               onClick={() => setOpen(true)}
