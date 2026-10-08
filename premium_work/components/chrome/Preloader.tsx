@@ -3,6 +3,7 @@
 import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import gsap from "gsap";
 import { getLenis } from "@/lib/lenis-instance";
+import { signalCurtainsOpening } from "@/components/motion/curtainSignal";
 
 /**
  * Preloader estilo Agrumea con telón de teatro:
@@ -83,6 +84,7 @@ export default function Preloader() {
         xPercent: (i) => (i === 0 ? -102 : 102),
         duration: 1.1,
         ease: "power4.inOut",
+        onStart: () => signalCurtainsOpening(),
       }, "+=0.3");
       tl.to(root, { opacity: 0, duration: 0.3 }, "-=0.25");
     }, root);

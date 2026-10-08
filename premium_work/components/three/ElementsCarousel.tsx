@@ -7,6 +7,7 @@ import { EffectComposer } from "three/addons/postprocessing/EffectComposer.js";
 import { RenderPass } from "three/addons/postprocessing/RenderPass.js";
 import { BokehPass } from "three/addons/postprocessing/BokehPass.js";
 import { useLang } from "@/components/i18n/lang";
+import { CURTAINS_OPENING } from "@/components/motion/curtainSignal";
 
 const SECTORS = [
   { name: "Hoteles", src: "/images/elementos-reales/hoteles.png", di: 0 },
@@ -245,6 +246,11 @@ export default function ElementsCarousel() {
     let raf = 0;
     let elapsed = 0;
     const fallStart = items.map(() => -1);
+    let curtainAt = -1;
+    const onCurtains = () => {
+      if (curtainAt < 0) curtainAt = elapsed;
+    };
+    window.addEventListener(CURTAINS_OPENING, onCurtains);
     const viewDir = new THREE.Vector3();
     const camRight = new THREE.Vector3();
     const camUp = new THREE.Vector3();
@@ -284,12 +290,13 @@ export default function ElementsCarousel() {
         // Aire entre el logo y el objeto, y entre el objeto y el final del header.
         wrap.position.addScaledVector(camUp, -halfH0 * 0.08 - reach * halfH * 0.30 + Math.sin(elapsed * 1.3 + i * 0.9) * 0.02 * (fallStart[i] < 0 || elapsed - fallStart[i] > 1.1 ? 1 : 0));
 
-        // Entra cayendo desde arriba y se asienta con un rebote corto.
+        // La caída de presentación empieza cuando las cortinas empiezan a abrirse.
+        // Si un objeto entra después, cae en ese momento, no espera otro telón.
         if (ad > 2.2) fallStart[i] = -1;
-        else if (inView && fallStart[i] < 0 && planeMeshes.length === COUNT) {
-          const intro = Math.max(elapsed, 1.15);
-          const stagger = elapsed < 1.15 ? (reach + 1) * 0.1 : 0;
-          fallStart[i] = intro + stagger;
+        else if (inView && fallStart[i] < 0 && curtainAt >= 0) {
+          const opening = elapsed - curtainAt < 0.08;
+          const stagger = opening ? (reach + 1) * 0.05 : 0;
+          fallStart[i] = (opening ? curtainAt : elapsed) + stagger;
         }
         const lift = fallLift(fallStart[i] < 0 ? -1 : elapsed - fallStart[i]);
         if (lift !== 0) wrap.position.addScaledVector(camUp, lift * halfH);
@@ -356,6 +363,7 @@ export default function ElementsCarousel() {
 
     return () => {
       cancelAnimationFrame(raf);
+      window.removeEventListener(CURTAINS_OPENING, onCurtains);
       ro.disconnect();
       el.removeEventListener("pointerdown", onDown);
       el.removeEventListener("pointermove", onMove);
