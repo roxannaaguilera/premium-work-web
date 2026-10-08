@@ -1,10 +1,13 @@
 "use client";
 
+import { motion } from "framer-motion";
 import ElementsCarousel from "@/components/three/ElementsCarousel";
+import CurtainIntro from "./CurtainIntro";
 
 /**
- * Hero: carrusel 3D con los 8 elementos de Premium Work.
- * Arrastra o desplaza para girar entre sectores — como Agrumea.
+ * Hero: carrusel 360° con los 8 elementos reales de Premium Work.
+ * Cortinas de presentación de arriba hacia abajo; los elementos
+ * aparecen detrás. Arrastra o desplaza para girar entre sectores.
  */
 export default function AgrumeaHero() {
   return (
@@ -17,8 +20,18 @@ export default function AgrumeaHero() {
         Premium Work — Profesionales de hospitality para eventos en Madrid
       </h1>
 
-      {/* Carrusel 3D de los 8 sectores */}
-      <ElementsCarousel />
+      {/* Cortinas de presentación */}
+      <CurtainIntro />
+
+      {/* Carrusel 3D de los 8 sectores: aparece tras las cortinas */}
+      <motion.div
+        className="h-full"
+        initial={{ opacity: 0, scale: 0.97 }}
+        animate={{ opacity: 1, scale: 1 }}
+        transition={{ delay: 1.5, duration: 0.9, ease: "easeOut" }}
+      >
+        <ElementsCarousel />
+      </motion.div>
 
       {/* Privacidad y cookies */}
       <a
