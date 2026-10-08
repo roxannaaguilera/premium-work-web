@@ -1,7 +1,6 @@
 "use client";
 
 import { useEffect, useRef } from "react";
-import { useRouter } from "next/navigation";
 import * as THREE from "three";
 import { EffectComposer } from "three/addons/postprocessing/EffectComposer.js";
 import { RenderPass } from "three/addons/postprocessing/RenderPass.js";
@@ -34,9 +33,16 @@ const SLUGS = ["hoteles", "restaurantes", "catering", "eventos-corporativos", "e
  */
 export default function ElementsCarousel() {
   const { t } = useLang();
-  const router = useRouter();
   const mountRef = useRef<HTMLDivElement>(null);
   const tagRef = useRef<HTMLDivElement>(null);
+  // Navegación directa desde el manejador nativo (fuera del ciclo de React).
+  const goToService = (slug: string) => {
+    const a = document.createElement("a");
+    a.href = `/servicios/${slug}`;
+    a.style.display = "none";
+    document.body.appendChild(a);
+    a.click();
+  };
 
   useEffect(() => {
     const mount = mountRef.current;
@@ -149,7 +155,23 @@ export default function ElementsCarousel() {
         const hits = raycaster.intersectObjects(planeMeshes, false);
         const idx = ((Math.round(rotation / STEP) % COUNT) + COUNT) % COUNT;
         if (hits.length > 0 && hits[0].object.userData.sectorIndex === idx) {
-          router.push(`/servicios/${SLUGS[SECTORS[idx].di]}`);
+          // Guarda la posición del elemento en el hero para la transición continua.
+          tmpV.setFromMatrixPosition(items[idx].matrixWorld).project(camera);
+          const r = el.getBoundingClientRect();
+          const slug = SLUGS[SECTORS[idx].di];
+          try {
+            sessionStorage.setItem(
+              "pw-element-from",
+              JSON.stringify({
+                x: r.left + (tmpV.x * 0.5 + 0.5) * r.width,
+                y: r.top + (-tmpV.y * 0.5 + 0.5) * r.height,
+                slug,
+              })
+            );
+          } catch {
+            /* sin almacenamiento: la página entra desde abajo */
+          }
+          goToService(slug);
           return;
         }
       }
@@ -185,6 +207,7 @@ export default function ElementsCarousel() {
     const camRight = new THREE.Vector3();
     const camUp = new THREE.Vector3();
     const slotCenter = new THREE.Vector3();
+    const tmpV = new THREE.Vector3();
     const animate = () => {
       raf = requestAnimationFrame(animate);
       const dt = Math.min(clock.getDelta(), 0.05);

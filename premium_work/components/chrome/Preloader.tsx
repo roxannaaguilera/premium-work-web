@@ -12,7 +12,11 @@ import { getLenis } from "@/lib/lenis-instance";
  */
 export default function Preloader() {
   const rootRef = useRef<HTMLDivElement>(null);
-  const [done, setDone] = useState(false);
+  // La carga con porcentajes solo se muestra en la primera visita;
+  // al volver, solo aparece la cortina azul del hero.
+  const [done, setDone] = useState(
+    () => typeof window !== "undefined" && sessionStorage.getItem("pw-booted") === "1"
+  );
   const reduced =
     typeof window !== "undefined" &&
     window.matchMedia("(prefers-reduced-motion: reduce)").matches;
@@ -27,6 +31,11 @@ export default function Preloader() {
     const finish = () => {
       document.body.style.overflow = "";
       lenis?.start();
+      try {
+        sessionStorage.setItem("pw-booted", "1");
+      } catch {
+        /* sin almacenamiento: se repite la carga */
+      }
       setDone(true);
     };
 

@@ -69,7 +69,6 @@ const es = {
     ],
   },
   serviceDetail: {
-    back: "Volver",
     includesTitle: "Qué incluye",
     otherTitle: "Los otros servicios",
     cta: "Solicitar este servicio",
@@ -312,7 +311,6 @@ const en: Dict = {
     ],
   },
   serviceDetail: {
-    back: "Back",
     includesTitle: "What's included",
     otherTitle: "The other services",
     cta: "Request this service",

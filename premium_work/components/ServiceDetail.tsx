@@ -1,6 +1,8 @@
 "use client";
 
 import Link from "next/link";
+import { useEffect, useRef, useState } from "react";
+import { motion, useScroll, useTransform } from "framer-motion";
 import FixedHeader from "@/components/chrome/FixedHeader";
 import { Footer } from "@/components/Footer";
 import { useLang } from "@/components/i18n/lang";
@@ -23,6 +25,8 @@ function splitTitle(title: string): string[] {
   return [words.slice(0, best).join(" "), words.slice(best).join(" ")];
 }
 
+type FromPos = { dx: number; dy: number } | null;
+
 export default function ServiceDetail({ slug }: { slug: string }) {
   const { dict } = useLang();
   const items = dict.serviceDetail.items;
@@ -31,40 +35,88 @@ export default function ServiceDetail({ slug }: { slug: string }) {
   const sector = dict.sectors.items[idx];
   const lines = splitTitle(sector.title.toUpperCase());
 
+  // El elemento entra desde la posición que tenía en el hero (inclinado)
+  // y se incorpora a su nueva posición; después el scroll lo sube.
+  const [from, setFrom] = useState<FromPos>(null);
+  const [ready, setReady] = useState(false);
+  useEffect(() => {
+    const vw = window.innerWidth;
+    const vh = window.innerHeight;
+    // Centro del elemento al inicio del scroll: abajo del sticky.
+    const endX = vw / 2;
+    const endY = vh * 0.74;
+    let dx = 0;
+    let dy = vh * 0.45;
+    try {
+      const raw = sessionStorage.getItem("pw-element-from");
+      if (raw) {
+        const p = JSON.parse(raw) as { x: number; y: number; slug: string };
+        sessionStorage.removeItem("pw-element-from");
+        if (p.slug === slug) {
+          dx = p.x - endX;
+          dy = p.y - endY;
+        }
+      }
+    } catch {
+      /* visita directa: entra desde abajo */
+    }
+    setFrom({ dx, dy });
+    setReady(true);
+  }, [slug]);
+
+  // El scroll sube el elemento hasta posicionarlo sobre el nombre.
+  const secRef = useRef<HTMLElement>(null);
+  const { scrollYProgress } = useScroll({ target: secRef, offset: ["start start", "end end"] });
+  const riseY = useTransform(scrollYProgress, [0, 0.6], ["0vh", "-28vh"]);
+  const riseR = useTransform(scrollYProgress, [0, 0.6], [-10, 0]);
+  const riseS = useTransform(scrollYProgress, [0, 0.6], [1, 1.15]);
+
   return (
     <>
       <FixedHeader />
       <main className="bg-[#fdf3eb] text-[#131834]">
-        {/* Nombre gigante + elemento: cada uno ocupa media pantalla */}
-        <section aria-label={sector.title} className="px-5 md:px-10 pt-40 md:pt-48">
-          <Link
-            href="/"
-            className="inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.3em] text-[#131834]/60 hover:text-[#131834] transition-colors"
-          >
-            <span aria-hidden="true">←</span> {dict.serviceDetail.back}
-          </Link>
-          <h1 className="mt-6 font-serif font-semibold uppercase leading-[0.9] tracking-tight text-[#131834] text-[clamp(3.5rem,13vw,12rem)]">
-            {lines.map((l, i) => (
-              <span key={i} className="block">
-                {l}
-              </span>
-            ))}
-          </h1>
-          <p className="mt-6 max-w-2xl font-serif text-xl md:text-2xl italic text-[#131834]/80">
-            {item.tagline}
-          </p>
-          <div className="flex min-h-[50vh] items-end justify-center py-10">
-            <img
-              src={item.img}
-              alt={sector.title}
-              className="h-[46vh] w-auto object-contain drop-shadow-[0_30px_40px_rgba(19,24,52,0.18)]"
-            />
+        {/* Nombre centrado + elemento que sube con el scroll */}
+        <section ref={secRef} aria-label={sector.title} className="relative h-[240vh]">
+          <div className="sticky top-0 flex h-screen flex-col items-center justify-center overflow-hidden">
+            <motion.h1
+              initial={{ opacity: 0, y: 48 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.9, delay: 0.15, ease: [0.22, 1, 0.36, 1] }}
+              className="z-10 px-4 text-center font-serif font-semibold uppercase leading-[0.9] tracking-tight text-[#131834] text-[clamp(3.5rem,13vw,12rem)]"
+            >
+              {lines.map((l, i) => (
+                <span key={i} className="block">
+                  {l}
+                </span>
+              ))}
+            </motion.h1>
+            {/* Entrada desde el hero (fuera) + subida con scroll (dentro) */}
+            <div className="pointer-events-none absolute inset-x-0 bottom-[5vh] z-20 flex justify-center">
+              {ready && (
+                <motion.div
+                  initial={{ x: from?.dx ?? 0, y: from?.dy ?? 0, scale: 0.9, rotate: -10 }}
+                  animate={{ x: 0, y: 0, scale: 1, rotate: -10 }}
+                  transition={{ duration: 1, ease: [0.22, 1, 0.36, 1] }}
+                >
+                  <motion.div style={{ y: riseY, rotate: riseR, scale: riseS }}>
+                    <img
+                      src={item.img}
+                      alt={sector.title}
+                      className="h-[42vh] w-auto object-contain drop-shadow-[0_30px_40px_rgba(19,24,52,0.18)]"
+                    />
+                  </motion.div>
+                </motion.div>
+              )}
+            </div>
           </div>
         </section>
 
         {/* Descripción y qué incluye */}
         <section className="px-5 md:px-10 py-14 md:py-20">
-          <p className="max-w-3xl text-lg md:text-xl leading-relaxed text-[#131834]/85">
+          <p className="max-w-2xl font-serif text-2xl md:text-3xl italic text-[#131834]/85">
+            {item.tagline}
+          </p>
+          <p className="mt-6 max-w-3xl text-lg md:text-xl leading-relaxed text-[#131834]/85">
             {sector.copy}
           </p>
           <h2 className="mt-12 text-xs font-bold uppercase tracking-[0.35em] text-[#131834]/60">
