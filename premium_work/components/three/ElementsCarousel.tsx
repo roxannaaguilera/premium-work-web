@@ -9,20 +9,13 @@ import { SECTOR_ELEMENTS } from "./elementBuilders";
 
 const COUNT = SECTOR_ELEMENTS.length;
 const STEP = (Math.PI * 2) / COUNT;
-const RADIUS_X = 1.7;
-const DEPTH = 2.15;
-
-function wrapAngle(angle: number) {
-  let v = angle % (Math.PI * 2);
-  if (v > Math.PI) v -= Math.PI * 2;
-  if (v < -Math.PI) v += Math.PI * 2;
-  return v;
-}
+/** Casillas desde el objeto nítido del centro hasta la esquina de la pantalla. */
+const CORNER = 2.05;
 
 /**
- * Carrusel 3D de los 8 elementos de Premium Work.
- * El del frente sale de la pantalla, nítido; los laterales se inclinan y se desenfocan.
- * Arrastra o desplaza para girar; encaja en el sector más cercano.
+ * Los 8 elementos de Premium Work en una diagonal de esquina a esquina.
+ * El del centro sale de la pantalla y se queda nítido; hacia las esquinas
+ * se inclinan, se alejan y se desenfocan. Arrastra o desplaza para cambiar.
  */
 export default function ElementsCarousel() {
   const mountRef = useRef<HTMLDivElement>(null);
@@ -60,9 +53,9 @@ export default function ElementsCarousel() {
     envTex.colorSpace = THREE.SRGBColorSpace;
     scene.environment = envTex;
 
-    const camera = new THREE.PerspectiveCamera(52, 1, 0.08, 30);
-    camera.position.set(0, 0.28, 3.35);
-    camera.lookAt(0, 0.22, 0.8);
+    const camera = new THREE.PerspectiveCamera(38, 1, 0.08, 40);
+    camera.position.set(0, 0.08, 5.2);
+    camera.lookAt(0, 0.02, 0.5);
 
     // ---------- Luces ----------
     scene.add(new THREE.HemisphereLight(0xfff2e0, 0x2a1f16, 0.4));
@@ -70,8 +63,8 @@ export default function ElementsCarousel() {
     key.position.set(3.5, 6.5, 4.5);
     key.castShadow = true;
     key.shadow.mapSize.set(1024, 1024);
-    key.shadow.camera.left = -4; key.shadow.camera.right = 4;
-    key.shadow.camera.top = 4; key.shadow.camera.bottom = -4;
+    key.shadow.camera.left = -8; key.shadow.camera.right = 8;
+    key.shadow.camera.top = 8; key.shadow.camera.bottom = -8;
     key.shadow.bias = -0.0004;
     scene.add(key);
     const rim = new THREE.DirectionalLight(0x9db8ff, 0.5);
@@ -85,14 +78,14 @@ export default function ElementsCarousel() {
     composer.setPixelRatio(Math.min(window.devicePixelRatio, 1.75));
     composer.addPass(new RenderPass(scene, camera));
     const bokeh = new BokehPass(scene, camera, {
-      focus: 1.7,
-      aperture: 0.22,
-      maxblur: 0.035,
+      focus: 3.2,
+      aperture: 0.07,
+      maxblur: 0.038,
     });
     composer.addPass(bokeh);
     const focusPoint = new THREE.Vector3();
 
-    // ---------- Elementos normalizados en círculo ----------
+    // ---------- Elementos normalizados, luego en diagonal ----------
     const items: THREE.Group[] = [];
     SECTOR_ELEMENTS.forEach(({ build }) => {
       const g = build();
@@ -161,27 +154,44 @@ export default function ElementsCarousel() {
     let raf = 0;
     let elapsed = 0;
     let shown = -1;
+    const viewDir = new THREE.Vector3();
+    const camRight = new THREE.Vector3();
+    const camUp = new THREE.Vector3();
+    const slotCenter = new THREE.Vector3();
     const animate = () => {
       raf = requestAnimationFrame(animate);
       const dt = Math.min(clock.getDelta(), 0.05);
       elapsed += dt;
       rotation += (target - rotation) * (1 - Math.exp(-dt * 8));
+      camera.updateMatrixWorld();
+      camera.getWorldDirection(viewDir);
+      camRight.setFromMatrixColumn(camera.matrixWorld, 0);
+      camUp.setFromMatrixColumn(camera.matrixWorld, 1);
+      const vFov = THREE.MathUtils.degToRad(camera.fov);
       items.forEach((wrap, i) => {
-        const angle = wrapAngle(i * STEP - rotation);
-        const away = Math.abs(angle);
-        const frontness = Math.max(0, Math.cos(angle));
-        const side = Math.sin(angle);
-        wrap.position.set(
-          side * RADIUS_X,
-          0.08 + (1 - frontness) * 0.28 + Math.sin(elapsed * 1.4 + i * 1.3) * 0.03,
-          -0.35 + Math.cos(angle) * DEPTH
-        );
+        let t = i - rotation / STEP;
+        t = ((t % COUNT) + COUNT) % COUNT;
+        if (t > COUNT / 2) t -= COUNT;
+
+        const ad = Math.abs(t);
+        const along = t / CORNER;
+        const reach = Math.max(-1, Math.min(1, along));
+        const frontness = Math.max(0, 1 - ad / CORNER);
+        const dist = Math.max(0.55, camera.position.z - (0.35 + frontness * 1.55));
+        const halfH = Math.tan(vFov / 2) * dist;
+        const halfW = halfH * Math.max(camera.aspect, 1);
+
+        slotCenter.copy(camera.position).addScaledVector(viewDir, dist);
+        wrap.position.copy(slotCenter);
+        wrap.position.addScaledVector(camRight, reach * halfW * 0.86);
+        wrap.position.addScaledVector(camUp, reach * halfH * 0.72 + Math.sin(elapsed * 1.3 + i * 0.9) * 0.02);
+
         wrap.rotation.order = "YXZ";
-        wrap.rotation.y = side * 0.7;
-        wrap.rotation.x = -0.82;
-        wrap.rotation.z = -side * 0.55;
-        wrap.scale.setScalar(away > 1.45 ? 0.001 : 0.36 + frontness * frontness * 1.45);
-        wrap.visible = away < 1.5;
+        wrap.rotation.y = reach * 0.78;
+        wrap.rotation.x = -0.66;
+        wrap.rotation.z = -reach * 0.32;
+        wrap.scale.setScalar(ad > CORNER + 0.4 ? 0.001 : 0.55 + frontness * frontness * 0.38);
+        wrap.visible = ad < CORNER + 0.45;
       });
       const index = ((Math.round(rotation / STEP) % COUNT) + COUNT) % COUNT;
       if (index !== shown && captionRef.current) {
@@ -192,7 +202,25 @@ export default function ElementsCarousel() {
       items[index].getWorldPosition(focusPoint);
       focusPoint.applyMatrix4(camera.matrixWorldInverse);
       bokeh.uniforms.focus.value = -focusPoint.z;
+
+      // El del frente no entra en el desenfoque: solo lo de detrás y los lados.
+      const frontWasVisible = items[index].visible;
+      items[index].visible = false;
       composer.render();
+      items[index].visible = frontWasVisible;
+
+      const background = scene.background;
+      scene.background = null;
+      const autoClear = renderer.autoClear;
+      renderer.autoClear = false;
+      renderer.setRenderTarget(null);
+      renderer.clearDepth();
+      const visibility = items.map((wrap) => wrap.visible);
+      items.forEach((wrap, i) => { wrap.visible = i === index; });
+      renderer.render(scene, camera);
+      items.forEach((wrap, i) => { wrap.visible = visibility[i]; });
+      scene.background = background;
+      renderer.autoClear = autoClear;
     };
     animate();
 
