@@ -22,9 +22,9 @@ const SECTORS = [
 const COUNT = SECTORS.length;
 const STEP = (Math.PI * 2) / COUNT;
 const ITEM_SIZE = 1.45;
-// Inclinación del objeto principal en el héroe: la misma que la entrada de la
-// página de servicio (CSS rotate(-22deg) = antihorario = +22° en Three.js),
-// para que el viaje del objeto no tenga un salto de rotación.
+// El objeto principal está derecho en reposo; al posar el cursor se inclina al
+// ángulo de entrada del detalle (CSS rotate(-22deg) = antihorario = +22° aquí),
+// para que el viaje del objeto tenga coherencia de rotación.
 const ENTRY_TILT = THREE.MathUtils.degToRad(22);
 
 // Slugs de las páginas de detalle, en el orden del diccionario.
@@ -255,13 +255,13 @@ export default function ElementsCarousel() {
         // Aire entre el logo y el objeto, y entre el objeto y el final del header.
         wrap.position.addScaledVector(camUp, -halfH0 * 0.08 - reach * halfH * 0.30 + Math.sin(elapsed * 1.3 + i * 0.9) * 0.02);
 
-        // De frente a cámara, leve giro en los laterales. El principal nace ya
-        // inclinado al ángulo de entrada del detalle (coherencia de rotación).
+        // De frente a cámara, leve giro en los laterales. El principal se inclina
+        // al posar el cursor (hoverT), no en reposo.
         wrap.rotation.order = "YXZ";
         wrap.rotation.y = reach * 0.18;
         wrap.rotation.x = 0;
         const frontness = Math.max(0, 1 - ad / 0.5);
-        wrap.rotation.z = -reach * 0.08 + frontness * ENTRY_TILT;
+        wrap.rotation.z = -reach * 0.08 + frontness * hoverT * ENTRY_TILT;
         // El principal entra entero en pantalla; los laterales más pequeños.
         const fit = (halfH0 * 1.15) / ITEM_SIZE;
         const boost = isFront ? 1 + 0.14 * hoverT : 1;

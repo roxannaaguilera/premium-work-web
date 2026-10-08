@@ -81,7 +81,7 @@ export default function ServiceDetail({ slug }: { slug: string }) {
             <motion.h1
               initial={{ opacity: 0, y: -96 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.9, delay: 0.85, ease: [0.22, 1, 0.36, 1] }}
+              transition={{ duration: 0.9, delay: 1.7, ease: [0.22, 1, 0.36, 1] }}
               className="z-10 px-4 text-center font-serif font-semibold uppercase leading-[0.9] tracking-tight text-[#131834] text-[clamp(3.5rem,13vw,12rem)]"
             >
               {lines.map((l, i) => (
@@ -91,17 +91,21 @@ export default function ServiceDetail({ slug }: { slug: string }) {
               ))}
             </motion.h1>
             {/* Entrada desde el hero (fuera) + subida con scroll (dentro).
-                En reposo asoma la mitad del objeto sin tapar el nombre. */}
+                En reposo asoma la mitad del objeto sin tapar el nombre.
+                La entrada es una coreografía lenta: el objeto avanza hacia la
+                pantalla agrandándose (manteniendo la inclinación del hover) y
+                luego cae con rebote hasta su posición final. */}
             <div className="pointer-events-none absolute inset-x-0 -bottom-[32vh] z-20 flex justify-center">
               {ready && (
                 <motion.div
                   initial={{ x: from?.dx ?? 0, y: from?.dy ?? 0, scale: 1.14, rotate: -22 }}
-                  animate={{ x: 0, y: 0, scale: 1, rotate: [-22, -22, 0] }}
-                  transition={{
-                    duration: 1.1,
-                    ease: [0.22, 1, 0.36, 1],
-                    rotate: { duration: 1.1, times: [0, 0.7, 1], ease: "easeOut" },
+                  animate={{
+                    x: [(from?.dx ?? 0), (from?.dx ?? 0) * 0.4, 0, 0],
+                    y: [(from?.dy ?? 0), (from?.dy ?? 0) - 100, 26, 0],
+                    scale: [1.14, 1.5, 0.94, 1],
+                    rotate: [-22, -22, -4, 0],
                   }}
+                  transition={{ duration: 2, times: [0, 0.38, 0.78, 1], ease: ["easeOut", "easeIn", "easeOut"] }}
                 >
                   <motion.div style={{ y: riseY, scale: riseS }} className="pointer-events-auto">
                     <Link
