@@ -34,7 +34,7 @@ export async function POST(request: Request) {
     if (typeof value !== "string" || !value.trim() || value.length > (key === "message" ? 5000 : 200)) return error("Revisa los campos obligatorios y su longitud.");
     values[key] = value.trim();
   }
-  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(values.email) || !Object.hasOwn(sectorLabels, values.sector) || !Object.hasOwn(serviceLabels, values.service) || data.consent !== "on") return error("Revisa el email, el servicio, el sector y el consentimiento.");
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(values.email) || !Object.hasOwn(sectorLabels("es"), values.sector) || !Object.hasOwn(serviceLabels("es"), values.service) || data.consent !== "on") return error("Revisa el email, el servicio, el sector y el consentimiento.");
   values.city = resolveCity(values.city)!;
   const phone = normalizedPhone(String(data.phone ?? ""), data.phone_country ?? "ES")!, eventDate = data.event_date ?? "";
   if (typeof phone !== "string" || phone.length > 100 || typeof eventDate !== "string" || (eventDate && !validDate(eventDate))) return error("Revisa el teléfono o la fecha del evento.");
@@ -69,7 +69,7 @@ export async function GET(request: Request) {
   const from = params.get("dateFrom"), to = params.get("dateTo");
   if ((from && !validDate(from)) || (to && !validDate(to)) || (from && to && from > to)) return error("Rango de fechas no válido.");
   const sector = params.get("sector"), service = params.get("service");
-  if ((sector && !Object.hasOwn(sectorLabels, sector)) || (service && !Object.hasOwn(serviceLabels, service))) return error("Sector o servicio no válido.");
+  if ((sector && !Object.hasOwn(sectorLabels("es"), sector)) || (service && !Object.hasOwn(serviceLabels("es"), service))) return error("Sector o servicio no válido.");
   const page = Number(params.get("page") || 1);
   if (!Number.isInteger(page) || page < 1 || page > 100000) return error("Página no válida.");
   try {
