@@ -62,7 +62,7 @@ onUnmounted(() => {
 <template>
   <div
     v-if="flight"
-    class="fixed inset-0 z-[200] overflow-y-auto bg-[#faf6ee]"
+    class="fixed inset-0 z-[200] overflow-y-auto bg-[#fae4d4]"
     role="dialog"
     aria-modal="true"
     :aria-label="flight.slug"

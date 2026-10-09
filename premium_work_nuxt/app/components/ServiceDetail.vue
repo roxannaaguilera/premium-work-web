@@ -299,7 +299,7 @@ onUnmounted(() => {
     </div>
   </div>
 
-  <main class="bg-[#faf6ee] text-[#131834]">
+  <main class="bg-[#fae4d4] text-[#131834]">
     <!-- Nombre centrado + elemento que sube con el scroll -->
     <section ref="secRef" :aria-label="sector.title" class="relative h-[240vh]">
       <div class="sticky top-0 flex h-screen flex-col items-center justify-center overflow-hidden">
