@@ -105,7 +105,7 @@ watch(open, (isOpen) => {
       </div>
 
       <a :href="'#inicio'" :aria-label="t('header.logoLabel')" class="block justify-self-center">
-        <img src="/images/logo-premium-work.png" alt="Premium Work" class="h-28 md:h-36 w-auto" />
+        <img :src="'/images/logo-premium-work.png'" alt="Premium Work" class="h-28 md:h-36 w-auto" />
       </a>
 
       <div class="flex items-center gap-2 justify-self-end">

@@ -1,3 +1,8 @@
+<script lang="ts">
+/** Nombre del evento de apertura del telón (paridad con curtainSignal.ts). */
+export const CURTAINS_OPEN_EVENT = 'pw-curtains-open'
+</script>
+
 <script setup lang="ts">
 // Migración de components/chrome/Preloader.tsx (Next.js/React).
 //
@@ -19,9 +24,6 @@
 //
 //   <ClientOnly><Preloader /></ClientOnly>
 import { onMounted, onUnmounted, ref } from 'vue'
-
-/** Nombre del evento de apertura del telón (paridad con curtainSignal.ts). */
-export const CURTAINS_OPEN_EVENT = 'pw-curtains-open'
 
 const done = ref(false)
 const pct = ref(0)
