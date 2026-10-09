@@ -1,13 +1,11 @@
 "use client";
 
 import ElementsCarousel from "@/components/three/ElementsCarousel";
-import CurtainIntro from "./CurtainIntro";
 import { useLang } from "@/components/i18n/lang";
 
 /**
  * Hero: carrusel 360° con los 8 elementos reales de Premium Work.
- * Al volver, el telón rayado se abre hacia los lados y los elementos
- * caen detrás. Arrastra o desplaza para girar entre sectores.
+ * Arrastra o desplaza para girar entre sectores.
  * Un click en el objeto principal abre su página de servicio.
  */
 export default function AgrumeaHero() {
@@ -18,9 +16,6 @@ export default function AgrumeaHero() {
       aria-label={t("hero.aria")}
       className="relative h-screen overflow-hidden bg-[#fdf3eb]"
     >
-      {/* Cortinas de presentación */}
-      <CurtainIntro />
-
       {/* Carrusel: cada objeto cae, rebota una vez y se queda */}
       <div className="relative h-full">
         <ElementsCarousel />

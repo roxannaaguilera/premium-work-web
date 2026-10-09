@@ -6,6 +6,7 @@ import FixedHeader from "@/components/chrome/FixedHeader";
 import Preloader from "@/components/chrome/Preloader";
 import { SmoothScroll } from "@/components/motion/SmoothScroll";
 import AgrumeaHero from "@/components/motion/AgrumeaHero";
+import ServiceOverlay from "@/components/ServiceOverlay";
 import { DayJourney } from "@/components/motion/DayJourney";
 import { FloatingShowcase } from "@/components/motion/FloatingShowcase";
 
@@ -31,6 +32,7 @@ export default function Home() {
         <ContactSection />
         <Footer />
       </main>
+      <ServiceOverlay />
     </>
   );
 }

@@ -1,13 +1,11 @@
 "use client";
 
-import Link from "next/link";
-import { useEffect, useRef, useState, type MouseEvent as ReactMouseEvent } from "react";
+import { useEffect, useRef } from "react";
 import * as THREE from "three";
 import { EffectComposer } from "three/addons/postprocessing/EffectComposer.js";
 import { RenderPass } from "three/addons/postprocessing/RenderPass.js";
 import { BokehPass } from "three/addons/postprocessing/BokehPass.js";
 import { useLang } from "@/components/i18n/lang";
-import { CURTAINS_OPENING } from "@/components/motion/curtainSignal";
 
 const SECTORS = [
   { name: "Hoteles", src: "/images/elementos-reales/hoteles.png", di: 0 },
@@ -79,68 +77,65 @@ export default function ElementsCarousel() {
   } | null>(null);
   const frontRef = useRef({ idx: 0, hoverT: 0 });
   const hiddenIdxRef = useRef(-1);
-  const downRef = useRef<{ x: number; y: number } | null>(null);
-  const [frontSlug, setFrontSlug] = useState(SLUGS[SECTORS[0].di]);
-  const frontSlugRef = useRef(frontSlug);
 
-  // Clic sobre el <Link> que envuelve el canvas: si fue arrastre o no dio en el
-  // objeto frontal, se cancela la navegación; si dio en el objeto, se guarda el
-  // vuelo en sessionStorage y se navega. La página de detalle reconstruye el
-  // vuelo del clon (sin panel de barrido).
-  const handleLinkClick = (e: ReactMouseEvent<HTMLAnchorElement>) => {
-    const down = downRef.current;
-    downRef.current = null;
-    if (!down || Math.hypot(e.clientX - down.x, e.clientY - down.y) >= 6) {
-      e.preventDefault(); // fue arrastre
-      return;
-    }
-    const three = threeRef.current;
-    if (!three || three.planeMeshes.length !== COUNT) {
-      e.preventDefault();
-      return;
-    }
-    const { camera, items, planeMeshes, raycaster, el } = three;
-    const r = el.getBoundingClientRect();
-    const ndc = new THREE.Vector2(
-      ((e.clientX - r.left) / r.width) * 2 - 1,
-      -((e.clientY - r.top) / r.height) * 2 + 1
-    );
-    raycaster.setFromCamera(ndc, camera);
-    const hits = raycaster.intersectObjects(planeMeshes, false);
-    const idx = frontRef.current.idx;
-    if (hits.length === 0 || (hits[0].object.userData.sectorIndex as number) !== idx) {
-      e.preventDefault(); // no dio en el objeto frontal
-      return;
-    }
-    const slug = SLUGS[SECTORS[idx].di];
-    // Rect en pantalla del objeto frontal para el clon volador.
-    const wp = new THREE.Vector3();
-    const obj = items[idx];
-    obj.getWorldPosition(wp);
-    const pv = wp.clone().project(camera);
-    const cx = r.left + (pv.x * 0.5 + 0.5) * r.width;
-    const cy = r.top + (-pv.y * 0.5 + 0.5) * r.height;
-    const dist = camera.position.distanceTo(wp);
-    const worldH = ITEM_SIZE * obj.scale.x;
-    const vFov = THREE.MathUtils.degToRad(camera.fov);
-    const screenH = (worldH / (2 * dist * Math.tan(vFov / 2))) * r.height;
-    try {
-      sessionStorage.setItem(
-        "pw-flight",
-        JSON.stringify({
-          src: SECTORS[idx].src,
-          slug,
-          fromY: cy - screenH / 2,
-          fromH: screenH,
-          rotate: -22 * frontRef.current.hoverT,
-        })
+  // Clic nativo sobre el canvas: si fue arrastre o no dio en el objeto frontal,
+  // no hace nada; si dio en el objeto, guarda el vuelo en sessionStorage y
+  // navega con un <a> imperativo (la navegación cliente de Next la intercepta).
+  // Se usa manejador NATIVO (no onClick de React) porque router.push() imperativo
+  // no funciona en este build y el <Link> envolviendo el canvas tampoco.
+  useEffect(() => {
+    const mount = mountRef.current;
+    if (!mount) return;
+    let down: { x: number; y: number } | null = null;
+    const onPointerDown = (e: PointerEvent) => {
+      down = { x: e.clientX, y: e.clientY };
+    };
+    const onClick = (e: MouseEvent) => {
+      const d = down;
+      down = null;
+      if (!d || Math.hypot(e.clientX - d.x, e.clientY - d.y) >= 6) return; // arrastre
+      const three = threeRef.current;
+      if (!three || three.planeMeshes.length !== COUNT) return;
+      const { camera, items, planeMeshes, raycaster, el } = three;
+      const r = el.getBoundingClientRect();
+      const ndc = new THREE.Vector2(
+        ((e.clientX - r.left) / r.width) * 2 - 1,
+        -((e.clientY - r.top) / r.height) * 2 + 1
       );
-    } catch {
-      /* sin almacenamiento: la página entra desde abajo */
-    }
-    e.preventDefault();
-    window.location.href = `/servicios/${slug}`;
-  };
+      raycaster.setFromCamera(ndc, camera);
+      const hits = raycaster.intersectObjects(planeMeshes, false);
+      const idx = frontRef.current.idx;
+      if (hits.length === 0 || (hits[0].object.userData.sectorIndex as number) !== idx) return;
+      const slug = SLUGS[SECTORS[idx].di];
+      // Rect en pantalla del objeto frontal para el clon volador.
+      const wp = new THREE.Vector3();
+      const obj = items[idx];
+      obj.getWorldPosition(wp);
+      const pv = wp.clone().project(camera);
+      const cx = r.left + (pv.x * 0.5 + 0.5) * r.width;
+      const cy = r.top + (-pv.y * 0.5 + 0.5) * r.height;
+      const dist = camera.position.distanceTo(wp);
+      const worldH = ITEM_SIZE * obj.scale.x;
+      const vFov = THREE.MathUtils.degToRad(camera.fov);
+      const screenH = (worldH / (2 * dist * Math.tan(vFov / 2))) * r.height;
+      // En vez de navegar, se emite un evento: el overlay SPA de la home
+      // renderiza el detalle sin recarga (el objeto nunca desaparece).
+      const flight = {
+        src: SECTORS[idx].src,
+        slug,
+        fromY: cy - screenH / 2,
+        fromH: screenH,
+        rotate: -22 * frontRef.current.hoverT,
+      };
+      window.dispatchEvent(new CustomEvent("pw-open-service", { detail: flight }));
+    };
+    mount.addEventListener("pointerdown", onPointerDown);
+    mount.addEventListener("click", onClick);
+    return () => {
+      mount.removeEventListener("pointerdown", onPointerDown);
+      mount.removeEventListener("click", onClick);
+    };
+  }, []);
 
   useEffect(() => {
     const mount = mountRef.current;
@@ -275,11 +270,8 @@ export default function ElementsCarousel() {
     let raf = 0;
     let elapsed = 0;
     const fallStart = items.map(() => -1);
-    let curtainAt = -1;
-    const onCurtains = () => {
-      if (curtainAt < 0) curtainAt = elapsed;
-    };
-    window.addEventListener(CURTAINS_OPENING, onCurtains);
+    // Sin cortina: la caída de presentación empieza al montar.
+    const curtainAt = 0;
     const viewDir = new THREE.Vector3();
     const camRight = new THREE.Vector3();
     const camUp = new THREE.Vector3();
@@ -345,10 +337,7 @@ export default function ElementsCarousel() {
       frontRef.current.idx = index;
       frontRef.current.hoverT = hoverT;
       const s = SLUGS[SECTORS[index].di];
-      if (s !== frontSlugRef.current) {
-        frontSlugRef.current = s;
-        setFrontSlug(s);
-      }
+      // (slug frontal disponible en s si se necesita)
 
       // Hover solo sobre el objeto principal: avanza un poco hacia adelante.
       if (!dragging && planeMeshes.length === COUNT) {
@@ -397,7 +386,6 @@ export default function ElementsCarousel() {
 
     return () => {
       cancelAnimationFrame(raf);
-      window.removeEventListener(CURTAINS_OPENING, onCurtains);
       ro.disconnect();
       el.removeEventListener("pointerdown", onDown);
       el.removeEventListener("pointermove", onMove);
@@ -419,20 +407,13 @@ export default function ElementsCarousel() {
 
   return (
     <div className="relative h-full min-h-full bg-[#fdf3eb] text-[#131834]">
-      <Link
-        href={`/servicios/${frontSlug}`}
-        onClick={handleLinkClick}
-        onPointerDown={(e) => {
-          downRef.current = { x: e.clientX, y: e.clientY };
-        }}
-        className="block h-full w-full"
+      <div
+        ref={mountRef}
+        className="h-full w-full cursor-pointer [&_canvas]:block [&_canvas]:h-full [&_canvas]:w-full"
+        role="link"
         aria-label={t("hero.discoverTag")}
-      >
-        <div
-          ref={mountRef}
-          className="h-full w-full [&_canvas]:block [&_canvas]:h-full [&_canvas]:w-full"
-        />
-      </Link>
+        tabIndex={0}
+      />
       {/* Etiqueta que aparece al posar el cursor sobre el objeto principal */}
       <div
         ref={tagRef}

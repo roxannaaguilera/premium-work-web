@@ -27,7 +27,17 @@ function splitTitle(title: string): string[] {
 
 type FromPos = { dx: number; dy: number } | null;
 
-export default function ServiceDetail({ slug }: { slug: string }) {
+export type Flight = { src: string; slug: string; fromY: number; fromH: number; rotate: number };
+
+export default function ServiceDetail({
+  slug,
+  initialFlight,
+  onClose,
+}: {
+  slug: string;
+  initialFlight?: Flight | null;
+  onClose?: () => void;
+}) {
   const { dict } = useLang();
   const items = dict.serviceDetail.items;
   const idx = items.findIndex((i) => i.slug === slug);
@@ -68,11 +78,12 @@ export default function ServiceDetail({ slug }: { slug: string }) {
   // sessionStorage, un clon fixed vuela desde el rect del héroe hasta el reposo,
   // con la coreografía (avanza agrandándose → cae con rebote). Al aterrizar,
   // cede al objeto real por crossfade. Sin vuelo: entrada directa.
-  type Flight = { src: string; slug: string; fromY: number; fromH: number; rotate: number };
   // Se lee en useEffect (no en el inicializador) para evitar mismatch de
   // hidratación: el servidor renderiza sin vuelo y el cliente lo añade tras hidratar.
-  const [flight, setFlight] = useState<Flight | null>(null);
+  // Si viene initialFlight (overlay SPA), se usa directamente sin sessionStorage.
+  const [flight, setFlight] = useState<Flight | null>(initialFlight ?? null);
   useEffect(() => {
+    if (initialFlight) return; // el overlay ya lo pasó
     try {
       const raw = sessionStorage.getItem("pw-flight");
       if (raw) {
@@ -89,6 +100,14 @@ export default function ServiceDetail({ slug }: { slug: string }) {
   // El scroll sube el elemento y lo encoge hasta centrarlo en las letras,
   // a un tamaño proporcionado con la tipografía.
   const secRef = useRef<HTMLElement>(null);
+  // En modo overlay (SPA), el objeto cierra el overlay en vez de navegar.
+  // Se define fuera del JSX para evitar remontajes.
+  const backProps = {
+    "aria-label": dict.header.logoLabel,
+    title: dict.header.logoLabel,
+    className: "block cursor-pointer",
+  } as const;
+
   const { scrollYProgress } = useScroll({ target: secRef, offset: ["start start", "end end"] });
   const riseY = useTransform(scrollYProgress, [0, 0.6], ["0vh", "-50vh"]);
   const riseS = useTransform(scrollYProgress, [0, 0.6], [1, 0.35]);
@@ -151,18 +170,23 @@ export default function ServiceDetail({ slug }: { slug: string }) {
                   transition={{ duration: 0.25 }}
                 >
                   <motion.div style={{ y: riseY, scale: riseS }} className="pointer-events-auto">
-                    <Link
-                      href="/"
-                      aria-label={dict.header.logoLabel}
-                      title={dict.header.logoLabel}
-                      className="block cursor-pointer"
-                    >
-                      <img
-                        src={item.img}
-                        alt={sector.title}
-                        className="h-[62vh] w-auto object-contain drop-shadow-[0_30px_40px_rgba(19,24,52,0.18)]"
-                      />
-                    </Link>
+                    {onClose ? (
+                      <button onClick={onClose} {...backProps}>
+                        <img
+                          src={item.img}
+                          alt={sector.title}
+                          className="h-[62vh] w-auto object-contain drop-shadow-[0_30px_40px_rgba(19,24,52,0.18)]"
+                        />
+                      </button>
+                    ) : (
+                      <Link href="/" {...backProps}>
+                        <img
+                          src={item.img}
+                          alt={sector.title}
+                          className="h-[62vh] w-auto object-contain drop-shadow-[0_30px_40px_rgba(19,24,52,0.18)]"
+                        />
+                      </Link>
+                    )}
                   </motion.div>
                 </motion.div>
               ) : (
@@ -178,18 +202,23 @@ export default function ServiceDetail({ slug }: { slug: string }) {
                   transition={{ duration: 2, times: [0, 0.38, 0.78, 1], ease: ["easeOut", "easeIn", "easeOut"] }}
                 >
                   <motion.div style={{ y: riseY, scale: riseS }} className="pointer-events-auto">
-                    <Link
-                      href="/"
-                      aria-label={dict.header.logoLabel}
-                      title={dict.header.logoLabel}
-                      className="block cursor-pointer"
-                    >
-                      <img
-                        src={item.img}
-                        alt={sector.title}
-                        className="h-[62vh] w-auto object-contain drop-shadow-[0_30px_40px_rgba(19,24,52,0.18)]"
-                      />
-                    </Link>
+                    {onClose ? (
+                      <button onClick={onClose} {...backProps}>
+                        <img
+                          src={item.img}
+                          alt={sector.title}
+                          className="h-[62vh] w-auto object-contain drop-shadow-[0_30px_40px_rgba(19,24,52,0.18)]"
+                        />
+                      </button>
+                    ) : (
+                      <Link href="/" {...backProps}>
+                        <img
+                          src={item.img}
+                          alt={sector.title}
+                          className="h-[62vh] w-auto object-contain drop-shadow-[0_30px_40px_rgba(19,24,52,0.18)]"
+                        />
+                      </Link>
+                    )}
                   </motion.div>
                 </motion.div>
                 )
