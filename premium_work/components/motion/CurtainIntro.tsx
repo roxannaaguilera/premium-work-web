@@ -1,29 +1,38 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import { preloaderCurtainIsUp, signalCurtainsOpening } from "./curtainSignal";
+import { useEffect, useLayoutEffect, useState } from "react";
+import { signalCurtainsOpening } from "./curtainSignal";
 
-const PANELS = 5;
-const IN = 0.7;
-const HOLD = 1.1;
-const OUT = 0.8;
-const STAGGER = 0.07;
+const OPEN = 0.85;
 
 function easeInOut(u: number) {
   const t = Math.min(1, Math.max(0, u));
   return t < 0.5 ? 2 * t * t : 1 - Math.pow(-2 * t + 2, 2) / 2;
 }
 
+const STRIPES =
+  "repeating-linear-gradient(90deg, #131834 0px, #131834 22px, #1b2148 22px, #1b2148 44px)";
+
 /**
- * Cortinas de presentación. Caen, cubren, y al empezar a abrirse
- * disparan la caída de los objetos. El reloj avanza como máximo
- * 32 ms por frame para no saltarse la apertura en un fotograma lento.
+ * Al volver al inicio, el mismo telón rayado del preloader se abre hacia
+ * los lados. No cubre la primera visita (ahí abre el preloader) y no hay
+ * una segunda cortina subiendo desde abajo.
  */
 export default function CurtainIntro() {
-  const [ys, setYs] = useState<number[]>(() => Array(PANELS).fill(-100));
+  const [play, setPlay] = useState(false);
+  const [xs, setXs] = useState<[number, number]>([0, 0]);
   const [gone, setGone] = useState(false);
 
+  useLayoutEffect(() => {
+    try {
+      if (sessionStorage.getItem("pw-booted") === "1") setPlay(true);
+    } catch {
+      /* primera visita: la abre el preloader */
+    }
+  }, []);
+
   useEffect(() => {
+    if (!play) return;
     let raf = 0;
     let last = performance.now();
     let elapsed = 0;
@@ -32,18 +41,13 @@ export default function CurtainIntro() {
       const dt = Math.min(0.032, (now - last) / 1000);
       last = now;
       elapsed += dt;
-      if (!signaled && elapsed >= HOLD && !preloaderCurtainIsUp()) {
+      if (!signaled) {
         signaled = true;
         signalCurtainsOpening();
       }
-      const next = Array.from({ length: PANELS }, (_, i) => {
-        if (elapsed < IN) return -100 + 100 * easeInOut(elapsed / IN);
-        if (elapsed < HOLD + i * STAGGER) return 0;
-        const u = (elapsed - HOLD - i * STAGGER) / OUT;
-        return 100 * easeInOut(u);
-      });
-      setYs(next);
-      if (elapsed > HOLD + (PANELS - 1) * STAGGER + OUT + 0.05) {
+      const u = easeInOut(elapsed / OPEN);
+      setXs([-102 * u, 102 * u]);
+      if (elapsed > OPEN + 0.05) {
         setGone(true);
         return;
       }
@@ -51,19 +55,19 @@ export default function CurtainIntro() {
     };
     raf = requestAnimationFrame(tick);
     return () => cancelAnimationFrame(raf);
-  }, []);
+  }, [play]);
 
-  if (gone) return null;
+  if (!play || gone) return null;
 
   return (
-    <div className="pointer-events-none fixed inset-0 z-[60] flex" aria-hidden="true">
-      {ys.map((y, i) => (
+    <div className="pointer-events-none fixed inset-0 z-[60]" aria-hidden="true">
+      {xs.map((x, i) => (
         <div
           key={i}
-          className="relative h-full flex-1 bg-[#131834]"
-          style={{ transform: `translateY(${y}%)` }}
+          className={`absolute top-0 bottom-0 w-1/2 ${i === 0 ? "left-0" : "right-0"}`}
+          style={{ background: STRIPES, transform: `translateX(${x}%)` }}
         >
-          <div className="absolute inset-x-0 bottom-0 h-[3px] bg-[#d8a93c]" />
+          <div className="absolute inset-x-0 bottom-0 h-1.5 bg-[#eab308]" />
         </div>
       ))}
     </div>

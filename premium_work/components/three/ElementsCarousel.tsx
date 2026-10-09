@@ -23,10 +23,6 @@ const SECTORS = [
 const COUNT = SECTORS.length;
 const STEP = (Math.PI * 2) / COUNT;
 const ITEM_SIZE = 1.45;
-// El objeto principal está derecho en reposo; al posar el cursor se inclina al
-// ángulo de entrada del detalle (CSS rotate(-22deg) = antihorario = +22° aquí),
-// para que el viaje del objeto tenga coherencia de rotación.
-const ENTRY_TILT = THREE.MathUtils.degToRad(22);
 
 // Slugs de las páginas de detalle, en el orden del diccionario.
 const SLUGS = ["hoteles", "restaurantes", "catering", "eventos-corporativos", "eventos-deportivos", "festivales", "bodas-y-celebraciones", "experiencias-privadas"];
@@ -41,9 +37,9 @@ function fallLift(age: number): number {
   const dip = -0.05;
   const rebound = 0.028;
   if (age < 0) return drop;
-  const fall = 0.62;
-  const up = 0.24;
-  const settle = 0.2;
+  const fall = 0.36;
+  const up = 0.13;
+  const settle = 0.1;
   if (age < fall) {
     const e = 1 - Math.pow(1 - age / fall, 3);
     return drop + (dip - drop) * e;
@@ -180,7 +176,7 @@ export default function ElementsCarousel() {
       if (!dragging) return;
       const dx = e.clientX - lastX;
       lastX = e.clientX;
-      target -= dx * 0.0075;
+      target -= dx * 0.013;
     };
     const onUp = (e: PointerEvent) => {
       if (!dragging) return;
@@ -260,7 +256,7 @@ export default function ElementsCarousel() {
       raf = requestAnimationFrame(animate);
       const dt = Math.min(clock.getDelta(), 0.05);
       elapsed += dt;
-      rotation += (target - rotation) * (1 - Math.exp(-dt * 8));
+      rotation += (target - rotation) * (1 - Math.exp(-dt * 18));
       camera.updateMatrixWorld();
       camera.getWorldDirection(viewDir);
       camRight.setFromMatrixColumn(camera.matrixWorld, 0);
@@ -288,26 +284,25 @@ export default function ElementsCarousel() {
         wrap.position.addScaledVector(camRight, reach * halfW * 0.62);
         // Diagonal suave: entra por arriba-izquierda, sale por abajo-derecha.
         // Aire entre el logo y el objeto, y entre el objeto y el final del header.
-        wrap.position.addScaledVector(camUp, -halfH0 * 0.08 - reach * halfH * 0.30 + Math.sin(elapsed * 1.3 + i * 0.9) * 0.02 * (fallStart[i] < 0 || elapsed - fallStart[i] > 1.1 ? 1 : 0));
+        wrap.position.addScaledVector(camUp, -halfH0 * 0.08 - reach * halfH * 0.30 + Math.sin(elapsed * 1.3 + i * 0.9) * 0.02 * (fallStart[i] < 0 || elapsed - fallStart[i] > 0.64 ? 1 : 0));
 
         // La caída de presentación empieza cuando las cortinas empiezan a abrirse.
         // Si un objeto entra después, cae en ese momento, no espera otro telón.
         if (ad > 2.2) fallStart[i] = -1;
         else if (inView && fallStart[i] < 0 && curtainAt >= 0) {
           const opening = elapsed - curtainAt < 0.08;
-          const stagger = opening ? (reach + 1) * 0.05 : 0;
+          const stagger = opening ? (reach + 1) * 0.028 : 0;
           fallStart[i] = (opening ? curtainAt : elapsed) + stagger;
         }
         const lift = fallLift(fallStart[i] < 0 ? -1 : elapsed - fallStart[i]);
         if (lift !== 0) wrap.position.addScaledVector(camUp, lift * halfH);
 
-        // De frente a cámara, leve giro en los laterales. El principal se inclina
-        // al posar el cursor (hoverT), no en reposo.
+        // De frente a cámara. El principal no se inclina en reposo ni al pasar
+        // el cursor: la inclinación solo ocurre después del click, en el detalle.
         wrap.rotation.order = "YXZ";
-        wrap.rotation.y = reach * 0.18;
+        wrap.rotation.y = isFront ? 0 : reach * 0.18;
         wrap.rotation.x = 0;
-        const frontness = Math.max(0, 1 - ad / 0.5);
-        wrap.rotation.z = -reach * 0.08 + frontness * hoverT * ENTRY_TILT;
+        wrap.rotation.z = isFront ? 0 : -reach * 0.08;
         // El principal entra entero en pantalla; los laterales más pequeños.
         const fit = (halfH0 * 1.15) / ITEM_SIZE;
         const boost = isFront ? 1 + 0.14 * hoverT : 1;

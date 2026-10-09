@@ -6,8 +6,8 @@ import { useLang } from "@/components/i18n/lang";
 
 /**
  * Hero: carrusel 360° con los 8 elementos reales de Premium Work.
- * Cortinas de presentación de arriba hacia abajo; los elementos
- * aparecen detrás. Arrastra o desplaza para girar entre sectores.
+ * Al volver, el telón rayado se abre hacia los lados y los elementos
+ * caen detrás. Arrastra o desplaza para girar entre sectores.
  * Un click en el objeto principal abre su página de servicio.
  */
 export default function AgrumeaHero() {
