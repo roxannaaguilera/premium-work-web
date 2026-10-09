@@ -1,0 +1,104 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ——— Sistema de diseño: Premium Work (paridad con app/globals.css del proyecto Next.js) ——— */
+:root {
+  --lime: #2451e6;
+  --lime-deep: #173aab;
+  --ink: #131313;
+  /* Azul de marca Premium Work (fijado por Roxanna el 07/10/2026) */
+  --brand: #131834;
+  --brand-cream: #faf6ee;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  margin: 0;
+  background: #fff;
+  color: var(--ink);
+  font-family: "DM Sans", ui-sans-serif, system-ui, sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Titulares gruesos compactos */
+.display {
+  font-family: "DM Sans", ui-sans-serif, system-ui, sans-serif;
+  font-weight: 800;
+  letter-spacing: -0.035em;
+  line-height: 1.02;
+}
+
+/* Footer: en móvil pequeño el titular separa sus líneas (em en bloque) */
+@media (max-width: 480px) {
+  .footer-title {
+    line-height: 1.3;
+  }
+  .footer-title em {
+    display: block;
+  }
+}
+
+/* Rótulo de sección: 11px mayúsculas, tracking amplio */
+.eyebrow {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+}
+
+/* ——— Botones píldora ——— */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.6rem;
+  border-radius: 9999px;
+  padding: 0.95rem 1.6rem;
+  min-height: 2.75rem;
+  font-size: 0.875rem;
+  font-weight: 700;
+  line-height: 1.25;
+  white-space: nowrap;
+  transition:
+    transform 0.25s ease,
+    background-color 0.25s ease,
+    color 0.25s ease,
+    border-color 0.25s ease,
+    box-shadow 0.25s ease;
+}
+.btn:hover {
+  transform: translateY(-2px);
+}
+.btn:active {
+  transform: translateY(0);
+}
+.btn:focus-visible {
+  outline: 2px solid var(--lime-deep);
+  outline-offset: 4px;
+}
+/* Acento: azul royal */
+.btn-lime {
+  background: var(--lime);
+  color: #fff;
+  box-shadow: 0 12px 28px rgba(80, 130, 255, 0.35);
+}
+.btn-lime:hover {
+  background: #1b45c4;
+}
+/* Secundario sobre fondo oscuro */
+.btn-outline-on-dark {
+  border: 1px solid rgba(255, 255, 255, 0.35);
+  color: #fff;
+  background: rgba(255, 255, 255, 0.04);
+  -webkit-backdrop-filter: blur(6px);
+  backdrop-filter: blur(6px);
+}
+.btn-outline-on-dark:hover {
+  background: #fff;
+  border-color: #fff;
+  color: var(--ink);
+}
