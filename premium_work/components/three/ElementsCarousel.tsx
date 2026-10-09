@@ -320,6 +320,9 @@ export default function ElementsCarousel() {
       canvas.style.zIndex = "auto";
       canvas.style.pointerEvents = "none";
       canvas.style.background = "transparent";
+      canvas.style.border = "none";
+      canvas.style.outline = "none";
+      canvas.style.boxShadow = "none";
       canvas.dataset.pwPark = "slot";
       resizeTo(w, h);
       frameDetail();

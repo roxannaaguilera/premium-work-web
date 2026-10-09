@@ -198,7 +198,8 @@ export default function ServiceDetail({
                     type="button"
                     onClick={onClose}
                     aria-label={dict.header.logoLabel}
-                    className="absolute inset-0 z-[1] cursor-pointer bg-transparent"
+                    className="absolute inset-0 z-[1] cursor-pointer appearance-none border-0 bg-transparent shadow-none outline-none"
+                    style={{ border: "none", outline: "none", boxShadow: "none", background: "transparent" }}
                   />
                 </motion.div>
               ) : flight ? (
