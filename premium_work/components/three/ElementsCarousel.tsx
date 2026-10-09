@@ -9,7 +9,6 @@ import { useLang } from "@/components/i18n/lang";
 
 const SECTORS = [
   { name: "Hoteles", src: "/images/elementos-reales/hoteles.png", di: 0 },
-  { name: "Bodas y celebraciones", src: "/images/elementos-reales/bodas.png", di: 6 },
   { name: "Catering", src: "/images/elementos-reales/catering.png", di: 2 },
   { name: "Eventos corporativos", src: "/images/elementos-reales/corporativos.png", di: 3 },
   { name: "Restaurantes", src: "/images/elementos-reales/restaurantes.png", di: 1 },
