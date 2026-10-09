@@ -300,23 +300,20 @@ export default function ElementsCarousel() {
 
     const parkInSlot = (slot: HTMLElement) => {
       const canvas = renderer.domElement;
-      const idx = detailRef.current?.idx ?? frontRef.current.idx;
-      const mesh = planeMeshes.find((m) => m.userData.sectorIndex === idx);
-      const geom = mesh?.geometry as THREE.PlaneGeometry | undefined;
-      const gw = geom?.parameters.width || ITEM_SIZE;
-      const gh = geom?.parameters.height || ITEM_SIZE;
-      const h = Math.max(1, Math.round(window.innerHeight * 0.62));
-      const w = Math.max(1, Math.round(h * (gw / gh)));
-      slot.style.position = "relative";
-      slot.style.width = `${w}px`;
-      slot.style.height = `${h}px`;
+      slot.style.background = "transparent";
+      slot.style.border = "none";
+      slot.style.outline = "none";
+      slot.style.boxShadow = "none";
+      slot.style.overflow = "visible";
       slot.appendChild(canvas);
       parked = true;
       slotEl = slot;
-      canvas.style.position = "relative";
-      canvas.style.left = "auto";
-      canvas.style.top = "auto";
+      // Lienzo a sangre en la sección: transparente, sin caja alrededor del mesh.
+      canvas.style.position = "absolute";
+      canvas.style.inset = "0";
       canvas.style.margin = "0";
+      canvas.style.width = "100%";
+      canvas.style.height = "100%";
       canvas.style.zIndex = "auto";
       canvas.style.pointerEvents = "none";
       canvas.style.background = "transparent";
@@ -324,7 +321,11 @@ export default function ElementsCarousel() {
       canvas.style.outline = "none";
       canvas.style.boxShadow = "none";
       canvas.dataset.pwPark = "slot";
+      const w = slot.clientWidth || window.innerWidth;
+      const h = slot.clientHeight || window.innerHeight;
       resizeTo(w, h);
+      canvas.style.width = "100%";
+      canvas.style.height = "100%";
       frameDetail();
       renderTransparent();
     };
@@ -390,17 +391,20 @@ export default function ElementsCarousel() {
       camera.updateMatrixWorld();
       camera.getWorldDirection(viewDir);
       const fov = THREE.MathUtils.degToRad(camera.fov);
-      const distD = 2.2;
+      const distD = 2.4;
       const halfHD = Math.tan(fov / 2) * distD;
       const mesh = planeMeshes.find((m) => m.userData.sectorIndex === detail.idx);
       const gh = (mesh?.geometry as THREE.PlaneGeometry | undefined)?.parameters.height || ITEM_SIZE;
-      const scale = (halfHD * 2 * 0.98) / gh;
+      const t = Math.max(0, Math.min(1, ((window as Window & { __pwDetailT?: number }).__pwDetailT ?? 0) / 0.45));
+      const fill = 0.95 - 0.42 * t;
+      const drop = halfHD * (1.28 - 1.12 * t);
+      const scale = (halfHD * 2 * fill) / gh;
       items.forEach((wrap, i) => {
         if (i !== detail.idx) {
           wrap.visible = false;
           return;
         }
-        detailAnchor.copy(camera.position).addScaledVector(viewDir, distD);
+        detailAnchor.copy(camera.position).addScaledVector(viewDir, distD).addScaledVector(camUp, -drop);
         wrap.position.copy(detailAnchor);
         wrap.scale.setScalar(scale);
         wrap.rotation.set(0, 0, 0);

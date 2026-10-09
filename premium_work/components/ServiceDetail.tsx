@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useEffect, useLayoutEffect, useRef, useState, type RefObject } from "react";
-import { motion, useScroll, useTransform } from "framer-motion";
+import { motion, useMotionValueEvent, useScroll, useTransform } from "framer-motion";
 import FixedHeader from "@/components/chrome/FixedHeader";
 import { Footer } from "@/components/Footer";
 import { useLang } from "@/components/i18n/lang";
@@ -112,6 +112,7 @@ export default function ServiceDetail({
     if (!slot) return;
     window.dispatchEvent(new CustomEvent("pw-mesh-slot", { detail: slot }));
     return () => {
+      (window as Window & { __pwDetailT?: number }).__pwDetailT = 0;
       window.dispatchEvent(new CustomEvent("pw-mesh-slot", { detail: null }));
     };
   }, [liveMesh]);
@@ -127,6 +128,9 @@ export default function ServiceDetail({
     container: scrollContainer,
     target: secRef,
     offset: ["start start", "end end"],
+  });
+  useMotionValueEvent(scrollYProgress, "change", (value) => {
+    (window as Window & { __pwDetailT?: number }).__pwDetailT = value;
   });
   const riseY = useTransform(scrollYProgress, [0, 0.6], ["0vh", "-50vh"]);
   const riseS = useTransform(scrollYProgress, [0, 0.6], [1, 0.35]);
@@ -159,6 +163,14 @@ export default function ServiceDetail({
         {/* Nombre centrado + elemento que sube con el scroll */}
         <section ref={secRef} aria-label={sector.title} className="relative h-[240vh]">
           <div className="sticky top-0 flex h-screen flex-col items-center justify-center overflow-hidden">
+            {liveMesh && (
+              <div
+                ref={meshSlotRef}
+                data-pw-mesh-slot
+                className="pointer-events-none absolute inset-0 z-20"
+                style={{ background: "transparent", border: "none", outline: "none", boxShadow: "none", overflow: "visible" }}
+              />
+            )}
             <motion.h1
               initial={{ opacity: 0, y: -96 }}
               animate={
@@ -190,19 +202,9 @@ export default function ServiceDetail({
                 La entrada es una coreografía lenta: el objeto avanza hacia la
                 pantalla agrandándose (manteniendo la inclinación del hover) y
                 luego cae con rebote hasta su posición final. */}
+            {!liveMesh && (
             <div className="pointer-events-none absolute inset-x-0 -bottom-[32vh] z-20 flex justify-center">
-              {liveMesh ? (
-                <motion.div style={{ y: riseY, scale: riseS }} className="pointer-events-auto relative">
-                  <div ref={meshSlotRef} data-pw-mesh-slot />
-                  <button
-                    type="button"
-                    onClick={onClose}
-                    aria-label={dict.header.logoLabel}
-                    className="absolute inset-0 z-[1] cursor-pointer appearance-none border-0 bg-transparent shadow-none outline-none"
-                    style={{ border: "none", outline: "none", boxShadow: "none", background: "transparent" }}
-                  />
-                </motion.div>
-              ) : flight ? (
+              {flight ? (
                 // Relevo del clon volador: aparece al aterrizar (crossfade invisible).
                 <motion.div
                   initial={{ opacity: 0 }}
@@ -264,6 +266,7 @@ export default function ServiceDetail({
                 )
               )}
             </div>
+            )}
           </div>
         </section>
 
