@@ -1,7 +1,7 @@
 "use client";
 
-import { useEffect, useRef, type MouseEvent as ReactMouseEvent } from "react";
-import { useRouter } from "next/navigation";
+import Link from "next/link";
+import { useEffect, useRef, useState, type MouseEvent as ReactMouseEvent } from "react";
 import * as THREE from "three";
 import { EffectComposer } from "three/addons/postprocessing/EffectComposer.js";
 import { RenderPass } from "three/addons/postprocessing/RenderPass.js";
@@ -63,23 +63,83 @@ function fallLift(age: number): number {
  */
 export default function ElementsCarousel() {
   const { t } = useLang();
-  const router = useRouter();
   const mountRef = useRef<HTMLDivElement>(null);
   const tagRef = useRef<HTMLDivElement>(null);
-  // Ida con navegación cliente desde el manejador nativo: se pulsa un <a> oculto
-  // cuyo onClick de React hace router.push (el push imperativo directo no funciona
-  // fuera del ciclo de React). Así no hay flash de recarga y el objeto viaja de
-  // forma continua desde su punto en el hero hasta la página de servicio.
-  const navSlugRef = useRef<string | null>(null);
-  const navAnchorRef = useRef<HTMLAnchorElement | null>(null);
-  const goToService = (slug: string) => {
-    navSlugRef.current = slug;
-    navAnchorRef.current?.click();
-  };
-  const onNavAnchorClick = (e: ReactMouseEvent<HTMLAnchorElement>) => {
+  // Navegación cliente con un <Link> REAL que envuelve el canvas: el clic del
+  // usuario sobre el objeto es un gesto auténtico y Next.js navega en cliente.
+  // (router.push imperativo y clic programático no navegan en este build.)
+  // El vuelo del clon (técnica Agrumea) se inicia en el onClick: el objeto
+  // nunca desaparece.
+  const threeRef = useRef<{
+    camera: THREE.PerspectiveCamera;
+    items: THREE.Group[];
+    planeMeshes: THREE.Mesh[];
+    raycaster: THREE.Raycaster;
+    el: HTMLCanvasElement;
+  } | null>(null);
+  const frontRef = useRef({ idx: 0, hoverT: 0 });
+  const hiddenIdxRef = useRef(-1);
+  const downRef = useRef<{ x: number; y: number } | null>(null);
+  const [frontSlug, setFrontSlug] = useState(SLUGS[SECTORS[0].di]);
+  const frontSlugRef = useRef(frontSlug);
+
+  // Clic sobre el <Link> que envuelve el canvas: si fue arrastre o no dio en el
+  // objeto frontal, se cancela la navegación; si dio en el objeto, se guarda el
+  // vuelo en sessionStorage y se navega. La página de detalle reconstruye el
+  // vuelo del clon (sin panel de barrido).
+  const handleLinkClick = (e: ReactMouseEvent<HTMLAnchorElement>) => {
+    const down = downRef.current;
+    downRef.current = null;
+    if (!down || Math.hypot(e.clientX - down.x, e.clientY - down.y) >= 6) {
+      e.preventDefault(); // fue arrastre
+      return;
+    }
+    const three = threeRef.current;
+    if (!three || three.planeMeshes.length !== COUNT) {
+      e.preventDefault();
+      return;
+    }
+    const { camera, items, planeMeshes, raycaster, el } = three;
+    const r = el.getBoundingClientRect();
+    const ndc = new THREE.Vector2(
+      ((e.clientX - r.left) / r.width) * 2 - 1,
+      -((e.clientY - r.top) / r.height) * 2 + 1
+    );
+    raycaster.setFromCamera(ndc, camera);
+    const hits = raycaster.intersectObjects(planeMeshes, false);
+    const idx = frontRef.current.idx;
+    if (hits.length === 0 || (hits[0].object.userData.sectorIndex as number) !== idx) {
+      e.preventDefault(); // no dio en el objeto frontal
+      return;
+    }
+    const slug = SLUGS[SECTORS[idx].di];
+    // Rect en pantalla del objeto frontal para el clon volador.
+    const wp = new THREE.Vector3();
+    const obj = items[idx];
+    obj.getWorldPosition(wp);
+    const pv = wp.clone().project(camera);
+    const cx = r.left + (pv.x * 0.5 + 0.5) * r.width;
+    const cy = r.top + (-pv.y * 0.5 + 0.5) * r.height;
+    const dist = camera.position.distanceTo(wp);
+    const worldH = ITEM_SIZE * obj.scale.x;
+    const vFov = THREE.MathUtils.degToRad(camera.fov);
+    const screenH = (worldH / (2 * dist * Math.tan(vFov / 2))) * r.height;
+    try {
+      sessionStorage.setItem(
+        "pw-flight",
+        JSON.stringify({
+          src: SECTORS[idx].src,
+          slug,
+          fromY: cy - screenH / 2,
+          fromH: screenH,
+          rotate: -22 * frontRef.current.hoverT,
+        })
+      );
+    } catch {
+      /* sin almacenamiento: la página entra desde abajo */
+    }
     e.preventDefault();
-    const slug = navSlugRef.current;
-    if (slug) router.push(`/servicios/${slug}`);
+    window.location.href = `/servicios/${slug}`;
   };
 
   useEffect(() => {
@@ -182,37 +242,8 @@ export default function ElementsCarousel() {
       if (!dragging) return;
       dragging = false;
       el.style.cursor = "grab";
-      // Click (sin arrastre) sobre el objeto principal: abre su página de servicio.
-      if (Math.hypot(e.clientX - downX, e.clientY - downY) < 6 && planeMeshes.length === COUNT) {
-        const rect = el.getBoundingClientRect();
-        pointerNDC.set(
-          ((e.clientX - rect.left) / rect.width) * 2 - 1,
-          -((e.clientY - rect.top) / rect.height) * 2 + 1
-        );
-        raycaster.setFromCamera(pointerNDC, camera);
-        const hits = raycaster.intersectObjects(planeMeshes, false);
-        const idx = ((Math.round(rotation / STEP) % COUNT) + COUNT) % COUNT;
-        if (hits.length > 0 && hits[0].object.userData.sectorIndex === idx) {
-          // Guarda la posición del elemento en el hero para la transición continua.
-          tmpV.setFromMatrixPosition(items[idx].matrixWorld).project(camera);
-          const r = el.getBoundingClientRect();
-          const slug = SLUGS[SECTORS[idx].di];
-          try {
-            sessionStorage.setItem(
-              "pw-element-from",
-              JSON.stringify({
-                x: r.left + (tmpV.x * 0.5 + 0.5) * r.width,
-                y: r.top + (-tmpV.y * 0.5 + 0.5) * r.height,
-                slug,
-              })
-            );
-          } catch {
-            /* sin almacenamiento: la página entra desde abajo */
-          }
-          goToService(slug);
-          return;
-        }
-      }
+      // El clic lo gestiona el onClick de React (navegación cliente); aquí solo
+      // se encaja el carrusel tras un arrastre.
       target = Math.round(target / STEP) * STEP;
     };
     const onWheel = (e: WheelEvent) => {
@@ -227,6 +258,8 @@ export default function ElementsCarousel() {
     el.addEventListener("pointermove", onMove);
     window.addEventListener("pointerup", onUp);
     el.addEventListener("wheel", onWheel, { passive: false });
+    // Objetos para el raycast desde el onClick de React.
+    threeRef.current = { camera, items, planeMeshes, raycaster, el };
 
     const ro = new ResizeObserver(() => {
       const w = mount.clientWidth || 1;
@@ -251,7 +284,6 @@ export default function ElementsCarousel() {
     const camRight = new THREE.Vector3();
     const camUp = new THREE.Vector3();
     const slotCenter = new THREE.Vector3();
-    const tmpV = new THREE.Vector3();
     const animate = () => {
       raf = requestAnimationFrame(animate);
       const dt = Math.min(clock.getDelta(), 0.05);
@@ -307,9 +339,16 @@ export default function ElementsCarousel() {
         const fit = (halfH0 * 1.15) / ITEM_SIZE;
         const boost = isFront ? 1 + 0.14 * hoverT : 1;
         wrap.scale.setScalar(!inView ? 0.001 : isFront ? fit * boost : fit * 0.66);
-        wrap.visible = inView;
+        wrap.visible = inView && i !== hiddenIdxRef.current;
       });
       const index = ((Math.round(rotation / STEP) % COUNT) + COUNT) % COUNT;
+      frontRef.current.idx = index;
+      frontRef.current.hoverT = hoverT;
+      const s = SLUGS[SECTORS[index].di];
+      if (s !== frontSlugRef.current) {
+        frontSlugRef.current = s;
+        setFrontSlug(s);
+      }
 
       // Hover solo sobre el objeto principal: avanza un poco hacia adelante.
       if (!dragging && planeMeshes.length === COUNT) {
@@ -380,7 +419,20 @@ export default function ElementsCarousel() {
 
   return (
     <div className="relative h-full min-h-full bg-[#fdf3eb] text-[#131834]">
-      <div ref={mountRef} className="h-full w-full [&_canvas]:block [&_canvas]:h-full [&_canvas]:w-full" />
+      <Link
+        href={`/servicios/${frontSlug}`}
+        onClick={handleLinkClick}
+        onPointerDown={(e) => {
+          downRef.current = { x: e.clientX, y: e.clientY };
+        }}
+        className="block h-full w-full"
+        aria-label={t("hero.discoverTag")}
+      >
+        <div
+          ref={mountRef}
+          className="h-full w-full [&_canvas]:block [&_canvas]:h-full [&_canvas]:w-full"
+        />
+      </Link>
       {/* Etiqueta que aparece al posar el cursor sobre el objeto principal */}
       <div
         ref={tagRef}
@@ -392,15 +444,6 @@ export default function ElementsCarousel() {
           {t("hero.discoverTag")}
         </span>
       </div>
-      {/* Ancla oculta para la navegación cliente desde el manejador nativo del canvas */}
-      <a
-        ref={navAnchorRef}
-        href="#"
-        onClick={onNavAnchorClick}
-        className="hidden"
-        aria-hidden="true"
-        tabIndex={-1}
-      />
     </div>
   );
 }

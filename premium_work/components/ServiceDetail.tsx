@@ -64,6 +64,28 @@ export default function ServiceDetail({ slug }: { slug: string }) {
     setReady(true);
   }, [slug]);
 
+  // Vuelo del clon (técnica Agrumea, sin panel): si hay datos de vuelo en
+  // sessionStorage, un clon fixed vuela desde el rect del héroe hasta el reposo,
+  // con la coreografía (avanza agrandándose → cae con rebote). Al aterrizar,
+  // cede al objeto real por crossfade. Sin vuelo: entrada directa.
+  type Flight = { src: string; slug: string; fromY: number; fromH: number; rotate: number };
+  // Se lee en useEffect (no en el inicializador) para evitar mismatch de
+  // hidratación: el servidor renderiza sin vuelo y el cliente lo añade tras hidratar.
+  const [flight, setFlight] = useState<Flight | null>(null);
+  useEffect(() => {
+    try {
+      const raw = sessionStorage.getItem("pw-flight");
+      if (raw) {
+        const f = JSON.parse(raw) as Flight;
+        sessionStorage.removeItem("pw-flight");
+        if (f.slug === slug) setFlight(f);
+      }
+    } catch {
+      /* sin vuelo: entrada directa */
+    }
+  }, [slug]);
+  const [landed, setLanded] = useState(false);
+
   // El scroll sube el elemento y lo encoge hasta centrarlo en las letras,
   // a un tamaño proporcionado con la tipografía.
   const secRef = useRef<HTMLElement>(null);
@@ -74,14 +96,39 @@ export default function ServiceDetail({ slug }: { slug: string }) {
   return (
     <>
       <FixedHeader />
+      {/* Clon volador (sin panel): vuela desde el rect del héroe hasta el reposo */}
+      {flight && !landed && (
+        <div
+          aria-hidden="true"
+          className="pointer-events-none fixed inset-x-0 z-[100] flex justify-center"
+          style={{ top: flight.fromY }}
+        >
+          <motion.div
+            initial={{ height: flight.fromH, rotate: flight.rotate, y: 0 }}
+            animate={{
+              height: [flight.fromH, flight.fromH * 1.35, window.innerHeight * 0.62 * 1.02, window.innerHeight * 0.62],
+              y: [0, -70, window.innerHeight * 0.7 - flight.fromY + 22, window.innerHeight * 0.7 - flight.fromY],
+              rotate: [flight.rotate, flight.rotate, -3, 0],
+            }}
+            transition={{ duration: 1.65, times: [0, 0.35, 0.8, 1], ease: ["easeOut", "easeIn", "easeOut"] }}
+            onAnimationComplete={() => setLanded(true)}
+          >
+            <img src={flight.src} alt="" draggable={false} className="h-full w-auto select-none" />
+          </motion.div>
+        </div>
+      )}
       <main className="bg-[#fdf3eb] text-[#131834]">
         {/* Nombre centrado + elemento que sube con el scroll */}
         <section ref={secRef} aria-label={sector.title} className="relative h-[240vh]">
           <div className="sticky top-0 flex h-screen flex-col items-center justify-center overflow-hidden">
             <motion.h1
               initial={{ opacity: 0, y: -96 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.9, delay: 1.7, ease: [0.22, 1, 0.36, 1] }}
+              animate={flight ? (landed ? { opacity: 1, y: 0 } : {}) : { opacity: 1, y: 0 }}
+              transition={
+                flight
+                  ? { duration: 0.9, delay: 0.3, ease: [0.22, 1, 0.36, 1] }
+                  : { duration: 0.9, delay: 1.7, ease: [0.22, 1, 0.36, 1] }
+              }
               className="z-10 px-4 text-center font-serif font-semibold uppercase leading-[0.9] tracking-tight text-[#131834] text-[clamp(3.5rem,13vw,12rem)]"
             >
               {lines.map((l, i) => (
@@ -96,7 +143,30 @@ export default function ServiceDetail({ slug }: { slug: string }) {
                 pantalla agrandándose (manteniendo la inclinación del hover) y
                 luego cae con rebote hasta su posición final. */}
             <div className="pointer-events-none absolute inset-x-0 -bottom-[32vh] z-20 flex justify-center">
-              {ready && (
+              {flight ? (
+                // Relevo del clon volador: aparece al aterrizar (crossfade invisible).
+                <motion.div
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: landed ? 1 : 0 }}
+                  transition={{ duration: 0.25 }}
+                >
+                  <motion.div style={{ y: riseY, scale: riseS }} className="pointer-events-auto">
+                    <Link
+                      href="/"
+                      aria-label={dict.header.logoLabel}
+                      title={dict.header.logoLabel}
+                      className="block cursor-pointer"
+                    >
+                      <img
+                        src={item.img}
+                        alt={sector.title}
+                        className="h-[62vh] w-auto object-contain drop-shadow-[0_30px_40px_rgba(19,24,52,0.18)]"
+                      />
+                    </Link>
+                  </motion.div>
+                </motion.div>
+              ) : (
+                ready && (
                 <motion.div
                   initial={{ x: from?.dx ?? 0, y: from?.dy ?? 0, scale: 1.14, rotate: -22 }}
                   animate={{
@@ -122,6 +192,7 @@ export default function ServiceDetail({ slug }: { slug: string }) {
                     </Link>
                   </motion.div>
                 </motion.div>
+                )
               )}
             </div>
           </div>
