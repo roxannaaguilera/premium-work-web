@@ -18,10 +18,6 @@ export default function AgrumeaHero() {
       aria-label={t("hero.aria")}
       className="relative h-screen overflow-hidden bg-[#fdf3eb]"
     >
-      <h1 className="sr-only">
-        {t("hero.title")}
-      </h1>
-
       {/* Cortinas de presentación */}
       <CurtainIntro />
 
