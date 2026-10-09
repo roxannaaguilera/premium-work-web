@@ -28,11 +28,28 @@ export default function ServiceOverlay() {
     if (window.location.pathname !== "/") {
       window.history.pushState({}, "", "/");
     }
-    // Desbloquear scroll y reanudar Lenis.
-    document.body.style.overflow = "";
-    document.documentElement.style.overflow = "";
-    getLenis()?.start();
   }, []);
+
+  // Bloquear/desbloquear scroll ligado al estado del overlay.
+  useEffect(() => {
+    if (!flight) return;
+    try {
+      getLenis()?.stop();
+    } catch {
+      /* Lenis no disponible */
+    }
+    document.body.style.overflow = "hidden";
+    document.documentElement.style.overflow = "hidden";
+    return () => {
+      try {
+        getLenis()?.start();
+      } catch {
+        /* Lenis no disponible */
+      }
+      document.body.style.overflow = "";
+      document.documentElement.style.overflow = "";
+    };
+  }, [flight]);
 
   useEffect(() => {
     const onOpen = (e: Event) => {
@@ -40,18 +57,10 @@ export default function ServiceOverlay() {
       if (!f || !f.slug) return;
       setFlight(f);
       window.history.pushState({ pwService: f.slug }, "", `/servicios/${f.slug}`);
-      // Bloquear scroll del fondo mientras el overlay está abierto:
-      // detener Lenis y ocultar el overflow del body y html.
-      getLenis()?.stop();
-      document.body.style.overflow = "hidden";
-      document.documentElement.style.overflow = "hidden";
     };
     const onPop = () => {
       // Botón atrás del navegador: cerrar el overlay.
       setFlight(null);
-      document.body.style.overflow = "";
-      document.documentElement.style.overflow = "";
-      getLenis()?.start();
     };
     window.addEventListener("pw-open-service", onOpen);
     window.addEventListener("popstate", onPop);
