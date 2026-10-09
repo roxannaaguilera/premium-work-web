@@ -162,7 +162,7 @@ export default function ServiceDetail({
       <main className="bg-[#fdf3eb] text-[#131834]">
         {/* Nombre centrado + elemento que sube con el scroll */}
         <section ref={secRef} aria-label={sector.title} className="relative h-[240vh]">
-          <div className="sticky top-0 flex h-screen flex-col items-center justify-center overflow-hidden">
+          <div className={`sticky top-0 flex h-screen flex-col items-center justify-center ${liveMesh ? "overflow-visible" : "overflow-hidden"}`}>
             {liveMesh && (
               <div
                 ref={meshSlotRef}

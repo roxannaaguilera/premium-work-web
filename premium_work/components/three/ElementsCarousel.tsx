@@ -396,8 +396,9 @@ export default function ElementsCarousel() {
       const mesh = planeMeshes.find((m) => m.userData.sectorIndex === detail.idx);
       const gh = (mesh?.geometry as THREE.PlaneGeometry | undefined)?.parameters.height || ITEM_SIZE;
       const t = Math.max(0, Math.min(1, ((window as Window & { __pwDetailT?: number }).__pwDetailT ?? 0) / 0.45));
-      const fill = 0.95 - 0.42 * t;
-      const drop = halfHD * (1.28 - 1.12 * t);
+      // El objeto entero cabe en la sección: no se recorta contra el borde.
+      const fill = 0.36 - 0.08 * t;
+      const drop = halfHD * (0.56 - 0.5 * t);
       const scale = (halfHD * 2 * fill) / gh;
       items.forEach((wrap, i) => {
         if (i !== detail.idx) {
