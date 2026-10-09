@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useLayoutEffect, useRef, useState, type RefObject } from "react";
 import { motion, useScroll, useTransform } from "framer-motion";
 import FixedHeader from "@/components/chrome/FixedHeader";
 import { Footer } from "@/components/Footer";
@@ -33,10 +33,12 @@ export default function ServiceDetail({
   slug,
   initialFlight,
   onClose,
+  scrollContainer,
 }: {
   slug: string;
   initialFlight?: Flight | null;
   onClose?: () => void;
+  scrollContainer?: RefObject<HTMLDivElement | null>;
 }) {
   const { dict } = useLang();
   const items = dict.serviceDetail.items;
@@ -103,6 +105,16 @@ export default function ServiceDetail({
   // El scroll sube el elemento y lo encoge hasta centrarlo en las letras,
   // a un tamaño proporcionado con la tipografía.
   const secRef = useRef<HTMLElement>(null);
+  const meshSlotRef = useRef<HTMLDivElement>(null);
+  useLayoutEffect(() => {
+    if (!liveMesh) return;
+    const slot = meshSlotRef.current;
+    if (!slot) return;
+    window.dispatchEvent(new CustomEvent("pw-mesh-slot", { detail: slot }));
+    return () => {
+      window.dispatchEvent(new CustomEvent("pw-mesh-slot", { detail: null }));
+    };
+  }, [liveMesh]);
   // En modo overlay (SPA), el objeto cierra el overlay en vez de navegar.
   // Se define fuera del JSX para evitar remontajes.
   const backProps = {
@@ -111,7 +123,11 @@ export default function ServiceDetail({
     className: "block cursor-pointer",
   } as const;
 
-  const { scrollYProgress } = useScroll({ target: secRef, offset: ["start start", "end end"] });
+  const { scrollYProgress } = useScroll({
+    container: scrollContainer,
+    target: secRef,
+    offset: ["start start", "end end"],
+  });
   const riseY = useTransform(scrollYProgress, [0, 0.6], ["0vh", "-50vh"]);
   const riseS = useTransform(scrollYProgress, [0, 0.6], [1, 0.35]);
 
@@ -176,12 +192,15 @@ export default function ServiceDetail({
                 luego cae con rebote hasta su posición final. */}
             <div className="pointer-events-none absolute inset-x-0 -bottom-[32vh] z-20 flex justify-center">
               {liveMesh ? (
-                <button
-                  type="button"
-                  onClick={onClose}
-                  aria-label={dict.header.logoLabel}
-                  className="pointer-events-auto h-[62vh] w-[46vh] cursor-pointer bg-transparent"
-                />
+                <motion.div style={{ y: riseY, scale: riseS }} className="pointer-events-auto relative">
+                  <div ref={meshSlotRef} data-pw-mesh-slot />
+                  <button
+                    type="button"
+                    onClick={onClose}
+                    aria-label={dict.header.logoLabel}
+                    className="absolute inset-0 z-[1] cursor-pointer bg-transparent"
+                  />
+                </motion.div>
               ) : flight ? (
                 // Relevo del clon volador: aparece al aterrizar (crossfade invisible).
                 <motion.div

@@ -257,9 +257,11 @@ export default function ElementsCarousel() {
     renderer.domElement.dataset.pwScene = String(mountCount);
 
     const cream = new THREE.Color(0xfdf3eb);
-    let lifted = false;
+    let parked = false;
+    let slotEl: HTMLElement | null = null;
     let pendingDrop = false;
     const detailAnchor = new THREE.Vector3();
+    let frameDetail = () => {};
 
     const resizeTo = (w: number, h: number) => {
       const width = Math.max(w, 1);
@@ -270,37 +272,58 @@ export default function ElementsCarousel() {
       composer.setSize(width, height);
     };
 
-    // El mismo <canvas> (mismo contexto WebGL, mismos meshes) pasa a
-    // document.body para quedar por encima del overlay. No se crea otro
-    // renderer ni se dispone la escena.
-    const applyLift = (on: boolean) => {
+    // El mismo <canvas> cambia de padre, sin crear otro renderer.
+    // En el detalle vive en el hueco del objeto (se desplaza con el scroll).
+    // Nunca es position:fixed ni cubre el viewport.
+    const clearCanvasChrome = () => {
       const canvas = renderer.domElement;
-      if (on && !lifted) {
-        lifted = true;
-        document.body.appendChild(canvas);
-      } else if (!on && lifted) {
-        lifted = false;
-        canvas.style.position = "";
-        canvas.style.left = "";
-        canvas.style.top = "";
-        canvas.style.margin = "";
-        canvas.style.zIndex = "";
-        canvas.style.pointerEvents = "";
-        canvas.style.background = "";
-        mount.appendChild(canvas);
-      }
-      if (lifted) {
-        resizeTo(window.innerWidth, window.innerHeight);
-        canvas.style.position = "fixed";
-        canvas.style.left = "0";
-        canvas.style.top = "0";
-        canvas.style.margin = "0";
-        canvas.style.zIndex = "260";
-        canvas.style.pointerEvents = "none";
-        canvas.style.background = "transparent";
-      } else {
-        resizeTo(mount.clientWidth || 1, mount.clientHeight || 1);
-      }
+      canvas.style.position = "";
+      canvas.style.left = "";
+      canvas.style.top = "";
+      canvas.style.right = "";
+      canvas.style.bottom = "";
+      canvas.style.inset = "";
+      canvas.style.margin = "";
+      canvas.style.zIndex = "";
+      canvas.style.pointerEvents = "";
+      canvas.style.background = "";
+    };
+
+    const unpark = () => {
+      parked = false;
+      slotEl = null;
+      clearCanvasChrome();
+      if (renderer.domElement.parentElement !== mount) mount.appendChild(renderer.domElement);
+      renderer.domElement.dataset.pwPark = "hero";
+      resizeTo(mount.clientWidth || 1, mount.clientHeight || 1);
+    };
+
+    const parkInSlot = (slot: HTMLElement) => {
+      const canvas = renderer.domElement;
+      const idx = detailRef.current?.idx ?? frontRef.current.idx;
+      const mesh = planeMeshes.find((m) => m.userData.sectorIndex === idx);
+      const geom = mesh?.geometry as THREE.PlaneGeometry | undefined;
+      const gw = geom?.parameters.width || ITEM_SIZE;
+      const gh = geom?.parameters.height || ITEM_SIZE;
+      const h = Math.max(1, Math.round(window.innerHeight * 0.62));
+      const w = Math.max(1, Math.round(h * (gw / gh)));
+      slot.style.position = "relative";
+      slot.style.width = `${w}px`;
+      slot.style.height = `${h}px`;
+      slot.appendChild(canvas);
+      parked = true;
+      slotEl = slot;
+      canvas.style.position = "relative";
+      canvas.style.left = "auto";
+      canvas.style.top = "auto";
+      canvas.style.margin = "0";
+      canvas.style.zIndex = "auto";
+      canvas.style.pointerEvents = "none";
+      canvas.style.background = "transparent";
+      canvas.dataset.pwPark = "slot";
+      resizeTo(w, h);
+      frameDetail();
+      renderTransparent();
     };
 
     const renderTransparent = () => {
@@ -337,13 +360,13 @@ export default function ElementsCarousel() {
         blendAtClose: 0,
       };
       if (tagRef.current) tagRef.current.style.opacity = "0";
-      applyLift(true);
-      // Un frame transparente ya, antes de que React pinte el overlay.
-      renderTransparent();
     };
 
     const ro = new ResizeObserver(() => {
-      if (lifted) return;
+      if (parked && slotEl) {
+        resizeTo(slotEl.clientWidth || 1, slotEl.clientHeight || 1);
+        return;
+      }
       resizeTo(mount.clientWidth || 1, mount.clientHeight || 1);
     });
     ro.observe(mount);
@@ -358,11 +381,34 @@ export default function ElementsCarousel() {
     const camRight = new THREE.Vector3();
     const camUp = new THREE.Vector3();
     const slotCenter = new THREE.Vector3();
+    frameDetail = () => {
+      const detail = detailRef.current;
+      if (!detail) return;
+      camera.updateMatrixWorld();
+      camera.getWorldDirection(viewDir);
+      const fov = THREE.MathUtils.degToRad(camera.fov);
+      const distD = 2.2;
+      const halfHD = Math.tan(fov / 2) * distD;
+      const mesh = planeMeshes.find((m) => m.userData.sectorIndex === detail.idx);
+      const gh = (mesh?.geometry as THREE.PlaneGeometry | undefined)?.parameters.height || ITEM_SIZE;
+      const scale = (halfHD * 2 * 0.98) / gh;
+      items.forEach((wrap, i) => {
+        if (i !== detail.idx) {
+          wrap.visible = false;
+          return;
+        }
+        detailAnchor.copy(camera.position).addScaledVector(viewDir, distD);
+        wrap.position.copy(detailAnchor);
+        wrap.scale.setScalar(scale);
+        wrap.rotation.set(0, 0, 0);
+        wrap.visible = true;
+      });
+    };
     const animate = () => {
       raf = requestAnimationFrame(animate);
       if (pendingDrop && !detailRef.current) {
         pendingDrop = false;
-        applyLift(false);
+        if (parked) unpark();
       }
       const dt = Math.min(clock.getDelta(), 0.05);
       elapsed += dt;
@@ -510,23 +556,37 @@ export default function ElementsCarousel() {
         renderer.autoClear = autoClear;
       };
 
-      // En el detalle el composer pintaría crema opaca y taparía el título.
-      // Solo el mesh, con el fondo transparente, encima del overlay.
-      if (detailRef.current) renderTransparent();
-      else {
+      // En el hueco del detalle solo se dibuja el mesh clicado, transparente.
+      // El recorte y el paso por encima de las letras los hace el scroll del hueco.
+      if (parked && detailRef.current) {
+        frameDetail();
+        renderTransparent();
+      } else if (handoff) {
+        window.dispatchEvent(new Event("pw-detail-home"));
+        pendingDrop = true;
+      } else if (detailRef.current) {
+        renderTransparent();
+      } else {
         renderHero();
-        if (handoff) {
-          window.dispatchEvent(new Event("pw-detail-home"));
-          pendingDrop = true;
-        }
       }
     };
+    const onMeshSlot = (e: Event) => {
+      const slot = (e as CustomEvent<HTMLElement | null>).detail;
+      if (slot) parkInSlot(slot);
+      else {
+        detailRef.current = null;
+        unpark();
+        animate();
+      }
+    };
+    window.addEventListener("pw-mesh-slot", onMeshSlot);
     animate();
 
     return () => {
       cancelAnimationFrame(raf);
       ro.disconnect();
       window.removeEventListener("pw-close-service", onCloseDetail);
+      window.removeEventListener("pw-mesh-slot", onMeshSlot);
       openDetailRef.current = () => {};
       el.removeEventListener("pointerdown", onDown);
       el.removeEventListener("pointermove", onMove);

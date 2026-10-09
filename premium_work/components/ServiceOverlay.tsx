@@ -22,6 +22,7 @@ type Flight = {
 export default function ServiceOverlay() {
   const [flight, setFlight] = useState<Flight | null>(null);
   const closingRef = useRef(false);
+  const scrollerRef = useRef<HTMLDivElement>(null);
 
   const finishClose = useCallback(() => {
     closingRef.current = false;
@@ -105,12 +106,18 @@ export default function ServiceOverlay() {
 
   return (
     <div
+      ref={scrollerRef}
       className="fixed inset-0 z-[200] overflow-y-auto bg-[#fdf3eb]"
       role="dialog"
       aria-modal="true"
       aria-label={flight.slug}
     >
-      <ServiceDetail slug={flight.slug} initialFlight={flight} onClose={close} />
+      <ServiceDetail
+        slug={flight.slug}
+        initialFlight={flight}
+        onClose={close}
+        scrollContainer={scrollerRef}
+      />
     </div>
   );
 }
