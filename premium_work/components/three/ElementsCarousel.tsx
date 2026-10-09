@@ -1,13 +1,14 @@
 "use client";
 
 import { useEffect, useRef, type MouseEvent as ReactMouseEvent } from "react";
-import { useRouter } from "next/navigation";
+import { usePathname } from "next/navigation";
 import * as THREE from "three";
 import { EffectComposer } from "three/addons/postprocessing/EffectComposer.js";
 import { RenderPass } from "three/addons/postprocessing/RenderPass.js";
 import { BokehPass } from "three/addons/postprocessing/BokehPass.js";
 import { useLang } from "@/components/i18n/lang";
 import { CURTAINS_OPENING } from "@/components/motion/curtainSignal";
+import { useStage } from "@/components/motion/stageContext";
 
 const SECTORS = [
   { name: "Hoteles", src: "/images/elementos-reales/hoteles.png", di: 0 },
@@ -23,6 +24,8 @@ const SECTORS = [
 const COUNT = SECTORS.length;
 const STEP = (Math.PI * 2) / COUNT;
 const ITEM_SIZE = 1.45;
+// Inclinación solo después del click, y se asienta enseguida.
+const ENTRY_TILT = THREE.MathUtils.degToRad(22);
 
 // Slugs de las páginas de detalle, en el orden del diccionario.
 const SLUGS = ["hoteles", "restaurantes", "catering", "eventos-corporativos", "eventos-deportivos", "festivales", "bodas-y-celebraciones", "experiencias-privadas"];
@@ -63,7 +66,12 @@ function fallLift(age: number): number {
  */
 export default function ElementsCarousel() {
   const { t } = useLang();
-  const router = useRouter();
+  const pathname = usePathname();
+  const stage = useStage();
+  const stageRef = useRef(stage);
+  const pathRef = useRef(pathname);
+  stageRef.current = stage;
+  pathRef.current = pathname;
   const mountRef = useRef<HTMLDivElement>(null);
   const tagRef = useRef<HTMLDivElement>(null);
   // Ida con navegación cliente desde el manejador nativo: se pulsa un <a> oculto
@@ -79,7 +87,9 @@ export default function ElementsCarousel() {
   const onNavAnchorClick = (e: ReactMouseEvent<HTMLAnchorElement>) => {
     e.preventDefault();
     const slug = navSlugRef.current;
-    if (slug) router.push(`/servicios/${slug}`);
+    if (!slug) return;
+    if (pathRef.current.startsWith("/servicios/")) stageRef.current.go("/");
+    else stageRef.current.go(`/servicios/${slug}`);
   };
 
   useEffect(() => {
@@ -93,6 +103,9 @@ export default function ElementsCarousel() {
     renderer.outputColorSpace = THREE.SRGBColorSpace;
     renderer.toneMapping = THREE.NoToneMapping;
     renderer.domElement.style.cursor = "grab";
+    const sceneWindow = window as Window & { __pwSceneMounts?: number };
+    sceneWindow.__pwSceneMounts = (sceneWindow.__pwSceneMounts ?? 0) + 1;
+    renderer.domElement.dataset.pwScene = String(sceneWindow.__pwSceneMounts);
     mount.appendChild(renderer.domElement);
 
     const scene = new THREE.Scene();
@@ -244,8 +257,11 @@ export default function ElementsCarousel() {
     const fallStart = items.map(() => -1);
     let curtainAt = -1;
     const onCurtains = () => {
-      if (curtainAt < 0) curtainAt = elapsed;
+      curtainAt = elapsed;
+      for (let i = 0; i < fallStart.length; i++) fallStart[i] = -1;
     };
+    let clickTilt = 0;
+    let tiltArmed = false;
     window.addEventListener(CURTAINS_OPENING, onCurtains);
     const viewDir = new THREE.Vector3();
     const camRight = new THREE.Vector3();
@@ -262,6 +278,17 @@ export default function ElementsCarousel() {
       camRight.setFromMatrixColumn(camera.matrixWorld, 0);
       camUp.setFromMatrixColumn(camera.matrixWorld, 1);
       const vFov = THREE.MathUtils.degToRad(camera.fov);
+      if (stageRef.current.pose === "service") {
+        if (!tiltArmed) {
+          clickTilt = ENTRY_TILT;
+          tiltArmed = true;
+        } else {
+          clickTilt += (0 - clickTilt) * (1 - Math.exp(-dt * 12));
+        }
+      } else {
+        clickTilt = 0;
+        tiltArmed = false;
+      }
       items.forEach((wrap, i) => {
         let t = i - rotation / STEP;
         t = ((t % COUNT) + COUNT) % COUNT;
@@ -297,12 +324,11 @@ export default function ElementsCarousel() {
         const lift = fallLift(fallStart[i] < 0 ? -1 : elapsed - fallStart[i]);
         if (lift !== 0) wrap.position.addScaledVector(camUp, lift * halfH);
 
-        // De frente a cámara. El principal no se inclina en reposo ni al pasar
-        // el cursor: la inclinación solo ocurre después del click, en el detalle.
+        // De frente hasta el click. Después, una inclinación corta que se asienta.
         wrap.rotation.order = "YXZ";
         wrap.rotation.y = isFront ? 0 : reach * 0.18;
         wrap.rotation.x = 0;
-        wrap.rotation.z = isFront ? 0 : -reach * 0.08;
+        wrap.rotation.z = isFront ? clickTilt : -reach * 0.08;
         // El principal entra entero en pantalla; los laterales más pequeños.
         const fit = (halfH0 * 1.15) / ITEM_SIZE;
         const boost = isFront ? 1 + 0.14 * hoverT : 1;

@@ -1,9 +1,11 @@
 "use client";
 
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState, type MouseEvent } from "react";
+import { usePathname } from "next/navigation";
 import gsap from "gsap";
 import { getLenis } from "@/lib/lenis-instance";
 import { useLang } from "@/components/i18n/lang";
+import { useStage } from "@/components/motion/stageContext";
 
 const LINK_HREFS = ["#inicio", "#servicios", "#nosotros", "#contacto"];
 
@@ -33,6 +35,13 @@ function LangToggle() {
 
 export default function FixedHeader() {
   const { t, dict } = useLang();
+  const pathname = usePathname();
+  const { go } = useStage();
+  const onLogo = (e: MouseEvent<HTMLAnchorElement>) => {
+    if (pathname === "/") return;
+    e.preventDefault();
+    go("/");
+  };
   const [scrolled, setScrolled] = useState(false);
   const [open, setOpen] = useState(false);
   const overlayRef = useRef<HTMLDivElement>(null);
@@ -100,7 +109,7 @@ export default function FixedHeader() {
           <div className="justify-self-start">
             <LangToggle />
           </div>
-          <a href="#inicio" aria-label={t("header.logoLabel")} className="block justify-self-center">
+          <a href="#inicio" aria-label={t("header.logoLabel")} className="block justify-self-center" onClick={onLogo}>
             <img
               src="/images/logo-premium-work.png"
               alt="Premium Work"
