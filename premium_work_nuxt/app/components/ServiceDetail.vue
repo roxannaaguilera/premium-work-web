@@ -72,13 +72,6 @@ const landed = ref(false)
 const scrollP = ref(0)
 const titleVisible = ref(false)
 
-/** Objetos anchos (ticket, carta) usan altura menor para no desbordar. */
-const objectSizeClass = computed(() =>
-  props.slug === 'festivales' || props.slug === 'experiencias-privadas'
-    ? 'h-[38vh] w-auto object-contain drop-shadow-[0_30px_40px_rgba(19,24,52,0.18)]'
-    : 'h-[62vh] w-auto object-contain drop-shadow-[0_30px_40px_rgba(19,24,52,0.18)]'
-)
-
 /** Estado Nuxt compartido para el vuelo (lo fijaría quien navegue con navigateTo). */
 const sharedFlight = useState<Flight | null>('pw-flight', () => null)
 
@@ -127,9 +120,6 @@ function startCloneFlight(): void {
   const el = cloneRef.value
   if (!f || !el || typeof window === 'undefined') return
   const vh = window.innerHeight
-  // Altura final según el objeto (los anchos como ticket/carta son más bajos).
-  const wide = props.slug === 'festivales' || props.slug === 'experiencias-privadas'
-  const finalH = vh * (wide ? 0.38 : 0.62)
   // Estado inicial en línea para evitar un flash antes del primer fotograma.
   el.style.height = `${f.fromH}px`
   el.style.transform = `translateY(0px) rotate(${f.rotate}deg)`
@@ -149,13 +139,13 @@ function startCloneFlight(): void {
         easing: 'ease-in',
       },
       {
-        height: `${finalH * 1.02}px`,
-        transform: `translateY(${(vh * 0.7 - f.fromY + 22).toFixed(1)}px) rotate(0deg)`,
+        height: `${vh * 0.62 * 1.02}px`,
+        transform: `translateY(${(vh * 0.7 - f.fromY + 22).toFixed(1)}px) rotate(-3deg)`,
         offset: 0.8,
         easing: 'ease-out',
       },
       {
-        height: `${finalH}px`,
+        height: `${vh * 0.62}px`,
         transform: `translateY(${(vh * 0.7 - f.fromY).toFixed(1)}px) rotate(0deg)`,
         offset: 1,
       },
@@ -301,13 +291,11 @@ onUnmounted(() => {
   <div
     v-if="flight && !landed"
     aria-hidden="true"
-    class="pointer-events-none fixed inset-0 z-[100]"
+    class="pointer-events-none fixed inset-x-0 z-[100] flex justify-center"
     :style="{ top: `${flight!.fromY}px` }"
   >
-    <div class="absolute left-1/2 -translate-x-1/2">
-      <div ref="cloneRef">
-        <img :src="flight!.src" alt="" draggable="false" class="h-full w-auto select-none" />
-      </div>
+    <div ref="cloneRef">
+      <img :src="flight!.src" alt="" draggable="false" class="h-full w-auto select-none" />
     </div>
   </div>
 
@@ -343,7 +331,7 @@ onUnmounted(() => {
                   <img
                     :src="item.img"
                     :alt="sector.title"
-                    :class="objectSizeClass"
+                    class="h-[62vh] w-auto object-contain drop-shadow-[0_30px_40px_rgba(19,24,52,0.18)]"
                   />
                 </button>
                 <NuxtLink
@@ -356,7 +344,7 @@ onUnmounted(() => {
                   <img
                     :src="item.img"
                     :alt="sector.title"
-                    :class="objectSizeClass"
+                    class="h-[62vh] w-auto object-contain drop-shadow-[0_30px_40px_rgba(19,24,52,0.18)]"
                   />
                 </NuxtLink>
               </div>
@@ -376,7 +364,7 @@ onUnmounted(() => {
                   <img
                     :src="item.img"
                     :alt="sector.title"
-                    :class="objectSizeClass"
+                    class="h-[62vh] w-auto object-contain drop-shadow-[0_30px_40px_rgba(19,24,52,0.18)]"
                   />
                 </button>
                 <NuxtLink
@@ -389,7 +377,7 @@ onUnmounted(() => {
                   <img
                     :src="item.img"
                     :alt="sector.title"
-                    :class="objectSizeClass"
+                    class="h-[62vh] w-auto object-contain drop-shadow-[0_30px_40px_rgba(19,24,52,0.18)]"
                   />
                 </NuxtLink>
               </div>

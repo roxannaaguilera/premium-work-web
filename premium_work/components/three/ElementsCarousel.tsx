@@ -291,6 +291,7 @@ export default function ElementsCarousel() {
       }
       if (lifted) {
         resizeTo(window.innerWidth, window.innerHeight);
+        canvas.style.position = "fixed";
         canvas.style.left = "0";
         canvas.style.top = "0";
         canvas.style.margin = "0";
@@ -443,7 +444,7 @@ export default function ElementsCarousel() {
             detailAnchor
               .copy(camera.position)
               .addScaledVector(viewDir, distD)
-              .addScaledVector(camUp, -halfHD * 0.65);
+              .addScaledVector(camUp, -halfHD * 0.48);
             wrap.position.lerp(detailAnchor, blend);
             const heroScale = wrap.scale.x;
             wrap.scale.setScalar(heroScale + (detailScale - heroScale) * blend);
