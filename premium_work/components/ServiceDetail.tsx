@@ -82,6 +82,9 @@ export default function ServiceDetail({
   // hidratación: el servidor renderiza sin vuelo y el cliente lo añade tras hidratar.
   // Si viene initialFlight (overlay SPA), se usa directamente sin sessionStorage.
   const [flight, setFlight] = useState<Flight | null>(initialFlight ?? null);
+  // Overlay del héroe: el mesh de WebGL sigue montado y ocupa este hueco.
+  // No se pinta una segunda foto.
+  const liveMesh = Boolean(initialFlight);
   useEffect(() => {
     if (initialFlight) return; // el overlay ya lo pasó
     try {
@@ -115,8 +118,8 @@ export default function ServiceDetail({
   return (
     <>
       <FixedHeader />
-      {/* Clon volador (sin panel): vuela desde el rect del héroe hasta el reposo */}
-      {flight && !landed && (
+      {/* Visita directa: un clon vuela desde el rect guardado. El overlay no lo usa. */}
+      {!liveMesh && flight && !landed && (
         <div
           aria-hidden="true"
           className="pointer-events-none fixed inset-x-0 z-[100] flex justify-center"
@@ -142,11 +145,21 @@ export default function ServiceDetail({
           <div className="sticky top-0 flex h-screen flex-col items-center justify-center overflow-hidden">
             <motion.h1
               initial={{ opacity: 0, y: -96 }}
-              animate={flight ? (landed ? { opacity: 1, y: 0 } : {}) : { opacity: 1, y: 0 }}
+              animate={
+                liveMesh
+                  ? { opacity: 1, y: 0 }
+                  : flight
+                    ? landed
+                      ? { opacity: 1, y: 0 }
+                      : {}
+                    : { opacity: 1, y: 0 }
+              }
               transition={
-                flight
-                  ? { duration: 0.9, delay: 0.3, ease: [0.22, 1, 0.36, 1] }
-                  : { duration: 0.9, delay: 1.7, ease: [0.22, 1, 0.36, 1] }
+                liveMesh
+                  ? { duration: 0.5, delay: 0.05, ease: [0.22, 1, 0.36, 1] }
+                  : flight
+                    ? { duration: 0.9, delay: 0.3, ease: [0.22, 1, 0.36, 1] }
+                    : { duration: 0.9, delay: 1.7, ease: [0.22, 1, 0.36, 1] }
               }
               className="z-10 px-4 text-center font-serif font-semibold uppercase leading-[0.9] tracking-tight text-[#131834] text-[clamp(3.5rem,13vw,12rem)]"
             >
@@ -162,7 +175,14 @@ export default function ServiceDetail({
                 pantalla agrandándose (manteniendo la inclinación del hover) y
                 luego cae con rebote hasta su posición final. */}
             <div className="pointer-events-none absolute inset-x-0 -bottom-[32vh] z-20 flex justify-center">
-              {flight ? (
+              {liveMesh ? (
+                <button
+                  type="button"
+                  onClick={onClose}
+                  aria-label={dict.header.logoLabel}
+                  className="pointer-events-auto h-[62vh] w-[46vh] cursor-pointer bg-transparent"
+                />
+              ) : flight ? (
                 // Relevo del clon volador: aparece al aterrizar (crossfade invisible).
                 <motion.div
                   initial={{ opacity: 0 }}

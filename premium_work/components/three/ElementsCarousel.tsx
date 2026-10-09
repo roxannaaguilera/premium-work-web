@@ -76,6 +76,16 @@ export default function ElementsCarousel() {
   } | null>(null);
   const frontRef = useRef({ idx: 0, hoverT: 0 });
   const hiddenIdxRef = useRef(-1);
+  const shellRef = useRef<HTMLDivElement>(null);
+  const elapsedRef = useRef(0);
+  const detailRef = useRef<null | {
+    idx: number;
+    start: number;
+    dur: number;
+    closing: boolean;
+    blendAtClose: number;
+  }>(null);
+  const openDetailRef = useRef<(idx: number) => void>(() => {});
 
   // Clic nativo sobre el canvas: si fue arrastre o no dio en el objeto frontal,
   // no hace nada; si dio en el objeto, guarda el vuelo en sessionStorage y
@@ -95,7 +105,7 @@ export default function ElementsCarousel() {
       if (!d || Math.hypot(e.clientX - d.x, e.clientY - d.y) >= 6) return; // arrastre
       const three = threeRef.current;
       if (!three || three.planeMeshes.length !== COUNT) return;
-      const { camera, items, planeMeshes, raycaster, el } = three;
+      const { camera, planeMeshes, raycaster, el } = three;
       const r = el.getBoundingClientRect();
       const ndc = new THREE.Vector2(
         ((e.clientX - r.left) / r.width) * 2 - 1,
@@ -106,27 +116,14 @@ export default function ElementsCarousel() {
       const idx = frontRef.current.idx;
       if (hits.length === 0 || (hits[0].object.userData.sectorIndex as number) !== idx) return;
       const slug = SLUGS[SECTORS[idx].di];
-      // Rect en pantalla del objeto frontal para el clon volador.
-      const wp = new THREE.Vector3();
-      const obj = items[idx];
-      obj.getWorldPosition(wp);
-      const pv = wp.clone().project(camera);
-      const cx = r.left + (pv.x * 0.5 + 0.5) * r.width;
-      const cy = r.top + (-pv.y * 0.5 + 0.5) * r.height;
-      const dist = camera.position.distanceTo(wp);
-      const worldH = ITEM_SIZE * obj.scale.x;
-      const vFov = THREE.MathUtils.degToRad(camera.fov);
-      const screenH = (worldH / (2 * dist * Math.tan(vFov / 2))) * r.height;
-      // En vez de navegar, se emite un evento: el overlay SPA de la home
-      // renderiza el detalle sin recarga (el objeto nunca desaparece).
-      const flight = {
-        src: SECTORS[idx].src,
-        slug,
-        fromY: cy - screenH / 2,
-        fromH: screenH,
-        rotate: -22 * frontRef.current.hoverT,
-      };
-      window.dispatchEvent(new CustomEvent("pw-open-service", { detail: flight }));
+      // El mismo mesh sigue en el lienzo que ya está montado y se mueve
+      // hasta la pose del detalle. No hay un segundo objeto.
+      openDetailRef.current(idx);
+      window.dispatchEvent(
+        new CustomEvent("pw-open-service", {
+          detail: { src: SECTORS[idx].src, slug, fromY: 0, fromH: 0, rotate: 0, mesh: true },
+        })
+      );
     };
     mount.addEventListener("pointerdown", onPointerDown);
     mount.addEventListener("click", onClick);
@@ -252,16 +249,102 @@ export default function ElementsCarousel() {
     el.addEventListener("pointermove", onMove);
     window.addEventListener("pointerup", onUp);
     el.addEventListener("wheel", onWheel, { passive: false });
-    // Objetos para el raycast desde el onClick de React.
+    // Objetos para el raycast desde el clic nativo.
     threeRef.current = { camera, items, planeMeshes, raycaster, el };
 
-    const ro = new ResizeObserver(() => {
-      const w = mount.clientWidth || 1;
-      const h = mount.clientHeight || 1;
-      camera.aspect = w / h;
+    const mountCount = ((window as Window & { __pwSceneMounts?: number }).__pwSceneMounts ?? 0) + 1;
+    (window as Window & { __pwSceneMounts?: number }).__pwSceneMounts = mountCount;
+    renderer.domElement.dataset.pwScene = String(mountCount);
+
+    const cream = new THREE.Color(0xfdf3eb);
+    let lifted = false;
+    let pendingDrop = false;
+    const detailAnchor = new THREE.Vector3();
+
+    const resizeTo = (w: number, h: number) => {
+      const width = Math.max(w, 1);
+      const height = Math.max(h, 1);
+      camera.aspect = width / height;
       camera.updateProjectionMatrix();
-      renderer.setSize(w, h);
-      composer.setSize(w, h);
+      renderer.setSize(width, height);
+      composer.setSize(width, height);
+    };
+
+    // El mismo <canvas> (mismo contexto WebGL, mismos meshes) pasa a
+    // document.body para quedar por encima del overlay. No se crea otro
+    // renderer ni se dispone la escena.
+    const applyLift = (on: boolean) => {
+      const canvas = renderer.domElement;
+      if (on && !lifted) {
+        lifted = true;
+        document.body.appendChild(canvas);
+      } else if (!on && lifted) {
+        lifted = false;
+        canvas.style.position = "";
+        canvas.style.left = "";
+        canvas.style.top = "";
+        canvas.style.margin = "";
+        canvas.style.zIndex = "";
+        canvas.style.pointerEvents = "";
+        canvas.style.background = "";
+        mount.appendChild(canvas);
+      }
+      if (lifted) {
+        resizeTo(window.innerWidth, window.innerHeight);
+        canvas.style.position = "fixed";
+        canvas.style.left = "0";
+        canvas.style.top = "0";
+        canvas.style.margin = "0";
+        canvas.style.zIndex = "260";
+        canvas.style.pointerEvents = "none";
+        canvas.style.background = "transparent";
+      } else {
+        resizeTo(mount.clientWidth || 1, mount.clientHeight || 1);
+      }
+    };
+
+    const renderTransparent = () => {
+      renderer.setClearColor(0x000000, 0);
+      renderer.setClearAlpha(0);
+      scene.background = null;
+      renderer.autoClear = true;
+      renderer.setRenderTarget(null);
+      renderer.clear();
+      renderer.render(scene, camera);
+    };
+
+    const onCloseDetail = () => {
+      const d = detailRef.current;
+      if (!d || d.closing) {
+        if (!d) window.dispatchEvent(new Event("pw-detail-home"));
+        return;
+      }
+      const u = Math.min(1, (elapsedRef.current - d.start) / d.dur);
+      const e = 1 - Math.pow(1 - u, 3);
+      d.closing = true;
+      d.blendAtClose = e;
+      d.start = elapsedRef.current;
+      d.dur = 0.42;
+    };
+    window.addEventListener("pw-close-service", onCloseDetail);
+
+    openDetailRef.current = (idx: number) => {
+      detailRef.current = {
+        idx,
+        start: elapsedRef.current,
+        dur: 0.62,
+        closing: false,
+        blendAtClose: 0,
+      };
+      if (tagRef.current) tagRef.current.style.opacity = "0";
+      applyLift(true);
+      // Un frame transparente ya, antes de que React pinte el overlay.
+      renderTransparent();
+    };
+
+    const ro = new ResizeObserver(() => {
+      if (lifted) return;
+      resizeTo(mount.clientWidth || 1, mount.clientHeight || 1);
     });
     ro.observe(mount);
 
@@ -277,14 +360,33 @@ export default function ElementsCarousel() {
     const slotCenter = new THREE.Vector3();
     const animate = () => {
       raf = requestAnimationFrame(animate);
+      if (pendingDrop && !detailRef.current) {
+        pendingDrop = false;
+        applyLift(false);
+      }
       const dt = Math.min(clock.getDelta(), 0.05);
       elapsed += dt;
+      elapsedRef.current = elapsed;
       rotation += (target - rotation) * (1 - Math.exp(-dt * 18));
       camera.updateMatrixWorld();
       camera.getWorldDirection(viewDir);
       camRight.setFromMatrixColumn(camera.matrixWorld, 0);
       camUp.setFromMatrixColumn(camera.matrixWorld, 1);
       const vFov = THREE.MathUtils.degToRad(camera.fov);
+      let blend = 0;
+      let handoff = false;
+      const detail = detailRef.current;
+      if (detail) {
+        const u = Math.min(1, (elapsed - detail.start) / detail.dur);
+        const e = 1 - Math.pow(1 - u, 3);
+        blend = detail.closing ? detail.blendAtClose * (1 - e) : e;
+        if (detail.closing && u >= 1) {
+          detailRef.current = null;
+          blend = 0;
+          handoff = true;
+        }
+      }
+      (window as Window & { __pwBlend?: number }).__pwBlend = blend;
       items.forEach((wrap, i) => {
         let t = i - rotation / STEP;
         t = ((t % COUNT) + COUNT) % COUNT;
@@ -331,6 +433,29 @@ export default function ElementsCarousel() {
         const boost = isFront ? 1 + 0.14 * hoverT : 1;
         wrap.scale.setScalar(!inView ? 0.001 : isFront ? fit * boost : fit * 0.66);
         wrap.visible = inView && i !== hiddenIdxRef.current;
+
+        // El mesh clicado se desplaza desde la pose del héroe hasta la del
+        // detalle. El resto se encoge. Al final queda de frente, sin inclinación.
+        if (blend > 0 && detail) {
+          if (i === detail.idx) {
+            const distD = 2.15;
+            const halfHD = Math.tan(vFov / 2) * distD;
+            const detailScale = (halfHD * 1.7) / ITEM_SIZE;
+            detailAnchor
+              .copy(camera.position)
+              .addScaledVector(viewDir, distD)
+              .addScaledVector(camUp, -halfHD * 0.48);
+            wrap.position.lerp(detailAnchor, blend);
+            const heroScale = wrap.scale.x;
+            wrap.scale.setScalar(heroScale + (detailScale - heroScale) * blend);
+            wrap.rotation.x = 0;
+            wrap.rotation.y = 0;
+            wrap.rotation.z = Math.sin(blend * Math.PI) * 0.28;
+            wrap.visible = true;
+          } else {
+            wrap.scale.multiplyScalar(1 - blend);
+          }
+        }
       });
       const index = ((Math.round(rotation / STEP) % COUNT) + COUNT) % COUNT;
       frontRef.current.idx = index;
@@ -339,7 +464,8 @@ export default function ElementsCarousel() {
       // (slug frontal disponible en s si se necesita)
 
       // Hover solo sobre el objeto principal: avanza un poco hacia adelante.
-      if (!dragging && planeMeshes.length === COUNT) {
+      if (detailRef.current) hovered = false;
+      else if (!dragging && planeMeshes.length === COUNT) {
         raycaster.setFromCamera(pointerNDC, camera);
         const hits = raycaster.intersectObjects(planeMeshes, false);
         hovered = hits.length > 0 && hits[0].object.userData.sectorIndex === index;
@@ -357,35 +483,51 @@ export default function ElementsCarousel() {
         tagRef.current.style.opacity = hovered ? "1" : "0";
       }
 
-      items[index].updateMatrixWorld(true);
-      items[index].getWorldPosition(focusPoint);
-      focusPoint.applyMatrix4(camera.matrixWorldInverse);
-      bokeh.uniforms.focus.value = -focusPoint.z;
+      const renderHero = () => {
+        renderer.setClearColor(0xfdf3eb, 1);
+        scene.background = cream;
+        items[index].updateMatrixWorld(true);
+        items[index].getWorldPosition(focusPoint);
+        focusPoint.applyMatrix4(camera.matrixWorldInverse);
+        bokeh.uniforms.focus.value = -focusPoint.z;
 
-      // El del frente no entra en el desenfoque: solo lo de detrás y los lados.
-      const frontWasVisible = items[index].visible;
-      items[index].visible = false;
-      composer.render();
-      items[index].visible = frontWasVisible;
+        // El del frente no entra en el desenfoque: solo lo de detrás y los lados.
+        const frontWasVisible = items[index].visible;
+        items[index].visible = false;
+        composer.render();
+        items[index].visible = frontWasVisible;
 
-      const background = scene.background;
-      scene.background = null;
-      const autoClear = renderer.autoClear;
-      renderer.autoClear = false;
-      renderer.setRenderTarget(null);
-      renderer.clearDepth();
-      const visibility = items.map((wrap) => wrap.visible);
-      items.forEach((wrap, i) => { wrap.visible = i === index; });
-      renderer.render(scene, camera);
-      items.forEach((wrap, i) => { wrap.visible = visibility[i]; });
-      scene.background = background;
-      renderer.autoClear = autoClear;
+        scene.background = null;
+        const autoClear = renderer.autoClear;
+        renderer.autoClear = false;
+        renderer.setRenderTarget(null);
+        renderer.clearDepth();
+        const visibility = items.map((wrap) => wrap.visible);
+        items.forEach((wrap, i) => { wrap.visible = i === index; });
+        renderer.render(scene, camera);
+        items.forEach((wrap, i) => { wrap.visible = visibility[i]; });
+        scene.background = cream;
+        renderer.autoClear = autoClear;
+      };
+
+      // En el detalle el composer pintaría crema opaca y taparía el título.
+      // Solo el mesh, con el fondo transparente, encima del overlay.
+      if (detailRef.current) renderTransparent();
+      else {
+        renderHero();
+        if (handoff) {
+          window.dispatchEvent(new Event("pw-detail-home"));
+          pendingDrop = true;
+        }
+      }
     };
     animate();
 
     return () => {
       cancelAnimationFrame(raf);
       ro.disconnect();
+      window.removeEventListener("pw-close-service", onCloseDetail);
+      openDetailRef.current = () => {};
       el.removeEventListener("pointerdown", onDown);
       el.removeEventListener("pointermove", onMove);
       window.removeEventListener("pointerup", onUp);
@@ -400,12 +542,12 @@ export default function ElementsCarousel() {
       bokeh.dispose();
       composer.dispose();
       renderer.dispose();
-      mount.removeChild(el);
+      if (el.parentElement) el.parentElement.removeChild(el);
     };
   }, []);
 
   return (
-    <div className="relative h-full min-h-full bg-[#fdf3eb] text-[#131834]">
+    <div ref={shellRef} className="relative h-full min-h-full bg-[#fdf3eb] text-[#131834]">
       <div
         ref={mountRef}
         className="h-full w-full cursor-pointer [&_canvas]:block [&_canvas]:h-full [&_canvas]:w-full"

@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import ServiceDetail from "@/components/ServiceDetail";
 import { getLenis } from "@/lib/lenis-instance";
 
@@ -13,22 +13,33 @@ type Flight = {
 };
 
 /**
- * Overlay SPA para el detalle de servicio: se abre sin recarga cuando el
- * usuario clica un objeto del héroe. El objeto (clon) vuela dentro del mismo
- * documento, sin flash de cambio de página.
+ * Overlay SPA para el detalle de servicio. La home (y su canvas) no se
+ * desmonta: pushState cambia la URL y el mesh que ya estaba en pantalla
+ * se mueve hasta la pose del detalle.
  *
  * La ruta /servicios/[slug] sigue existiendo para visitas directas y SEO.
  */
 export default function ServiceOverlay() {
   const [flight, setFlight] = useState<Flight | null>(null);
+  const closingRef = useRef(false);
 
-  const close = useCallback(() => {
+  const finishClose = useCallback(() => {
+    closingRef.current = false;
     setFlight(null);
-    // Restaurar la URL de la home sin recargar.
     if (window.location.pathname !== "/") {
       window.history.pushState({}, "", "/");
     }
   }, []);
+
+  const close = useCallback(() => {
+    if (closingRef.current) return;
+    closingRef.current = true;
+    // El carrusel anima el mesh de vuelta y avisa con pw-detail-home.
+    window.dispatchEvent(new Event("pw-close-service"));
+    window.setTimeout(() => {
+      if (closingRef.current) finishClose();
+    }, 900);
+  }, [finishClose]);
 
   // Bloquear/desbloquear scroll ligado al estado del overlay.
   useEffect(() => {
@@ -59,16 +70,26 @@ export default function ServiceOverlay() {
       window.history.pushState({ pwService: f.slug }, "", `/servicios/${f.slug}`);
     };
     const onPop = () => {
-      // Botón atrás del navegador: cerrar el overlay.
-      setFlight(null);
+      if (closingRef.current) return;
+      closingRef.current = true;
+      window.dispatchEvent(new Event("pw-close-service"));
+      window.setTimeout(() => {
+        if (closingRef.current) finishClose();
+      }, 900);
+    };
+    const onHome = () => {
+      if (!closingRef.current) return;
+      finishClose();
     };
     window.addEventListener("pw-open-service", onOpen);
     window.addEventListener("popstate", onPop);
+    window.addEventListener("pw-detail-home", onHome);
     return () => {
       window.removeEventListener("pw-open-service", onOpen);
       window.removeEventListener("popstate", onPop);
+      window.removeEventListener("pw-detail-home", onHome);
     };
-  }, []);
+  }, [finishClose]);
 
   // Tecla Escape cierra.
   useEffect(() => {
