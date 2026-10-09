@@ -318,7 +318,7 @@ onUnmounted(() => {
         <div class="pointer-events-none absolute inset-x-0 -bottom-[32vh] z-20 flex justify-center">
           <template v-if="flight">
             <!-- Relevo del clon volador: aparece al aterrizar (crossfade invisible) -->
-            <div :style="{ opacity: landed ? 1 : 0, transition: 'opacity 250ms ease' }">
+            <div :style="{ opacity: landed ? 1 : 0 }">
               <div :style="riseStyle" class="pointer-events-auto">
                 <button
                   v-if="onClose"
