@@ -102,3 +102,30 @@ body {
   border-color: #fff;
   color: var(--ink);
 }
+
+/* ——— Trama de puntos del hero (paridad con .hero-dots de globals.css) ——— */
+.hero-dots {
+  background-image: radial-gradient(rgba(19,19,19,.08) 1px, transparent 1.3px);
+  background-size: 14px 14px;
+  mask-image: radial-gradient(ellipse 90% 80% at 50% 30%, black 30%, transparent 75%);
+  -webkit-mask-image: radial-gradient(ellipse 90% 80% at 50% 30%, black 30%, transparent 75%);
+}
+
+/* ——— Formulario integrado (paridad con .integrated-form de globals.css) ——— */
+.integrated-form label,
+.integrated-form legend { color: var(--ink); }
+.integrated-form input:not([type="checkbox"]),
+.integrated-form select,
+.integrated-form textarea {
+  color: var(--ink);
+  border-color: rgba(19,19,19,.28);
+  background: #fff;
+  color-scheme: light;
+}
+.integrated-form select option { background: #fff; color: var(--ink); }
+.integrated-form input:focus,
+.integrated-form select:focus,
+.integrated-form textarea:focus {
+  border-color: var(--lime-deep);
+  box-shadow: 0 0 0 3px rgba(80,130,255,.25);
+}
