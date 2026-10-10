@@ -7,7 +7,7 @@ import { useLang } from "@/components/i18n/lang";
 
 const LINK_HREFS = ["#inicio", "#servicios", "#nosotros", "#contacto"];
 
-function LangToggle() {
+function LangToggle({ dark = false }: { dark?: boolean }) {
   const { lang, setLang } = useLang();
   return (
     <div role="group" aria-label="Language / Idioma" className="flex items-center gap-2">
@@ -20,8 +20,12 @@ function LangToggle() {
           aria-label={l === "es" ? "Español" : "English"}
           className={`flex h-9 w-9 items-center justify-center rounded-full text-xs font-bold uppercase tracking-wider transition-colors ${
             lang === l
-              ? "bg-[#131834] text-[#faf6ee]"
-              : "border border-[#131834]/25 text-[#131834]/60 hover:border-[#131834]/60 hover:text-[#131834]"
+              ? dark
+                ? "bg-[#faf6ee] text-[#131834]"
+                : "bg-[#131834] text-[#faf6ee]"
+              : dark
+                ? "border border-white/25 text-white/60 hover:border-white/60 hover:text-white"
+                : "border border-[#131834]/25 text-[#131834]/60 hover:border-[#131834]/60 hover:text-[#131834]"
           }`}
         >
           {l}
@@ -31,7 +35,7 @@ function LangToggle() {
   );
 }
 
-export default function FixedHeader() {
+export default function FixedHeader({ dark = false }: { dark?: boolean }) {
   const { t, dict } = useLang();
   const [scrolled, setScrolled] = useState(false);
   const [open, setOpen] = useState(false);
@@ -92,19 +96,21 @@ export default function FixedHeader() {
       <header
         className={`fixed inset-x-0 top-0 z-[60] transition-all duration-300 ${
           scrolled
-            ? "bg-[#fdf3eb]/90 backdrop-blur-md border-b border-[#131834]/10"
+            ? dark
+              ? "bg-[#131834]/90 backdrop-blur-md border-b border-white/10"
+              : "bg-[#fdf3eb]/90 backdrop-blur-md border-b border-[#131834]/10"
             : "bg-transparent border-b border-transparent"
         }`}
       >
         <div className="grid grid-cols-[1fr_auto_1fr] items-center px-5 md:px-8 pt-7 md:pt-9 pb-3">
           <div className="justify-self-start">
-            <LangToggle />
+            <LangToggle dark={dark} />
           </div>
           <a href="#inicio" aria-label={t("header.logoLabel")} className="block justify-self-center">
             <img
               src="/images/logo-premium-work.png"
               alt="Premium Work"
-              className="h-28 md:h-36 w-auto"
+              className={`h-28 md:h-36 w-auto${dark ? " invert" : ""}`}
             />
           </a>
           <div className="flex items-center gap-2 justify-self-end">
@@ -113,7 +119,11 @@ export default function FixedHeader() {
               onClick={() => setOpen(true)}
               aria-haspopup="dialog"
               aria-expanded={open}
-              className="inline-flex items-center rounded-full bg-[#131834] px-5 py-2 text-sm font-semibold tracking-wide text-[#faf6ee] hover:bg-[#1e2450] transition-colors"
+              className={`inline-flex items-center rounded-full px-5 py-2 text-sm font-semibold tracking-wide transition-colors ${
+                dark
+                  ? "bg-[#faf6ee] text-[#131834] hover:bg-white"
+                  : "bg-[#131834] text-[#faf6ee] hover:bg-[#1e2450]"
+              }`}
             >
               {t("header.menu")}
             </button>
@@ -123,7 +133,9 @@ export default function FixedHeader() {
               aria-haspopup="dialog"
               aria-expanded={open}
               aria-label={t("header.openMenu")}
-              className="flex h-9 w-9 items-center justify-center rounded-full bg-[#131834] hover:bg-[#1e2450] transition-colors"
+              className={`flex h-9 w-9 items-center justify-center rounded-full transition-colors ${
+                dark ? "bg-[#faf6ee] hover:bg-white" : "bg-[#131834] hover:bg-[#1e2450]"
+              }`}
             >
               <span aria-hidden="true" className="inline-block h-2.5 w-2.5 rotate-45 bg-[#eab308]" />
             </button>

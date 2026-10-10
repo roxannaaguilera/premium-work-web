@@ -107,7 +107,7 @@ export default function ServiceOverlay() {
   return (
     <div
       ref={scrollerRef}
-      className="fixed inset-0 z-[200] overflow-y-auto bg-[#fdf3eb]"
+      className="fixed inset-0 z-[200] overflow-y-auto bg-[#131834]"
       role="dialog"
       aria-modal="true"
       aria-label={flight.slug}
