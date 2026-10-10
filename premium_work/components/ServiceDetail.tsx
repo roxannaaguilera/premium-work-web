@@ -137,7 +137,7 @@ export default function ServiceDetail({
 
   return (
     <>
-      <FixedHeader dark />
+      <FixedHeader />
       {/* Visita directa: un clon vuela desde el rect guardado. El overlay no lo usa. */}
       {!liveMesh && flight && !landed && (
         <div
@@ -159,7 +159,7 @@ export default function ServiceDetail({
           </motion.div>
         </div>
       )}
-      <main className="bg-[#131834] text-[#faf6ee]">
+      <main className="bg-[#fdf3eb] text-[#131834]">
         {/* Nombre centrado + elemento que sube con el scroll */}
         <section ref={secRef} aria-label={sector.title} className="relative h-[240vh]">
           <div className={`sticky top-0 flex h-screen flex-col items-center justify-center ${liveMesh ? "overflow-visible" : "overflow-hidden"}`}>
@@ -189,7 +189,7 @@ export default function ServiceDetail({
                     ? { duration: 0.9, delay: 0.3, ease: [0.22, 1, 0.36, 1] }
                     : { duration: 0.9, delay: 1.7, ease: [0.22, 1, 0.36, 1] }
               }
-              className="z-10 px-4 text-center font-serif font-semibold uppercase leading-[0.9] tracking-tight text-[#faf6ee] text-[clamp(3.5rem,13vw,12rem)]"
+              className="z-10 px-4 text-center font-serif font-semibold uppercase leading-[0.9] tracking-tight text-[#131834] text-[clamp(3.5rem,13vw,12rem)]"
             >
               {lines.map((l, i) => (
                 <span key={i} className="block">
@@ -217,7 +217,7 @@ export default function ServiceDetail({
                         <img
                           src={item.img}
                           alt={sector.title}
-                          className="h-[62vh] w-auto object-contain drop-shadow-[0_30px_40px_rgba(0,0,0,0.5)]"
+                          className="h-[62vh] w-auto object-contain drop-shadow-[0_30px_40px_rgba(19,24,52,0.18)]"
                         />
                       </button>
                     ) : (
@@ -225,7 +225,7 @@ export default function ServiceDetail({
                         <img
                           src={item.img}
                           alt={sector.title}
-                          className="h-[62vh] w-auto object-contain drop-shadow-[0_30px_40px_rgba(0,0,0,0.5)]"
+                          className="h-[62vh] w-auto object-contain drop-shadow-[0_30px_40px_rgba(19,24,52,0.18)]"
                         />
                       </Link>
                     )}
@@ -249,7 +249,7 @@ export default function ServiceDetail({
                         <img
                           src={item.img}
                           alt={sector.title}
-                          className="h-[62vh] w-auto object-contain drop-shadow-[0_30px_40px_rgba(0,0,0,0.5)]"
+                          className="h-[62vh] w-auto object-contain drop-shadow-[0_30px_40px_rgba(19,24,52,0.18)]"
                         />
                       </button>
                     ) : (
@@ -257,7 +257,7 @@ export default function ServiceDetail({
                         <img
                           src={item.img}
                           alt={sector.title}
-                          className="h-[62vh] w-auto object-contain drop-shadow-[0_30px_40px_rgba(0,0,0,0.5)]"
+                          className="h-[62vh] w-auto object-contain drop-shadow-[0_30px_40px_rgba(19,24,52,0.18)]"
                         />
                       </Link>
                     )}
@@ -272,13 +272,13 @@ export default function ServiceDetail({
 
         {/* Descripción y qué incluye */}
         <section className="px-5 md:px-10 py-14 md:py-20">
-          <p className="max-w-2xl font-serif text-2xl md:text-3xl italic text-[#faf6ee]/85">
+          <p className="max-w-2xl font-serif text-2xl md:text-3xl italic text-[#131834]/85">
             {item.tagline}
           </p>
-          <p className="mt-6 max-w-3xl text-lg md:text-xl leading-relaxed text-[#faf6ee]/85">
+          <p className="mt-6 max-w-3xl text-lg md:text-xl leading-relaxed text-[#131834]/85">
             {sector.copy}
           </p>
-          <h2 className="mt-12 text-xs font-bold uppercase tracking-[0.35em] text-[#faf6ee]/60">
+          <h2 className="mt-12 text-xs font-bold uppercase tracking-[0.35em] text-[#131834]/60">
             {dict.serviceDetail.includesTitle}
           </h2>
           <ul className="mt-6 grid gap-4 sm:grid-cols-2 max-w-4xl">
@@ -291,7 +291,7 @@ export default function ServiceDetail({
           </ul>
           <Link
             href={`/solicitar-servicio?sector=${slug}`}
-            className="mt-10 inline-flex items-center gap-3 rounded-full bg-[#faf6ee] px-8 py-4 text-sm font-bold uppercase tracking-[0.2em] text-[#131834] transition-colors hover:bg-white"
+            className="mt-10 inline-flex items-center gap-3 rounded-full bg-[#131834] px-8 py-4 text-sm font-bold uppercase tracking-[0.2em] text-[#faf6ee] transition-colors hover:bg-[#1e2450]"
           >
             <span aria-hidden="true" className="inline-block h-2.5 w-2.5 rotate-45 bg-[#eab308]" />
             {dict.serviceDetail.cta}
@@ -299,8 +299,8 @@ export default function ServiceDetail({
         </section>
 
         {/* Los otros servicios */}
-        <section className="border-t border-white/10 px-5 md:px-10 py-14 md:py-20">
-          <h2 className="text-xs font-bold uppercase tracking-[0.35em] text-[#faf6ee]/60">
+        <section className="border-t border-[#131834]/10 px-5 md:px-10 py-14 md:py-20">
+          <h2 className="text-xs font-bold uppercase tracking-[0.35em] text-[#131834]/60">
             {dict.serviceDetail.otherTitle}
           </h2>
           <div className="mt-8 grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4">
