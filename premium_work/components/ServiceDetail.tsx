@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useEffect, useLayoutEffect, useRef, useState, type RefObject } from "react";
-import { motion, useMotionValueEvent, useScroll, useTransform } from "framer-motion";
+import { motion, useMotionValue, useMotionValueEvent, useScroll, useTransform } from "framer-motion";
 import FixedHeader from "@/components/chrome/FixedHeader";
 import { Footer } from "@/components/Footer";
 import { useLang } from "@/components/i18n/lang";
@@ -70,6 +70,50 @@ export default function ServiceDetail({
     };
   }, [titleSize]);
 
+  // El objeto nace debajo de todo el bloque del título, con un hueco bajo la
+  // última línea. Si el título ocupa dos líneas, el objeto se encoge lo justo
+  // para caber entero bajo ellas. El scroll lo sube al centro de las letras.
+  const objectRef = useRef<HTMLDivElement>(null);
+  const riseTarget = useMotionValue(0);
+  useLayoutEffect(() => {
+    const place = () => {
+      const title = titleRef.current;
+      const wrap = objectRef.current;
+      const sticky = title?.parentElement;
+      if (!title || !sticky) return;
+      const img = wrap?.querySelector("img");
+      const gap = 28;
+      const margin = 16;
+      const viewH = sticky.clientHeight || window.innerHeight;
+      const titleBottom = title.offsetTop + title.offsetHeight;
+      const titleMid = title.offsetTop + title.offsetHeight / 2;
+      const desired = viewH * 0.36;
+      const available = viewH - titleBottom - gap - margin;
+      const h = Math.min(desired, Math.max(available, 88));
+      const top = titleBottom + gap;
+      if (wrap) {
+        wrap.style.top = `${top}px`;
+        wrap.style.bottom = "auto";
+      }
+      if (img) img.style.height = `${h}px`;
+      riseTarget.set(titleMid - (top + h / 2));
+      (window as Window & { __pwDetailPose?: { drop: number; fill: number } }).__pwDetailPose = {
+        drop: (top + h / 2 - viewH / 2) / (viewH / 2),
+        fill: h / viewH,
+      };
+    };
+    place();
+    const ro = new ResizeObserver(place);
+    if (titleRef.current) ro.observe(titleRef.current);
+    window.addEventListener("resize", place);
+    document.fonts?.ready.then(place).catch(() => {});
+    return () => {
+      ro.disconnect();
+      window.removeEventListener("resize", place);
+      delete (window as Window & { __pwDetailPose?: { drop: number; fill: number } }).__pwDetailPose;
+    };
+  }, [titleSize, riseTarget, slug]);
+
   // Vuelo del clon (técnica Agrumea, sin panel): si hay datos de vuelo en
   // sessionStorage, un clon fixed vuela desde el rect del héroe hasta el reposo,
   // con la coreografía (avanza agrandándose → cae con rebote). Al aterrizar,
@@ -126,9 +170,10 @@ export default function ServiceDetail({
   useMotionValueEvent(scrollYProgress, "change", (value) => {
     (window as Window & { __pwDetailT?: number }).__pwDetailT = value;
   });
-  // Reposo: el objeto queda bajo el título (bottom 4vh, alto 36vh → centro a 78vh).
-  // El scroll lo sube 28vh y lo deja en el centro de las letras (50vh). Ahí se queda.
-  const riseY = useTransform(scrollYProgress, [0, 0.55], ["0vh", "-28vh"]);
+  const riseY = useTransform([scrollYProgress, riseTarget], ([progress, target]: number[]) => {
+    const t = Math.min(1, Math.max(0, progress / 0.55));
+    return target * t;
+  });
 
   return (
     <>
@@ -202,7 +247,7 @@ export default function ServiceDetail({
             {/* Visita directa: cae desde arriba y aterriza bajo el nombre.
                 El scroll lo sube hasta el centro de las letras. */}
             {!liveMesh && (
-            <div className="pointer-events-none absolute inset-x-0 bottom-[4vh] z-20 flex justify-center">
+            <div ref={objectRef} className="pointer-events-none absolute inset-x-0 z-20 flex justify-center">
               {flight ? (
                 // Relevo del clon volador: aparece al aterrizar (crossfade invisible).
                 <motion.div

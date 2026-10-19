@@ -440,9 +440,10 @@ export default function ElementsCarousel() {
         detailFallPending = false;
       }
       const t = Math.max(0, Math.min(1, ((window as Window & { __pwDetailT?: number }).__pwDetailT ?? 0) / 0.45));
-      // t=0: bajo el título. t=1: centro de las letras. No se recorta.
-      const fill = 0.36;
-      const drop = halfHD * 0.56 * (1 - t);
+      // t=0: bajo todo el título (lo mide la ficha). t=1: centro de las letras.
+      const pose = (window as Window & { __pwDetailPose?: { drop: number; fill: number } }).__pwDetailPose;
+      const fill = pose?.fill ?? 0.36;
+      const drop = halfHD * (pose?.drop ?? 0.56) * (1 - t);
       const scale = (halfHD * 2 * fill) / gh;
       items.forEach((wrap, i) => {
         if (i !== detail.idx) {
@@ -544,10 +545,11 @@ export default function ElementsCarousel() {
             const distD = 2.15;
             const halfHD = Math.tan(vFov / 2) * distD;
             const detailScale = (halfHD * 1.7) / ITEM_SIZE;
+            const rest = (window as Window & { __pwDetailPose?: { drop: number } }).__pwDetailPose?.drop ?? 0.56;
             detailAnchor
               .copy(camera.position)
               .addScaledVector(viewDir, distD)
-              .addScaledVector(camUp, -halfHD * 0.56);
+              .addScaledVector(camUp, -halfHD * rest);
             wrap.position.lerp(detailAnchor, blend);
             const heroScale = wrap.scale.x;
             wrap.scale.setScalar(heroScale + (detailScale - heroScale) * blend);
