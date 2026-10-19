@@ -65,7 +65,6 @@ function splitTitle(title: string): string[] {
   return [words.slice(0, best).join(' '), words.slice(best).join(' ')]
 }
 
-const from = ref<{ dx: number; dy: number } | null>(null)
 const ready = ref(false)
 const flight = ref<Flight | null>(props.initialFlight ?? null)
 const landed = ref(false)
@@ -157,33 +156,20 @@ function startCloneFlight(): void {
   }
 }
 
-/** Entrada directa coreografiada (2 s): avanza agrandándose y cae con rebote. */
+/** Entrada directa: cae desde arriba, aterriza y da un rebote corto. */
 function startEntry(): void {
   const el = entryRef.value
-  const fr = from.value
-  if (!el || !fr || typeof window === 'undefined') return
-  el.style.transform = `translate(${fr.dx}px, ${fr.dy}px) scale(1.14) rotate(-22deg)`
+  if (!el || typeof window === 'undefined') return
+  el.style.transform = 'translateY(-35vh)'
   entryAnim?.cancel()
   entryAnim = el.animate(
     [
-      {
-        transform: `translate(${fr.dx}px, ${fr.dy}px) scale(1.14) rotate(-22deg)`,
-        offset: 0,
-        easing: 'ease-out',
-      },
-      {
-        transform: `translate(${(fr.dx * 0.4).toFixed(1)}px, ${(fr.dy - 100).toFixed(1)}px) scale(1.5) rotate(-22deg)`,
-        offset: 0.38,
-        easing: 'ease-in',
-      },
-      {
-        transform: `translate(0px, 26px) scale(0.94) rotate(-4deg)`,
-        offset: 0.78,
-        easing: 'ease-out',
-      },
-      { transform: `translate(0px, 0px) scale(1) rotate(0deg)`, offset: 1 },
+      { transform: 'translateY(-35vh)', offset: 0, easing: 'ease-out' },
+      { transform: 'translateY(2.4vh)', offset: 0.62, easing: 'ease-out' },
+      { transform: 'translateY(-1.1vh)', offset: 0.84, easing: 'ease-out' },
+      { transform: 'translateY(0px)', offset: 1 },
     ],
-    { duration: 2000, fill: 'forwards' },
+    { duration: 1000, fill: 'forwards' },
   )
 }
 
@@ -204,25 +190,6 @@ async function init(slug: string): Promise<void> {
   titleVisible.value = false
   scrollP.value = 0
   ready.value = false
-
-  const vw = window.innerWidth
-  const vh = window.innerHeight
-  let dx = 0
-  let dy = vh * 0.45
-  try {
-    const raw = sessionStorage.getItem('pw-element-from')
-    if (raw) {
-      const p = JSON.parse(raw) as { x: number; y: number; slug: string }
-      sessionStorage.removeItem('pw-element-from')
-      if (p.slug === slug) {
-        dx = p.x - vw / 2
-        dy = p.y - vh * 0.74
-      }
-    }
-  } catch {
-    /* visita directa: entra desde abajo */
-  }
-  from.value = { dx, dy }
 
   // Vuelo: prop (overlay) > estado Nuxt (navegación cliente) > sessionStorage.
   if (!flight.value || flight.value.slug !== slug) {
@@ -302,20 +269,20 @@ onUnmounted(() => {
   <main class="bg-[#fae4d4] text-[#131834]">
     <!-- Nombre centrado + elemento que sube con el scroll -->
     <section ref="secRef" :aria-label="sector.title" class="relative h-[240vh]">
-      <div class="sticky top-0 flex h-screen flex-col items-center justify-center overflow-hidden">
+      <div class="sticky top-0 flex h-screen flex-col items-center justify-center overflow-visible">
         <h1
           class="svc-title z-10 px-4 text-center font-serif font-semibold uppercase leading-[0.9] tracking-tight text-[#131834] text-[clamp(3.5rem,13vw,12rem)]"
           :class="{ 'is-visible': titleVisible }"
-          :style="{ transitionDelay: flight ? '0.3s' : '1.7s' }"
+          :style="{ transitionDelay: flight ? '0.3s' : '0.35s' }"
         >
           <span v-for="(l, i) in lines" :key="i" class="block">{{ l }}</span>
         </h1>
-        <!-- Entrada desde el hero (fuera) + subida con scroll (dentro).
-             En reposo asoma la mitad del objeto sin tapar el nombre.
-             La entrada es una coreografía lenta: el objeto avanza hacia la
-             pantalla agrandándose (manteniendo la inclinación del hover) y
-             luego cae con rebote hasta su posición final. -->
-        <div class="pointer-events-none absolute inset-x-0 -bottom-[32vh] z-20 flex justify-center">
+        <!-- Visita directa: el objeto cae desde arriba y rebota. El vuelo
+             desde el héroe conserva su sitio. -->
+        <div
+          class="pointer-events-none absolute inset-x-0 z-20 flex justify-center"
+          :class="flight ? '-bottom-[32vh]' : 'bottom-[4vh]'"
+        >
           <template v-if="flight">
             <!-- Relevo del clon volador: aparece al aterrizar (crossfade invisible) -->
             <div :style="{ opacity: landed ? 1 : 0 }">
@@ -364,7 +331,7 @@ onUnmounted(() => {
                   <img
                     :src="item.img"
                     :alt="sector.title"
-                    class="h-[62vh] w-auto object-contain drop-shadow-[0_30px_40px_rgba(19,24,52,0.18)]"
+                    class="h-[36vh] w-auto object-contain"
                   />
                 </button>
                 <NuxtLink
@@ -377,7 +344,7 @@ onUnmounted(() => {
                   <img
                     :src="item.img"
                     :alt="sector.title"
-                    class="h-[62vh] w-auto object-contain drop-shadow-[0_30px_40px_rgba(19,24,52,0.18)]"
+                    class="h-[36vh] w-auto object-contain"
                   />
                 </NuxtLink>
               </div>
