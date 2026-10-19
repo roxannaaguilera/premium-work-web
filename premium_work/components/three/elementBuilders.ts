@@ -1,10 +1,10 @@
 import * as THREE from "three";
 
 /**
- * Constructores puros de los 8 elementos 3D de Premium Work.
+ * Constructores puros de los 7 elementos 3D de Premium Work.
  * Cada función devuelve un THREE.Group listo para añadir a cualquier escena.
  * (Extraídos de los componentes Bell3D, Cloche3D, Catering3D, Corporate3D,
- *  Medal3D, Festival3D, Rings3D y Envelope3D.)
+ *  Medal3D, Festival3D y Envelope3D.)
  */
 
 export interface SectorElement {
@@ -245,23 +245,7 @@ export function buildTicket(): THREE.Group {
   return ticket;
 }
 
-/** 7. Bodas y celebraciones — dos argollas separadas */
-export function buildRings(): THREE.Group {
-  const rings = new THREE.Group();
-  const band1 = new THREE.Mesh(new THREE.TorusGeometry(0.36, 0.075, 40, 96), goldMat());
-  band1.position.set(-0.48, 0.44, 0.02);
-  band1.rotation.set(0.05, -0.14, 0.04);
-  band1.castShadow = band1.receiveShadow = true;
-  rings.add(band1);
-  const band2 = new THREE.Mesh(new THREE.TorusGeometry(0.36, 0.075, 40, 96), goldMat());
-  band2.position.set(0.48, 0.42, -0.02);
-  band2.rotation.set(-0.04, 0.16, -0.05);
-  band2.castShadow = band2.receiveShadow = true;
-  rings.add(band2);
-  return rings;
-}
-
-/** 8. Eventos privados — sobre lacrado */
+/** 7. Eventos privados — sobre lacrado */
 export function buildEnvelope(): THREE.Group {
   const env3d = new THREE.Group();
   const paper = new THREE.MeshStandardMaterial({
@@ -323,6 +307,5 @@ export const SECTOR_ELEMENTS: SectorElement[] = [
   { name: "Eventos corporativos", build: buildMicrophone },
   { name: "Eventos deportivos", build: buildMedal },
   { name: "Festivales", build: buildTicket },
-  { name: "Bodas y celebraciones", build: buildRings },
   { name: "Eventos privados", build: buildEnvelope },
 ];

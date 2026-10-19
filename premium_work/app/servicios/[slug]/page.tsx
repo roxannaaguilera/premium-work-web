@@ -8,7 +8,6 @@ const SLUGS = [
   "eventos-corporativos",
   "eventos-deportivos",
   "festivales",
-  "bodas-y-celebraciones",
   "experiencias-privadas",
 ];
 

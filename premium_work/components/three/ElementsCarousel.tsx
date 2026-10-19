@@ -14,7 +14,7 @@ const SECTORS = [
   { name: "Eventos corporativos", src: "/images/elementos-reales/corporativos.png", di: 3 },
   { name: "Restaurantes", src: "/images/elementos-reales/restaurantes.png", di: 1 },
   { name: "Eventos deportivos", src: "/images/elementos-reales/deportivos.png", di: 4 },
-  { name: "Eventos privados", src: "/images/elementos-reales/privados.png", di: 7 },
+  { name: "Eventos privados", src: "/images/elementos-reales/privados.png", di: 6 },
   { name: "Festivales", src: "/images/elementos-reales/festivales.png", di: 5 },
 ] as const;
 
@@ -23,7 +23,7 @@ const STEP = (Math.PI * 2) / COUNT;
 const ITEM_SIZE = 1.45;
 
 // Slugs de las páginas de detalle, en el orden del diccionario.
-const SLUGS = ["hoteles", "restaurantes", "catering", "eventos-corporativos", "eventos-deportivos", "festivales", "bodas-y-celebraciones", "experiencias-privadas"];
+const SLUGS = ["hoteles", "restaurantes", "catering", "eventos-corporativos", "eventos-deportivos", "festivales", "experiencias-privadas"];
 
 /**
  * Caída con un solo rebote. Devuelve altura extra (en fracciones de media
