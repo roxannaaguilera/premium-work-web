@@ -31,7 +31,7 @@ function LangToggle() {
   );
 }
 
-export default function FixedHeader() {
+export default function FixedHeader({ hideUntilTop = false }: { hideUntilTop?: boolean }) {
   const { t, dict } = useLang();
   const [hidden, setHidden] = useState(false);
   const [open, setOpen] = useState(false);
@@ -43,7 +43,10 @@ export default function FixedHeader() {
   useEffect(() => {
     const onScroll = () => {
       const y = window.scrollY || document.documentElement.scrollTop || 0;
-      if (y <= 8) setHidden(false);
+      if (hideUntilTop) {
+        // Service pages: visible only at rest. Any scroll hides it until the top.
+        setHidden(y > 16);
+      } else if (y <= 8) setHidden(false);
       else if (y > lastY.current + 6) setHidden(true);
       else if (y < lastY.current - 6) setHidden(false);
       lastY.current = y;
@@ -51,7 +54,7 @@ export default function FixedHeader() {
     onScroll();
     window.addEventListener("scroll", onScroll, { passive: true });
     return () => window.removeEventListener("scroll", onScroll);
-  }, []);
+  }, [hideUntilTop]);
 
   const close = useCallback(() => setOpen(false), []);
 
@@ -97,7 +100,7 @@ export default function FixedHeader() {
   return (
     <>
       <header
-        className={`fixed inset-x-0 top-0 z-[60] border-b border-transparent bg-transparent transition-[transform,opacity] duration-300 ${
+        className={`fixed inset-x-0 top-0 z-[60] border-b border-transparent bg-transparent transition-[transform,translate,opacity] duration-300 ${
           hidden && !open ? "-translate-y-full pointer-events-none opacity-0" : "translate-y-0 opacity-100"
         } ${open ? "pointer-events-none opacity-0" : ""}`}
       >

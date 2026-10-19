@@ -46,7 +46,9 @@ export default function ServiceDetail({
   const lines = splitTitle(sector.title.toUpperCase());
   const titleRef = useRef<HTMLHeadingElement>(null);
   const longest = Math.max(1, ...lines.map((l) => l.length));
-  const titleSize = `clamp(1.45rem, ${Math.min(16, 88 / (longest * 0.86)).toFixed(2)}vw, 10rem)`;
+  // Cap well under the logo (h-36). Long lines scale down further so they
+  // stay inside the viewport; fit() enforces a gap under the header.
+  const titleSize = `clamp(1.35rem, ${Math.min(6.5, 54 / (longest * 0.9)).toFixed(2)}vw, 5.5rem)`;
   useLayoutEffect(() => {
     const fit = () => {
       const el = titleRef.current;
@@ -56,7 +58,16 @@ export default function ServiceDetail({
       const needed = Math.max(0, ...[...el.querySelectorAll("span")].map((s) => s.scrollWidth));
       if (needed > available && available > 0) {
         const current = parseFloat(getComputedStyle(el).fontSize);
-        el.style.fontSize = `${Math.max(20, (current * available) / needed * 0.98)}px`;
+        el.style.fontSize = `${Math.max(20, (current * available) / needed * 0.96)}px`;
+      }
+      const header = document.querySelector("header");
+      const minTop = (header?.getBoundingClientRect().bottom ?? 0) + 96;
+      let guard = 0;
+      while (el.getBoundingClientRect().top < minTop && guard < 18) {
+        const current = parseFloat(getComputedStyle(el).fontSize);
+        if (current <= 22) break;
+        el.style.fontSize = `${Math.max(22, current * 0.92)}px`;
+        guard++;
       }
     };
     fit();
@@ -186,7 +197,7 @@ export default function ServiceDetail({
 
   return (
     <>
-      <FixedHeader />
+      <FixedHeader hideUntilTop />
       {/* Visita directa: un clon vuela desde el rect guardado. El overlay no lo usa. */}
       {!liveMesh && flight && !landed && (
         <div
