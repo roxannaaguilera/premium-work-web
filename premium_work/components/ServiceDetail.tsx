@@ -44,6 +44,31 @@ export default function ServiceDetail({
   const item = items[idx];
   const sector = dict.sectors.items[idx];
   const lines = splitTitle(sector.title.toUpperCase());
+  const titleRef = useRef<HTMLHeadingElement>(null);
+  const longest = Math.max(1, ...lines.map((l) => l.length));
+  const titleSize = `clamp(1.45rem, ${Math.min(16, 88 / (longest * 0.86)).toFixed(2)}vw, 10rem)`;
+  useLayoutEffect(() => {
+    const fit = () => {
+      const el = titleRef.current;
+      if (!el) return;
+      el.style.fontSize = titleSize;
+      const available = el.clientWidth;
+      const needed = Math.max(0, ...[...el.querySelectorAll("span")].map((s) => s.scrollWidth));
+      if (needed > available && available > 0) {
+        const current = parseFloat(getComputedStyle(el).fontSize);
+        el.style.fontSize = `${Math.max(20, (current * available) / needed * 0.98)}px`;
+      }
+    };
+    fit();
+    document.fonts?.ready.then(fit).catch(() => {});
+    window.addEventListener("resize", fit);
+    const prev = document.documentElement.style.overflowX;
+    document.documentElement.style.overflowX = "clip";
+    return () => {
+      document.documentElement.style.overflowX = prev;
+      window.removeEventListener("resize", fit);
+    };
+  }, [titleSize]);
 
   // Vuelo del clon (técnica Agrumea, sin panel): si hay datos de vuelo en
   // sessionStorage, un clon fixed vuela desde el rect del héroe hasta el reposo,
@@ -128,7 +153,7 @@ export default function ServiceDetail({
           </motion.div>
         </div>
       )}
-      <main className="bg-[#fdf3eb] text-[#131834]">
+      <main className="overflow-x-clip bg-[#fdf3eb] text-[#131834]">
         {/* Nombre centrado + elemento que sube con el scroll */}
         <section ref={secRef} aria-label={sector.title} className="relative h-[240vh]">
           <div className="sticky top-0 flex h-screen flex-col items-center justify-center overflow-visible">
@@ -141,6 +166,8 @@ export default function ServiceDetail({
               />
             )}
             <motion.h1
+              ref={titleRef}
+              style={{ fontSize: titleSize }}
               initial={{ opacity: 0, y: -96 }}
               animate={
                 liveMesh
@@ -158,10 +185,10 @@ export default function ServiceDetail({
                     ? { duration: 0.9, delay: 0.3, ease: [0.22, 1, 0.36, 1] }
                     : { duration: 0.7, delay: 0.35, ease: [0.22, 1, 0.36, 1] }
               }
-              className="z-10 px-4 text-center font-serif font-semibold uppercase leading-[0.9] tracking-tight text-[#131834] text-[clamp(3.5rem,13vw,12rem)]"
+              className="z-10 box-border w-full max-w-[100vw] px-5 text-center font-serif font-semibold uppercase leading-[0.9] tracking-tight text-[#131834]"
             >
               {lines.map((l, i) => (
-                <span key={i} className="block">
+                <span key={i} className="block whitespace-nowrap">
                   {l}
                 </span>
               ))}

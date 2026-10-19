@@ -39,6 +39,25 @@ const idx = computed(() => items.value.findIndex((i: { slug: string }) => i.slug
 const item = computed(() => items.value[idx.value]!)
 const sector = computed(() => dict.value.sectors.items[idx.value]!)
 const lines = computed(() => splitTitle(sector.value.title.toUpperCase()))
+const titleRef = ref<HTMLElement | null>(null)
+/** Cabe el renglón más largo en el ancho de la ventana, sin scroll horizontal. */
+const titleSize = computed(() => {
+  const n = Math.max(1, ...lines.value.map((l) => l.length))
+  const vw = Math.min(16, 88 / (n * 0.86))
+  return `clamp(1.45rem, ${vw.toFixed(2)}vw, 10rem)`
+})
+
+function fitTitle(): void {
+  const el = titleRef.value
+  if (!el) return
+  el.style.fontSize = titleSize.value
+  const available = el.clientWidth
+  const needed = Math.max(0, ...[...el.querySelectorAll('span')].map((s) => s.scrollWidth))
+  if (needed > available && available > 0) {
+    const current = parseFloat(getComputedStyle(el).fontSize)
+    el.style.fontSize = `${Math.max(20, (current * available) / needed * 0.98)}px`
+  }
+}
 const logoLabel = computed(() => dict.value.header.logoLabel)
 
 const others = computed(() =>
@@ -237,14 +256,20 @@ watch(
 
 onMounted(() => {
   void init(props.slug)
+  document.documentElement.style.overflowX = 'clip'
   // capture:true para cazar también el scroll del contenedor del overlay.
   window.addEventListener('scroll', onScroll, { passive: true, capture: true })
   window.addEventListener('resize', onScroll)
+  window.addEventListener('resize', fitTitle)
+  void document.fonts?.ready.then(() => fitTitle())
+  fitTitle()
 })
 
 onUnmounted(() => {
+  document.documentElement.style.overflowX = ''
   window.removeEventListener('scroll', onScroll, true)
   window.removeEventListener('resize', onScroll)
+  window.removeEventListener('resize', fitTitle)
   cancelAnimationFrame(rafId)
   cloneAnim?.cancel()
   entryAnim?.cancel()
@@ -266,16 +291,17 @@ onUnmounted(() => {
     </div>
   </div>
 
-  <main class="bg-[#fae4d4] text-[#131834]">
+  <main class="overflow-x-clip bg-[#fae4d4] text-[#131834]">
     <!-- Nombre centrado + elemento que sube con el scroll -->
     <section ref="secRef" :aria-label="sector.title" class="relative h-[240vh]">
       <div class="sticky top-0 flex h-screen flex-col items-center justify-center overflow-visible">
         <h1
-          class="svc-title z-10 px-4 text-center font-serif font-semibold uppercase leading-[0.9] tracking-tight text-[#131834] text-[clamp(3.5rem,13vw,12rem)]"
+          ref="titleRef"
+          class="svc-title z-10 box-border w-full max-w-[100vw] px-5 text-center font-serif font-semibold uppercase leading-[0.9] tracking-tight text-[#131834]"
           :class="{ 'is-visible': titleVisible }"
-          :style="{ transitionDelay: flight ? '0.3s' : '0.35s' }"
+          :style="{ transitionDelay: flight ? '0.3s' : '0.35s', fontSize: titleSize }"
         >
-          <span v-for="(l, i) in lines" :key="i" class="block">{{ l }}</span>
+          <span v-for="(l, i) in lines" :key="i" class="block whitespace-nowrap">{{ l }}</span>
         </h1>
         <!-- Visita directa: el objeto cae desde arriba y rebota. El vuelo
              desde el héroe conserva su sitio. -->
@@ -425,5 +451,8 @@ onUnmounted(() => {
 .svc-title.is-visible {
   opacity: 1;
   transform: translateY(0);
+}
+.svc-title span {
+  white-space: nowrap;
 }
 </style>

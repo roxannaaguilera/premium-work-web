@@ -34,13 +34,22 @@ function LangToggle() {
 export default function FixedHeader() {
   const { t, dict } = useLang();
   const [scrolled, setScrolled] = useState(false);
+  const [hidden, setHidden] = useState(false);
   const [open, setOpen] = useState(false);
+  const lastY = useRef(0);
   const overlayRef = useRef<HTMLDivElement>(null);
   const linksRef = useRef<HTMLUListElement>(null);
   const LINKS = LINK_HREFS.map((href, i) => ({ href, label: dict.header.nav[i] }));
 
   useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 40);
+    const onScroll = () => {
+      const y = window.scrollY || document.documentElement.scrollTop || 0;
+      if (y <= 8) setHidden(false);
+      else if (y > lastY.current + 6) setHidden(true);
+      else if (y < lastY.current - 6) setHidden(false);
+      lastY.current = y;
+      setScrolled(y > 40);
+    };
     onScroll();
     window.addEventListener("scroll", onScroll, { passive: true });
     return () => window.removeEventListener("scroll", onScroll);
@@ -90,7 +99,9 @@ export default function FixedHeader() {
   return (
     <>
       <header
-        className={`fixed inset-x-0 top-0 z-[60] transition-all duration-300 ${
+        className={`fixed inset-x-0 top-0 z-[60] transition-transform duration-300 ${
+          hidden && !open ? "-translate-y-full pointer-events-none" : "translate-y-0"
+        } ${
           scrolled
             ? "bg-[#fdf3eb]/90 backdrop-blur-md border-b border-[#131834]/10"
             : "bg-transparent border-b border-transparent"
