@@ -54,6 +54,34 @@ function fallLift(age: number): number {
 }
 
 /**
+ * Caída del objeto al abrir un servicio: desde arriba, aterriza un poco
+ * por debajo y un solo rebote corto. Misma curva que el héroe, con tiempo
+ * para verla. Termina en 0 y no sigue oscilando.
+ */
+function serviceFallLift(age: number): number {
+  const drop = 0.7;
+  const dip = -0.045;
+  const rebound = 0.028;
+  if (age < 0) return drop;
+  const fall = 0.62;
+  const up = 0.22;
+  const settle = 0.16;
+  if (age < fall) {
+    const e = 1 - Math.pow(1 - age / fall, 3);
+    return drop + (dip - drop) * e;
+  }
+  if (age < fall + up) {
+    const e = 1 - Math.pow(1 - (age - fall) / up, 2);
+    return dip + (rebound - dip) * e;
+  }
+  if (age < fall + up + settle) {
+    const e = 1 - Math.pow(1 - (age - fall - up) / settle, 2);
+    return rebound * (1 - e);
+  }
+  return 0;
+}
+
+/**
  * Los 8 elementos reales de Premium Work (fotografía) en diagonal de
  * esquina a esquina. El del centro sale de la pantalla y se queda nítido;
  * hacia las esquinas se inclinan, se alejan y se desenfocan (bokeh).
@@ -290,9 +318,14 @@ export default function ElementsCarousel() {
       canvas.style.background = "";
     };
 
+    let detailFallAt = -1;
+    let detailFallPending = false;
+
     const unpark = () => {
       parked = false;
       slotEl = null;
+      detailFallAt = -1;
+      detailFallPending = false;
       clearCanvasChrome();
       if (renderer.domElement.parentElement !== mount) mount.appendChild(renderer.domElement);
       renderer.domElement.dataset.pwPark = "hero";
@@ -309,6 +342,7 @@ export default function ElementsCarousel() {
       slot.appendChild(canvas);
       parked = true;
       slotEl = slot;
+      detailFallPending = true;
       // Lienzo a sangre en la sección: transparente, sin caja alrededor del mesh.
       canvas.style.position = "absolute";
       canvas.style.inset = "0";
@@ -401,6 +435,10 @@ export default function ElementsCarousel() {
       const halfHD = Math.tan(fov / 2) * distD;
       const mesh = planeMeshes.find((m) => m.userData.sectorIndex === detail.idx);
       const gh = (mesh?.geometry as THREE.PlaneGeometry | undefined)?.parameters.height || ITEM_SIZE;
+      if (detailFallPending) {
+        detailFallAt = elapsed;
+        detailFallPending = false;
+      }
       const t = Math.max(0, Math.min(1, ((window as Window & { __pwDetailT?: number }).__pwDetailT ?? 0) / 0.45));
       // El objeto entero cabe en la sección: no se recorta contra el borde.
       const fill = 0.36 - 0.08 * t;
@@ -413,6 +451,8 @@ export default function ElementsCarousel() {
         }
         detailAnchor.copy(camera.position).addScaledVector(viewDir, distD).addScaledVector(camUp, -drop);
         wrap.position.copy(detailAnchor);
+        const lift = serviceFallLift(detailFallAt < 0 ? 0 : elapsed - detailFallAt);
+        if (lift !== 0) wrap.position.addScaledVector(camUp, lift * halfHD);
         wrap.scale.setScalar(scale);
         wrap.rotation.set(0, 0, 0);
         wrap.visible = true;
