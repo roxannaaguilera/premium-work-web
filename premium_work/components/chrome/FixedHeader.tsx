@@ -36,6 +36,7 @@ export default function FixedHeader({ hideUntilTop = false }: { hideUntilTop?: b
   const [hidden, setHidden] = useState(false);
   const [open, setOpen] = useState(false);
   const lastY = useRef(0);
+  const headerRef = useRef<HTMLElement>(null);
   const overlayRef = useRef<HTMLDivElement>(null);
   const linksRef = useRef<HTMLUListElement>(null);
   const LINKS = LINK_HREFS.map((href, i) => ({ href, label: dict.header.nav[i] }));
@@ -54,6 +55,23 @@ export default function FixedHeader({ hideUntilTop = false }: { hideUntilTop?: b
     onScroll();
     window.addEventListener("scroll", onScroll, { passive: true });
     return () => window.removeEventListener("scroll", onScroll);
+  }, [hideUntilTop]);
+
+  // El detalle de servicio también vive en un overlay sobre la principal:
+  // ahí scrollea un contenedor, no la ventana, y el listener anterior no lo
+  // ve. En captura sobre el documento se atiende solo al contenedor que
+  // envuelve a este header (su ancestro con scroll), con la misma regla.
+  useEffect(() => {
+    if (!hideUntilTop) return;
+    const onContainerScroll = (e: Event) => {
+      const target = e.target as HTMLElement | Document;
+      if (!(target instanceof HTMLElement)) return;
+      const header = headerRef.current;
+      if (!header || !target.contains(header)) return;
+      setHidden(target.scrollTop > 16);
+    };
+    document.addEventListener("scroll", onContainerScroll, { capture: true, passive: true });
+    return () => document.removeEventListener("scroll", onContainerScroll, { capture: true });
   }, [hideUntilTop]);
 
   const close = useCallback(() => setOpen(false), []);
@@ -100,6 +118,7 @@ export default function FixedHeader({ hideUntilTop = false }: { hideUntilTop?: b
   return (
     <>
       <header
+        ref={headerRef}
         className={`fixed inset-x-0 top-0 z-[60] border-b border-transparent bg-transparent transition-[transform,translate,opacity] duration-300 ${
           hidden && !open ? "-translate-y-full pointer-events-none opacity-0" : "translate-y-0 opacity-100"
         } ${open ? "pointer-events-none opacity-0" : ""}`}
