@@ -14,7 +14,7 @@ const SECTORS = [
   { name: "Eventos corporativos", src: "/images/elementos-reales/corporativos.png", di: 3 },
   { name: "Restaurantes", src: "/images/elementos-reales/restaurantes.png", di: 1 },
   { name: "Eventos deportivos", src: "/images/elementos-reales/deportivos.png", di: 4 },
-  { name: "Eventos privados", src: "/images/elementos-reales/privados.png", di: 7 },
+  { name: "Eventos privados", src: "/images/elementos-reales/privados.png", di: 6 },
   { name: "Festivales", src: "/images/elementos-reales/festivales.png", di: 5 },
 ] as const;
 
@@ -23,7 +23,7 @@ const STEP = (Math.PI * 2) / COUNT;
 const ITEM_SIZE = 1.45;
 
 // Slugs de las páginas de detalle, en el orden del diccionario.
-const SLUGS = ["hoteles", "restaurantes", "catering", "eventos-corporativos", "eventos-deportivos", "festivales", "bodas-y-celebraciones", "experiencias-privadas"];
+const SLUGS = ["hoteles", "restaurantes", "catering", "eventos-corporativos", "eventos-deportivos", "festivales", "experiencias-privadas"];
 
 /**
  * Caída con un solo rebote. Devuelve altura extra (en fracciones de media
@@ -440,9 +440,14 @@ export default function ElementsCarousel() {
         detailFallPending = false;
       }
       const t = Math.max(0, Math.min(1, ((window as Window & { __pwDetailT?: number }).__pwDetailT ?? 0) / 0.45));
-      // El objeto entero cabe en la sección: no se recorta contra el borde.
-      const fill = 0.36 - 0.08 * t;
-      const drop = halfHD * (0.56 - 0.5 * t);
+      // t=0: objeto grande, mitad bajo el borde. t=1: centro de las letras.
+      const pose = (window as Window & { __pwDetailPose?: { drop: number; end: number; fill: number; fillEnd: number } }).__pwDetailPose;
+      const fill0 = pose?.fill ?? 0.64;
+      const fill1 = pose?.fillEnd ?? fill0;
+      const fill = fill0 + (fill1 - fill0) * t;
+      const rest = pose?.drop ?? 1;
+      const end = pose?.end ?? 0;
+      const drop = halfHD * (rest + (end - rest) * t);
       const scale = (halfHD * 2 * fill) / gh;
       items.forEach((wrap, i) => {
         if (i !== detail.idx) {
@@ -544,10 +549,11 @@ export default function ElementsCarousel() {
             const distD = 2.15;
             const halfHD = Math.tan(vFov / 2) * distD;
             const detailScale = (halfHD * 1.7) / ITEM_SIZE;
+            const rest = (window as Window & { __pwDetailPose?: { drop: number } }).__pwDetailPose?.drop ?? 1;
             detailAnchor
               .copy(camera.position)
               .addScaledVector(viewDir, distD)
-              .addScaledVector(camUp, -halfHD * 0.48);
+              .addScaledVector(camUp, -halfHD * rest);
             wrap.position.lerp(detailAnchor, blend);
             const heroScale = wrap.scale.x;
             wrap.scale.setScalar(heroScale + (detailScale - heroScale) * blend);

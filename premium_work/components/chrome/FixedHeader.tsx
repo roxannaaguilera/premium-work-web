@@ -31,20 +31,30 @@ function LangToggle() {
   );
 }
 
-export default function FixedHeader() {
+export default function FixedHeader({ hideUntilTop = false }: { hideUntilTop?: boolean }) {
   const { t, dict } = useLang();
-  const [scrolled, setScrolled] = useState(false);
+  const [hidden, setHidden] = useState(false);
   const [open, setOpen] = useState(false);
+  const lastY = useRef(0);
   const overlayRef = useRef<HTMLDivElement>(null);
   const linksRef = useRef<HTMLUListElement>(null);
   const LINKS = LINK_HREFS.map((href, i) => ({ href, label: dict.header.nav[i] }));
 
   useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 40);
+    const onScroll = () => {
+      const y = window.scrollY || document.documentElement.scrollTop || 0;
+      if (hideUntilTop) {
+        // Service pages: visible only at rest. Any scroll hides it until the top.
+        setHidden(y > 16);
+      } else if (y <= 8) setHidden(false);
+      else if (y > lastY.current + 6) setHidden(true);
+      else if (y < lastY.current - 6) setHidden(false);
+      lastY.current = y;
+    };
     onScroll();
     window.addEventListener("scroll", onScroll, { passive: true });
     return () => window.removeEventListener("scroll", onScroll);
-  }, []);
+  }, [hideUntilTop]);
 
   const close = useCallback(() => setOpen(false), []);
 
@@ -90,10 +100,8 @@ export default function FixedHeader() {
   return (
     <>
       <header
-        className={`fixed inset-x-0 top-0 z-[60] transition-all duration-300 ${
-          scrolled
-            ? "bg-[#fdf3eb]/90 backdrop-blur-md border-b border-[#131834]/10"
-            : "bg-transparent border-b border-transparent"
+        className={`fixed inset-x-0 top-0 z-[60] border-b border-transparent bg-transparent transition-[transform,translate,opacity] duration-300 ${
+          hidden && !open ? "-translate-y-full pointer-events-none opacity-0" : "translate-y-0 opacity-100"
         } ${open ? "pointer-events-none opacity-0" : ""}`}
       >
         <div className="grid grid-cols-[1fr_auto_1fr] items-center px-5 md:px-8 pt-7 md:pt-9 pb-3">

@@ -4,7 +4,7 @@ import { ArrowRight, ChevronDown } from "lucide-react";
 import { useState } from "react";
 import { useLang } from "@/components/i18n/lang";
 
-const SLUGS = ["hoteles", "restaurantes", "catering", "eventos-corporativos", "eventos-deportivos", "festivales", "bodas-y-celebraciones", "experiencias-privadas"];
+const SLUGS = ["hoteles", "restaurantes", "catering", "eventos-corporativos", "eventos-deportivos", "festivales", "experiencias-privadas"];
 
 export function SectorsAccordion() {
   const { t, dict } = useLang();
