@@ -72,7 +72,7 @@ export default function ServiceDetail({
 
   // En reposo el objeto es grande: la mitad asoma bajo el título y el viewport
   // recorta el resto. Al hacer scroll sube al centro y se encoge hasta la
-  // altura de una línea del título.
+  // altura del bloque entero del título (una línea, o las dos si las hay).
   const objectRef = useRef<HTMLDivElement>(null);
   const riseTarget = useMotionValue(0);
   const riseScale = useMotionValue(1);
@@ -94,18 +94,17 @@ export default function ServiceDetail({
         wrap.style.bottom = "auto";
       }
       if (img) img.style.height = `${h}px`;
-      const line = title.querySelector("span");
-      const lineH = line ? (line as HTMLElement).offsetHeight : title.offsetHeight;
-      const titleMid = title.offsetTop + title.offsetHeight / 2;
+      const titleH = title.offsetHeight;
+      const titleMid = title.offsetTop + titleH / 2;
       const objectMid = top + h / 2;
       riseTarget.set(titleMid - objectMid);
-      riseScale.set(Math.min(1, lineH / h));
+      riseScale.set(Math.min(1, titleH / h));
       const half = viewH / 2;
       (window as Window & { __pwDetailPose?: { drop: number; end: number; fill: number; fillEnd: number } }).__pwDetailPose = {
         drop: (objectMid - half) / half,
         end: (titleMid - half) / half,
         fill: h / viewH,
-        fillEnd: lineH / viewH,
+        fillEnd: titleH / viewH,
       };
     };
     place();
