@@ -25,8 +25,6 @@ function splitTitle(title: string): string[] {
   return [words.slice(0, best).join(" "), words.slice(best).join(" ")];
 }
 
-type FromPos = { dx: number; dy: number } | null;
-
 export type Flight = { src: string; slug: string; fromY: number; fromH: number; rotate: number };
 
 export default function ServiceDetail({
@@ -46,35 +44,6 @@ export default function ServiceDetail({
   const item = items[idx];
   const sector = dict.sectors.items[idx];
   const lines = splitTitle(sector.title.toUpperCase());
-
-  // El elemento entra desde la posición que tenía en el hero (inclinado)
-  // y se incorpora a su nueva posición; después el scroll lo sube.
-  const [from, setFrom] = useState<FromPos>(null);
-  const [ready, setReady] = useState(false);
-  useEffect(() => {
-    const vw = window.innerWidth;
-    const vh = window.innerHeight;
-    // Centro del elemento al inicio del scroll: abajo del sticky.
-    const endX = vw / 2;
-    const endY = vh * 0.74;
-    let dx = 0;
-    let dy = vh * 0.45;
-    try {
-      const raw = sessionStorage.getItem("pw-element-from");
-      if (raw) {
-        const p = JSON.parse(raw) as { x: number; y: number; slug: string };
-        sessionStorage.removeItem("pw-element-from");
-        if (p.slug === slug) {
-          dx = p.x - endX;
-          dy = p.y - endY;
-        }
-      }
-    } catch {
-      /* visita directa: entra desde abajo */
-    }
-    setFrom({ dx, dy });
-    setReady(true);
-  }, [slug]);
 
   // Vuelo del clon (técnica Agrumea, sin panel): si hay datos de vuelo en
   // sessionStorage, un clon fixed vuela desde el rect del héroe hasta el reposo,
@@ -162,7 +131,7 @@ export default function ServiceDetail({
       <main className="bg-[#fdf3eb] text-[#131834]">
         {/* Nombre centrado + elemento que sube con el scroll */}
         <section ref={secRef} aria-label={sector.title} className="relative h-[240vh]">
-          <div className={`sticky top-0 flex h-screen flex-col items-center justify-center ${liveMesh ? "overflow-visible" : "overflow-hidden"}`}>
+          <div className="sticky top-0 flex h-screen flex-col items-center justify-center overflow-visible">
             {liveMesh && (
               <div
                 ref={meshSlotRef}
@@ -187,7 +156,7 @@ export default function ServiceDetail({
                   ? { duration: 0.5, delay: 0.05, ease: [0.22, 1, 0.36, 1] }
                   : flight
                     ? { duration: 0.9, delay: 0.3, ease: [0.22, 1, 0.36, 1] }
-                    : { duration: 0.9, delay: 1.7, ease: [0.22, 1, 0.36, 1] }
+                    : { duration: 0.7, delay: 0.35, ease: [0.22, 1, 0.36, 1] }
               }
               className="z-10 px-4 text-center font-serif font-semibold uppercase leading-[0.9] tracking-tight text-[#131834] text-[clamp(3.5rem,13vw,12rem)]"
             >
@@ -197,13 +166,11 @@ export default function ServiceDetail({
                 </span>
               ))}
             </motion.h1>
-            {/* Entrada desde el hero (fuera) + subida con scroll (dentro).
-                En reposo asoma la mitad del objeto sin tapar el nombre.
-                La entrada es una coreografía lenta: el objeto avanza hacia la
-                pantalla agrandándose (manteniendo la inclinación del hover) y
-                luego cae con rebote hasta su posición final. */}
+            {/* Visita directa: el objeto cae desde arriba, aterriza y da un
+                rebote corto. En reposo queda entero bajo el nombre. El scroll
+                lo sube por encima de las letras. */}
             {!liveMesh && (
-            <div className="pointer-events-none absolute inset-x-0 -bottom-[32vh] z-20 flex justify-center">
+            <div className="pointer-events-none absolute inset-x-0 bottom-[4vh] z-20 flex justify-center">
               {flight ? (
                 // Relevo del clon volador: aparece al aterrizar (crossfade invisible).
                 <motion.div
@@ -217,7 +184,7 @@ export default function ServiceDetail({
                         <img
                           src={item.img}
                           alt={sector.title}
-                          className="h-[62vh] w-auto object-contain drop-shadow-[0_30px_40px_rgba(19,24,52,0.18)]"
+                          className="h-[36vh] w-auto object-contain"
                         />
                       </button>
                     ) : (
@@ -225,23 +192,17 @@ export default function ServiceDetail({
                         <img
                           src={item.img}
                           alt={sector.title}
-                          className="h-[62vh] w-auto object-contain drop-shadow-[0_30px_40px_rgba(19,24,52,0.18)]"
+                          className="h-[36vh] w-auto object-contain"
                         />
                       </Link>
                     )}
                   </motion.div>
                 </motion.div>
               ) : (
-                ready && (
                 <motion.div
-                  initial={{ x: from?.dx ?? 0, y: from?.dy ?? 0, scale: 1.14, rotate: -22 }}
-                  animate={{
-                    x: [(from?.dx ?? 0), (from?.dx ?? 0) * 0.4, 0, 0],
-                    y: [(from?.dy ?? 0), (from?.dy ?? 0) - 100, 26, 0],
-                    scale: [1.14, 1.5, 0.94, 1],
-                    rotate: [-22, -22, -4, 0],
-                  }}
-                  transition={{ duration: 2, times: [0, 0.38, 0.78, 1], ease: ["easeOut", "easeIn", "easeOut"] }}
+                  initial={{ y: "-35vh" }}
+                  animate={{ y: ["-35vh", "2.4vh", "-1.1vh", "0vh"] }}
+                  transition={{ duration: 1, times: [0, 0.62, 0.84, 1], ease: ["easeOut", "easeOut", "easeOut"] }}
                 >
                   <motion.div style={{ y: riseY, scale: riseS }} className="pointer-events-auto">
                     {onClose ? (
@@ -249,7 +210,7 @@ export default function ServiceDetail({
                         <img
                           src={item.img}
                           alt={sector.title}
-                          className="h-[62vh] w-auto object-contain drop-shadow-[0_30px_40px_rgba(19,24,52,0.18)]"
+                          className="h-[36vh] w-auto object-contain"
                         />
                       </button>
                     ) : (
@@ -257,13 +218,12 @@ export default function ServiceDetail({
                         <img
                           src={item.img}
                           alt={sector.title}
-                          className="h-[62vh] w-auto object-contain drop-shadow-[0_30px_40px_rgba(19,24,52,0.18)]"
+                          className="h-[36vh] w-auto object-contain"
                         />
                       </Link>
                     )}
                   </motion.div>
                 </motion.div>
-                )
               )}
             </div>
             )}
