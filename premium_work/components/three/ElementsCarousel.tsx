@@ -6,6 +6,7 @@ import { EffectComposer } from "three/addons/postprocessing/EffectComposer.js";
 import { RenderPass } from "three/addons/postprocessing/RenderPass.js";
 import { BokehPass } from "three/addons/postprocessing/BokehPass.js";
 import { useLang } from "@/components/i18n/lang";
+import { CURTAINS_OPENING, preloaderCurtainIsUp } from "@/components/motion/curtainSignal";
 
 const SECTORS = [
   { name: "Hoteles", src: "/images/elementos-reales/hoteles.png", di: 0 },
@@ -379,8 +380,13 @@ export default function ElementsCarousel() {
     let raf = 0;
     let elapsed = 0;
     const fallStart = items.map(() => -1);
-    // Sin cortina: la caída de presentación empieza al montar.
-    const curtainAt = 0;
+    // La caída de presentación espera a que el telón empiece a abrirse:
+    // así se ve caer al objeto en vez de ocurrir detrás del preloader.
+    let curtainAt = -1;
+    const onCurtains = () => {
+      if (curtainAt < 0) curtainAt = elapsed;
+    };
+    window.addEventListener(CURTAINS_OPENING, onCurtains);
     const viewDir = new THREE.Vector3();
     const camRight = new THREE.Vector3();
     const camUp = new THREE.Vector3();
@@ -421,6 +427,9 @@ export default function ElementsCarousel() {
       const dt = Math.min(clock.getDelta(), 0.05);
       elapsed += dt;
       elapsedRef.current = elapsed;
+      // Sin telón en pantalla (visita de vuelta o movimiento reducido) no
+      // llega ninguna señal: la caída empieza en ese mismo fotograma.
+      if (curtainAt < 0 && !preloaderCurtainIsUp()) curtainAt = elapsed;
       rotation += (target - rotation) * (1 - Math.exp(-dt * 18));
       camera.updateMatrixWorld();
       camera.getWorldDirection(viewDir);
@@ -593,6 +602,7 @@ export default function ElementsCarousel() {
     return () => {
       cancelAnimationFrame(raf);
       ro.disconnect();
+      window.removeEventListener(CURTAINS_OPENING, onCurtains);
       window.removeEventListener("pw-close-service", onCloseDetail);
       window.removeEventListener("pw-mesh-slot", onMeshSlot);
       openDetailRef.current = () => {};
