@@ -142,8 +142,13 @@ export default function ServiceDetail({
           <motion.div
             initial={{ height: flight.fromH, rotate: flight.rotate, y: 0 }}
             animate={{
-              height: [flight.fromH, flight.fromH * 1.35, window.innerHeight * 0.62 * 1.02, window.innerHeight * 0.62],
-              y: [0, -70, window.innerHeight * 0.7 - flight.fromY + 22, window.innerHeight * 0.7 - flight.fromY],
+              height: [flight.fromH, flight.fromH * 1.35, window.innerHeight * 0.36 * 1.02, window.innerHeight * 0.36],
+              y: [
+                0,
+                -70,
+                window.innerHeight * 0.32 - flight.fromY + 18,
+                window.innerHeight * 0.32 - flight.fromY,
+              ],
               rotate: [flight.rotate, flight.rotate, -3, 0],
             }}
             transition={{ duration: 1.65, times: [0, 0.35, 0.8, 1], ease: ["easeOut", "easeIn", "easeOut"] }}
@@ -193,11 +198,10 @@ export default function ServiceDetail({
                 </span>
               ))}
             </motion.h1>
-            {/* Visita directa: el objeto cae desde arriba, aterriza y da un
-                rebote corto. En reposo queda entero bajo el nombre. El scroll
-                lo sube por encima de las letras. */}
+            {/* Visita directa: el objeto cae desde arriba, aterriza en el
+                centro de las letras y da un rebote corto. El scroll lo sube. */}
             {!liveMesh && (
-            <div className="pointer-events-none absolute inset-x-0 bottom-[4vh] z-20 flex justify-center">
+            <div className="pointer-events-none absolute inset-0 z-20 flex items-center justify-center">
               {flight ? (
                 // Relevo del clon volador: aparece al aterrizar (crossfade invisible).
                 <motion.div

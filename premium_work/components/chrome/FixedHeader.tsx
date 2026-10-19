@@ -33,7 +33,6 @@ function LangToggle() {
 
 export default function FixedHeader() {
   const { t, dict } = useLang();
-  const [scrolled, setScrolled] = useState(false);
   const [hidden, setHidden] = useState(false);
   const [open, setOpen] = useState(false);
   const lastY = useRef(0);
@@ -48,7 +47,6 @@ export default function FixedHeader() {
       else if (y > lastY.current + 6) setHidden(true);
       else if (y < lastY.current - 6) setHidden(false);
       lastY.current = y;
-      setScrolled(y > 40);
     };
     onScroll();
     window.addEventListener("scroll", onScroll, { passive: true });
@@ -99,12 +97,8 @@ export default function FixedHeader() {
   return (
     <>
       <header
-        className={`fixed inset-x-0 top-0 z-[60] transition-transform duration-300 ${
+        className={`fixed inset-x-0 top-0 z-[60] border-b border-transparent bg-transparent transition-transform duration-300 ${
           hidden && !open ? "-translate-y-full pointer-events-none" : "translate-y-0"
-        } ${
-          scrolled
-            ? "bg-[#fdf3eb]/90 backdrop-blur-md border-b border-[#131834]/10"
-            : "bg-transparent border-b border-transparent"
         } ${open ? "pointer-events-none opacity-0" : ""}`}
       >
         <div className="grid grid-cols-[1fr_auto_1fr] items-center px-5 md:px-8 pt-7 md:pt-9 pb-3">
