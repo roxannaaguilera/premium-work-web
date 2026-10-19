@@ -126,8 +126,9 @@ export default function ServiceDetail({
   useMotionValueEvent(scrollYProgress, "change", (value) => {
     (window as Window & { __pwDetailT?: number }).__pwDetailT = value;
   });
-  const riseY = useTransform(scrollYProgress, [0, 0.6], ["0vh", "-50vh"]);
-  const riseS = useTransform(scrollYProgress, [0, 0.6], [1, 0.35]);
+  // Reposo: el objeto queda bajo el título (bottom 4vh, alto 36vh → centro a 78vh).
+  // El scroll lo sube 28vh y lo deja en el centro de las letras (50vh). Ahí se queda.
+  const riseY = useTransform(scrollYProgress, [0, 0.55], ["0vh", "-28vh"]);
 
   return (
     <>
@@ -146,8 +147,8 @@ export default function ServiceDetail({
               y: [
                 0,
                 -70,
-                window.innerHeight * 0.32 - flight.fromY + 18,
-                window.innerHeight * 0.32 - flight.fromY,
+                window.innerHeight * 0.6 - flight.fromY + 18,
+                window.innerHeight * 0.6 - flight.fromY,
               ],
               rotate: [flight.rotate, flight.rotate, -3, 0],
             }}
@@ -198,10 +199,10 @@ export default function ServiceDetail({
                 </span>
               ))}
             </motion.h1>
-            {/* Visita directa: el objeto cae desde arriba, aterriza en el
-                centro de las letras y da un rebote corto. El scroll lo sube. */}
+            {/* Visita directa: cae desde arriba y aterriza bajo el nombre.
+                El scroll lo sube hasta el centro de las letras. */}
             {!liveMesh && (
-            <div className="pointer-events-none absolute inset-0 z-20 flex items-center justify-center">
+            <div className="pointer-events-none absolute inset-x-0 bottom-[4vh] z-20 flex justify-center">
               {flight ? (
                 // Relevo del clon volador: aparece al aterrizar (crossfade invisible).
                 <motion.div
@@ -209,7 +210,7 @@ export default function ServiceDetail({
                   animate={{ opacity: landed ? 1 : 0 }}
                   transition={{ duration: 0.25 }}
                 >
-                  <motion.div style={{ y: riseY, scale: riseS }} className="pointer-events-auto">
+                  <motion.div style={{ y: riseY }} className="pointer-events-auto">
                     {onClose ? (
                       <button onClick={onClose} {...backProps}>
                         <img
@@ -235,7 +236,7 @@ export default function ServiceDetail({
                   animate={{ y: ["-35vh", "2.4vh", "-1.1vh", "0vh"] }}
                   transition={{ duration: 1, times: [0, 0.62, 0.84, 1], ease: ["easeOut", "easeOut", "easeOut"] }}
                 >
-                  <motion.div style={{ y: riseY, scale: riseS }} className="pointer-events-auto">
+                  <motion.div style={{ y: riseY }} className="pointer-events-auto">
                     {onClose ? (
                       <button onClick={onClose} {...backProps}>
                         <img

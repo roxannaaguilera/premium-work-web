@@ -440,10 +440,9 @@ export default function ElementsCarousel() {
         detailFallPending = false;
       }
       const t = Math.max(0, Math.min(1, ((window as Window & { __pwDetailT?: number }).__pwDetailT ?? 0) / 0.45));
-      // Reposo en el centro de las letras (el título está al centro del hueco).
-      // El scroll lo sube. El objeto no se recorta contra el borde.
-      const fill = 0.36 - 0.08 * t;
-      const drop = -halfHD * 0.42 * t;
+      // t=0: bajo el título. t=1: centro de las letras. No se recorta.
+      const fill = 0.36;
+      const drop = halfHD * 0.56 * (1 - t);
       const scale = (halfHD * 2 * fill) / gh;
       items.forEach((wrap, i) => {
         if (i !== detail.idx) {
@@ -547,7 +546,8 @@ export default function ElementsCarousel() {
             const detailScale = (halfHD * 1.7) / ITEM_SIZE;
             detailAnchor
               .copy(camera.position)
-              .addScaledVector(viewDir, distD);
+              .addScaledVector(viewDir, distD)
+              .addScaledVector(camUp, -halfHD * 0.56);
             wrap.position.lerp(detailAnchor, blend);
             const heroScale = wrap.scale.x;
             wrap.scale.setScalar(heroScale + (detailScale - heroScale) * blend);
