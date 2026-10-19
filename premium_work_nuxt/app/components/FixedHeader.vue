@@ -16,6 +16,8 @@ const LINK_HREFS = ['#inicio', '#servicios', '#nosotros', '#contacto'] as const
 
 const scrolled = ref(false)
 const open = ref(false)
+const hidden = ref(false)
+let lastY = 0
 
 const links = computed(() =>
   LINK_HREFS.map((href, i) => ({ href, label: dict.value.header.nav[i] ?? href })),
@@ -38,7 +40,12 @@ function getLenis(): LenisLike | null {
 }
 
 function onScroll(): void {
-  scrolled.value = window.scrollY > 40
+  const y = window.scrollY || document.documentElement.scrollTop || 0
+  if (open.value || y <= 8) hidden.value = false
+  else if (y > lastY + 6) hidden.value = true
+  else if (y < lastY - 6) hidden.value = false
+  lastY = y
+  scrolled.value = y > 40
 }
 
 function close(): void {
@@ -75,12 +82,13 @@ watch(open, (isOpen) => {
 
 <template>
   <header
-    class="fixed inset-x-0 top-0 z-[60] transition-all duration-300"
-    :class="
+    class="fixed inset-x-0 top-0 z-[60] transition-transform duration-300"
+    :class="[
+      hidden ? '-translate-y-full pointer-events-none' : 'translate-y-0',
       scrolled
         ? 'bg-[#fdf3eb]/90 backdrop-blur-md border-b border-[#131834]/10'
-        : 'bg-transparent border-b border-transparent'
-    "
+        : 'bg-transparent border-b border-transparent',
+    ]"
   >
     <div class="grid grid-cols-[1fr_auto_1fr] items-center px-5 md:px-8 pt-7 md:pt-9 pb-3">
       <div class="justify-self-start">

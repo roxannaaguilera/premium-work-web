@@ -205,6 +205,11 @@ export default function ServiceDetail({
     }
   }, [slug]);
   const [landed, setLanded] = useState(false);
+  // El header se oculta en cuanto el detalle deja el reposo. Se deriva del
+  // mismo progreso de scroll que sube el objeto (framer, con el contenedor
+  // del overlay o la ventana según el modo): es el canal que siempre
+  // funciona, también al abrir un segundo servicio tras volver a la principal.
+  const [pastTop, setPastTop] = useState(false);
 
   // El scroll sube el elemento y lo encoge hasta centrarlo en las letras,
   // a un tamaño proporcionado con la tipografía.
@@ -235,6 +240,7 @@ export default function ServiceDetail({
   });
   useMotionValueEvent(scrollYProgress, "change", (value) => {
     (window as Window & { __pwDetailT?: number }).__pwDetailT = value;
+    setPastTop(value > 0.01);
   });
   const riseY = useTransform([scrollYProgress, riseTarget], ([progress, target]: number[]) => {
     const t = Math.min(1, Math.max(0, progress / 0.55));
@@ -247,7 +253,7 @@ export default function ServiceDetail({
 
   return (
     <>
-      <FixedHeader hideUntilTop />
+      <FixedHeader hideUntilTop scrolledAway={pastTop} />
       {/* Visita directa: un clon vuela desde el rect guardado. El overlay no lo usa. */}
       {!liveMesh && flight && !landed && (
         <div
