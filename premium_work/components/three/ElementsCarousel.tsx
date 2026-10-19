@@ -440,10 +440,12 @@ export default function ElementsCarousel() {
         detailFallPending = false;
       }
       const t = Math.max(0, Math.min(1, ((window as Window & { __pwDetailT?: number }).__pwDetailT ?? 0) / 0.45));
-      // t=0: bajo todo el título (lo mide la ficha). t=1: centro de las letras.
-      const pose = (window as Window & { __pwDetailPose?: { drop: number; fill: number } }).__pwDetailPose;
-      const fill = pose?.fill ?? 0.36;
-      const drop = halfHD * (pose?.drop ?? 0.56) * (1 - t);
+      // t=0: objeto grande, mitad bajo el borde. t=1: centro de las letras.
+      const pose = (window as Window & { __pwDetailPose?: { drop: number; end: number; fill: number } }).__pwDetailPose;
+      const fill = pose?.fill ?? 0.64;
+      const rest = pose?.drop ?? 1;
+      const end = pose?.end ?? 0;
+      const drop = halfHD * (rest + (end - rest) * t);
       const scale = (halfHD * 2 * fill) / gh;
       items.forEach((wrap, i) => {
         if (i !== detail.idx) {
@@ -545,7 +547,7 @@ export default function ElementsCarousel() {
             const distD = 2.15;
             const halfHD = Math.tan(vFov / 2) * distD;
             const detailScale = (halfHD * 1.7) / ITEM_SIZE;
-            const rest = (window as Window & { __pwDetailPose?: { drop: number } }).__pwDetailPose?.drop ?? 0.56;
+            const rest = (window as Window & { __pwDetailPose?: { drop: number } }).__pwDetailPose?.drop ?? 1;
             detailAnchor
               .copy(camera.position)
               .addScaledVector(viewDir, distD)

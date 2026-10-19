@@ -70,9 +70,9 @@ export default function ServiceDetail({
     };
   }, [titleSize]);
 
-  // El objeto nace debajo de todo el bloque del título, con un hueco bajo la
-  // última línea. Si el título ocupa dos líneas, el objeto se encoge lo justo
-  // para caber entero bajo ellas. El scroll lo sube al centro de las letras.
+  // Título arriba. El objeto conserva un tamaño grande y fijo: la mitad de
+  // arriba asoma bajo las letras y la mitad de abajo la recorta el viewport.
+  // El scroll lo sube al centro del título. No se encoge para “caber”.
   const objectRef = useRef<HTMLDivElement>(null);
   const riseTarget = useMotionValue(0);
   useLayoutEffect(() => {
@@ -82,23 +82,24 @@ export default function ServiceDetail({
       const sticky = title?.parentElement;
       if (!title || !sticky) return;
       const img = wrap?.querySelector("img");
-      const gap = 28;
-      const margin = 16;
+      const gap = 32;
       const viewH = sticky.clientHeight || window.innerHeight;
-      const titleBottom = title.offsetTop + title.offsetHeight;
-      const titleMid = title.offsetTop + title.offsetHeight / 2;
-      const desired = viewH * 0.36;
-      const available = viewH - titleBottom - gap - margin;
-      const h = Math.min(desired, Math.max(available, 88));
-      const top = titleBottom + gap;
+      const h = viewH * 0.64;
+      const top = viewH - h / 2;
+      sticky.style.paddingBottom = `${h / 2 + gap}px`;
+      sticky.style.justifyContent = "flex-end";
       if (wrap) {
         wrap.style.top = `${top}px`;
         wrap.style.bottom = "auto";
       }
       if (img) img.style.height = `${h}px`;
-      riseTarget.set(titleMid - (top + h / 2));
-      (window as Window & { __pwDetailPose?: { drop: number; fill: number } }).__pwDetailPose = {
-        drop: (top + h / 2 - viewH / 2) / (viewH / 2),
+      const titleMid = title.offsetTop + title.offsetHeight / 2;
+      const objectMid = top + h / 2;
+      riseTarget.set(titleMid - objectMid);
+      const half = viewH / 2;
+      (window as Window & { __pwDetailPose?: { drop: number; end: number; fill: number } }).__pwDetailPose = {
+        drop: (objectMid - half) / half,
+        end: (titleMid - half) / half,
         fill: h / viewH,
       };
     };
@@ -110,7 +111,7 @@ export default function ServiceDetail({
     return () => {
       ro.disconnect();
       window.removeEventListener("resize", place);
-      delete (window as Window & { __pwDetailPose?: { drop: number; fill: number } }).__pwDetailPose;
+      delete (window as Window & { __pwDetailPose?: { drop: number; end: number; fill: number } }).__pwDetailPose;
     };
   }, [titleSize, riseTarget, slug]);
 
@@ -188,12 +189,12 @@ export default function ServiceDetail({
           <motion.div
             initial={{ height: flight.fromH, rotate: flight.rotate, y: 0 }}
             animate={{
-              height: [flight.fromH, flight.fromH * 1.35, window.innerHeight * 0.36 * 1.02, window.innerHeight * 0.36],
+              height: [flight.fromH, flight.fromH * 1.35, window.innerHeight * 0.64 * 1.02, window.innerHeight * 0.64],
               y: [
                 0,
                 -70,
-                window.innerHeight * 0.6 - flight.fromY + 18,
-                window.innerHeight * 0.6 - flight.fromY,
+                window.innerHeight * 0.68 - flight.fromY + 18,
+                window.innerHeight * 0.68 - flight.fromY,
               ],
               rotate: [flight.rotate, flight.rotate, -3, 0],
             }}
@@ -207,7 +208,7 @@ export default function ServiceDetail({
       <main className="overflow-x-clip bg-[#fdf3eb] text-[#131834]">
         {/* Nombre centrado + elemento que sube con el scroll */}
         <section ref={secRef} aria-label={sector.title} className="relative h-[240vh]">
-          <div className="sticky top-0 flex h-screen flex-col items-center justify-center overflow-visible">
+          <div className="sticky top-0 flex h-screen flex-col items-center justify-end overflow-visible pb-[calc(32vh+32px)]">
             {liveMesh && (
               <div
                 ref={meshSlotRef}
@@ -261,7 +262,7 @@ export default function ServiceDetail({
                         <img
                           src={item.img}
                           alt={sector.title}
-                          className="h-[36vh] w-auto object-contain"
+                          className="w-auto object-contain"
                         />
                       </button>
                     ) : (
@@ -269,7 +270,7 @@ export default function ServiceDetail({
                         <img
                           src={item.img}
                           alt={sector.title}
-                          className="h-[36vh] w-auto object-contain"
+                          className="w-auto object-contain"
                         />
                       </Link>
                     )}
@@ -287,7 +288,7 @@ export default function ServiceDetail({
                         <img
                           src={item.img}
                           alt={sector.title}
-                          className="h-[36vh] w-auto object-contain"
+                          className="w-auto object-contain"
                         />
                       </button>
                     ) : (
@@ -295,7 +296,7 @@ export default function ServiceDetail({
                         <img
                           src={item.img}
                           alt={sector.title}
-                          className="h-[36vh] w-auto object-contain"
+                          className="w-auto object-contain"
                         />
                       </Link>
                     )}

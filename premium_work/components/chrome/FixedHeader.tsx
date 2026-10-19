@@ -97,8 +97,8 @@ export default function FixedHeader() {
   return (
     <>
       <header
-        className={`fixed inset-x-0 top-0 z-[60] border-b border-transparent bg-transparent transition-transform duration-300 ${
-          hidden && !open ? "-translate-y-full pointer-events-none" : "translate-y-0"
+        className={`fixed inset-x-0 top-0 z-[60] border-b border-transparent bg-transparent transition-[transform,opacity] duration-300 ${
+          hidden && !open ? "-translate-y-full pointer-events-none opacity-0" : "translate-y-0 opacity-100"
         } ${open ? "pointer-events-none opacity-0" : ""}`}
       >
         <div className="grid grid-cols-[1fr_auto_1fr] items-center px-5 md:px-8 pt-7 md:pt-9 pb-3">
