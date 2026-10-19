@@ -90,7 +90,7 @@ export default function FixedHeader() {
   return (
     <>
       <header
-        className={`fixed inset-x-0 top-0 z-[60] transition-all duration-300 ${
+        className={`fixed inset-x-0 top-0 z-[110] transition-all duration-300 ${
           scrolled
             ? "bg-[#fdf3eb]/90 backdrop-blur-md border-b border-[#131834]/10"
             : "bg-transparent border-b border-transparent"
