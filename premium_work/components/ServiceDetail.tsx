@@ -2,10 +2,52 @@
 
 import Link from "next/link";
 import { useEffect, useLayoutEffect, useRef, useState, type RefObject } from "react";
-import { motion, useMotionValueEvent, useScroll, useTransform } from "framer-motion";
+import { motion, useMotionValue, useMotionValueEvent, useScroll, useTransform } from "framer-motion";
 import FixedHeader from "@/components/chrome/FixedHeader";
 import { Footer } from "@/components/Footer";
 import { useLang } from "@/components/i18n/lang";
+
+type InkBox = { frac: number; center: number };
+const inkCache = new Map<string, InkBox>();
+
+/** Altura opaca de la foto, para que el objeto (no el margen transparente) iguale al título. */
+function imageInk(img: HTMLImageElement): InkBox {
+  const key = img.currentSrc || img.src;
+  const cached = inkCache.get(key);
+  if (cached) return cached;
+  const fallback: InkBox = { frac: 1, center: 0.5 };
+  const w = img.naturalWidth;
+  const h = img.naturalHeight;
+  if (!w || !h) return fallback;
+  const canvas = document.createElement("canvas");
+  canvas.width = w;
+  canvas.height = h;
+  const ctx = canvas.getContext("2d", { willReadFrequently: true });
+  if (!ctx) return fallback;
+  ctx.drawImage(img, 0, 0);
+  let data: Uint8ClampedArray;
+  try {
+    data = ctx.getImageData(0, 0, w, h).data;
+  } catch {
+    return fallback;
+  }
+  let minY = h;
+  let maxY = 0;
+  const step = Math.max(1, Math.floor(w / 480));
+  for (let y = 0; y < h; y++) {
+    for (let x = 0; x < w; x += step) {
+      if (data[(y * w + x) * 4 + 3] > 16) {
+        if (y < minY) minY = y;
+        if (y > maxY) maxY = y;
+        break;
+      }
+    }
+  }
+  if (maxY <= minY) return fallback;
+  const box = { frac: (maxY - minY + 1) / h, center: (minY + maxY) / 2 / h };
+  inkCache.set(key, box);
+  return box;
+}
 
 /** Divide un título en dos líneas equilibradas (p. ej. EVENTOS / PRIVADOS). */
 function splitTitle(title: string): string[] {
@@ -44,6 +86,99 @@ export default function ServiceDetail({
   const item = items[idx];
   const sector = dict.sectors.items[idx];
   const lines = splitTitle(sector.title.toUpperCase());
+  const titleRef = useRef<HTMLHeadingElement>(null);
+  const longest = Math.max(1, ...lines.map((l) => l.length));
+  // Large hero type, near the old 10rem cap. Long lines scale down only
+  // enough to stay inside the viewport; fit() keeps a short gap under the logo.
+  const titleSize = `clamp(1.6rem, ${Math.min(14, 92 / (longest * 0.82)).toFixed(2)}vw, 10rem)`;
+  useLayoutEffect(() => {
+    const fit = () => {
+      const el = titleRef.current;
+      if (!el) return;
+      el.style.fontSize = titleSize;
+      const available = el.clientWidth;
+      const needed = Math.max(0, ...[...el.querySelectorAll("span")].map((s) => s.scrollWidth));
+      if (needed > available && available > 0) {
+        const current = parseFloat(getComputedStyle(el).fontSize);
+        el.style.fontSize = `${Math.max(28, (current * available) / needed * 0.98)}px`;
+      }
+      const header = document.querySelector("header");
+      const minTop = (header?.getBoundingClientRect().bottom ?? 0) + 36;
+      let guard = 0;
+      while (el.getBoundingClientRect().top < minTop && guard < 12) {
+        const current = parseFloat(getComputedStyle(el).fontSize);
+        if (current <= 48) break;
+        el.style.fontSize = `${Math.max(48, current * 0.97)}px`;
+        guard++;
+      }
+    };
+    fit();
+    document.fonts?.ready.then(fit).catch(() => {});
+    window.addEventListener("resize", fit);
+    const prev = document.documentElement.style.overflowX;
+    document.documentElement.style.overflowX = "clip";
+    return () => {
+      document.documentElement.style.overflowX = prev;
+      window.removeEventListener("resize", fit);
+    };
+  }, [titleSize]);
+
+  // En reposo el objeto es grande: la mitad asoma bajo el título y el viewport
+  // recorta el resto. Al hacer scroll sube al centro y se encoge hasta la
+  // altura del bloque entero del título (una línea, o las dos si las hay).
+  const objectRef = useRef<HTMLDivElement>(null);
+  const riseTarget = useMotionValue(0);
+  const riseScale = useMotionValue(1);
+  useLayoutEffect(() => {
+    const place = () => {
+      const title = titleRef.current;
+      const wrap = objectRef.current;
+      const sticky = title?.parentElement;
+      if (!title || !sticky) return;
+      const img = wrap?.querySelector("img");
+      const gap = 32;
+      const viewH = sticky.clientHeight || window.innerHeight;
+      const h = viewH * 0.64;
+      const top = viewH - h / 2;
+      sticky.style.paddingBottom = `${h / 2 + gap}px`;
+      sticky.style.justifyContent = "flex-end";
+      if (wrap) {
+        wrap.style.top = `${top}px`;
+        wrap.style.bottom = "auto";
+      }
+      if (img) img.style.height = `${h}px`;
+      const titleH = title.offsetHeight;
+      const titleMid = title.offsetTop + titleH / 2;
+      const objectMid = top + h / 2;
+      const ink = img && img.complete && img.naturalWidth ? imageInk(img) : { frac: 1, center: 0.5 };
+      const frac = ink.frac || 1;
+      const s = Math.min(1, titleH / (h * frac));
+      const shift = (ink.center - 0.5) * h * s;
+      riseTarget.set(titleMid - objectMid - shift);
+      riseScale.set(s);
+      const half = viewH / 2;
+      const endMid = titleMid - shift;
+      (window as Window & { __pwDetailPose?: { drop: number; end: number; fill: number; fillEnd: number } }).__pwDetailPose = {
+        drop: (objectMid - half) / half,
+        end: (endMid - half) / half,
+        fill: h / viewH,
+        fillEnd: titleH / (viewH * frac),
+      };
+    };
+    place();
+    const ro = new ResizeObserver(place);
+    if (titleRef.current) ro.observe(titleRef.current);
+    const imgEl = objectRef.current?.querySelector("img");
+    imgEl?.addEventListener("load", place);
+    window.addEventListener("resize", place);
+    document.fonts?.ready.then(place).catch(() => {});
+    return () => {
+      ro.disconnect();
+      imgEl?.removeEventListener("load", place);
+      window.removeEventListener("resize", place);
+      delete (window as Window & { __pwDetailPose?: { drop: number; end: number; fill: number; fillEnd: number } }).__pwDetailPose;
+    };
+  }, [titleSize, riseTarget, riseScale, slug]);
 
   // Vuelo del clon (técnica Agrumea, sin panel): si hay datos de vuelo en
   // sessionStorage, un clon fixed vuela desde el rect del héroe hasta el reposo,
@@ -101,12 +236,18 @@ export default function ServiceDetail({
   useMotionValueEvent(scrollYProgress, "change", (value) => {
     (window as Window & { __pwDetailT?: number }).__pwDetailT = value;
   });
-  const riseY = useTransform(scrollYProgress, [0, 0.6], ["0vh", "-50vh"]);
-  const riseS = useTransform(scrollYProgress, [0, 0.6], [1, 0.35]);
+  const riseY = useTransform([scrollYProgress, riseTarget], ([progress, target]: number[]) => {
+    const t = Math.min(1, Math.max(0, progress / 0.55));
+    return target * t;
+  });
+  const riseS = useTransform([scrollYProgress, riseScale], ([progress, scale]: number[]) => {
+    const t = Math.min(1, Math.max(0, progress / 0.55));
+    return 1 + (scale - 1) * t;
+  });
 
   return (
     <>
-      <FixedHeader />
+      <FixedHeader hideUntilTop />
       {/* Visita directa: un clon vuela desde el rect guardado. El overlay no lo usa. */}
       {!liveMesh && flight && !landed && (
         <div
@@ -117,8 +258,13 @@ export default function ServiceDetail({
           <motion.div
             initial={{ height: flight.fromH, rotate: flight.rotate, y: 0 }}
             animate={{
-              height: [flight.fromH, flight.fromH * 1.35, window.innerHeight * 0.62 * 1.02, window.innerHeight * 0.62],
-              y: [0, -70, window.innerHeight * 0.7 - flight.fromY + 22, window.innerHeight * 0.7 - flight.fromY],
+              height: [flight.fromH, flight.fromH * 1.35, window.innerHeight * 0.64 * 1.02, window.innerHeight * 0.64],
+              y: [
+                0,
+                -70,
+                window.innerHeight * 0.68 - flight.fromY + 18,
+                window.innerHeight * 0.68 - flight.fromY,
+              ],
               rotate: [flight.rotate, flight.rotate, -3, 0],
             }}
             transition={{ duration: 1.65, times: [0, 0.35, 0.8, 1], ease: ["easeOut", "easeIn", "easeOut"] }}
@@ -128,10 +274,10 @@ export default function ServiceDetail({
           </motion.div>
         </div>
       )}
-      <main className="bg-[#fdf3eb] text-[#131834]">
+      <main className="overflow-x-clip bg-[#fdf3eb] text-[#131834]">
         {/* Nombre centrado + elemento que sube con el scroll */}
         <section ref={secRef} aria-label={sector.title} className="relative h-[240vh]">
-          <div className="sticky top-0 flex h-screen flex-col items-center justify-center overflow-visible">
+          <div className="sticky top-0 flex h-screen flex-col items-center justify-end overflow-visible pb-[calc(32vh+32px)]">
             {liveMesh && (
               <div
                 ref={meshSlotRef}
@@ -141,6 +287,8 @@ export default function ServiceDetail({
               />
             )}
             <motion.h1
+              ref={titleRef}
+              style={{ fontSize: titleSize }}
               initial={{ opacity: 0, y: -96 }}
               animate={
                 liveMesh
@@ -158,19 +306,18 @@ export default function ServiceDetail({
                     ? { duration: 0.9, delay: 0.3, ease: [0.22, 1, 0.36, 1] }
                     : { duration: 0.7, delay: 0.35, ease: [0.22, 1, 0.36, 1] }
               }
-              className="z-10 px-4 text-center font-serif font-semibold uppercase leading-[0.9] tracking-tight text-[#131834] text-[clamp(3.5rem,13vw,12rem)]"
+              className="z-10 box-border w-full max-w-[100vw] px-5 text-center font-serif font-semibold uppercase leading-[0.9] tracking-tight text-[#131834]"
             >
               {lines.map((l, i) => (
-                <span key={i} className="block">
+                <span key={i} className="block whitespace-nowrap">
                   {l}
                 </span>
               ))}
             </motion.h1>
-            {/* Visita directa: el objeto cae desde arriba, aterriza y da un
-                rebote corto. En reposo queda entero bajo el nombre. El scroll
-                lo sube por encima de las letras. */}
+            {/* Visita directa: cae desde arriba y aterriza bajo el nombre.
+                El scroll lo sube hasta el centro de las letras. */}
             {!liveMesh && (
-            <div className="pointer-events-none absolute inset-x-0 bottom-[4vh] z-20 flex justify-center">
+            <div ref={objectRef} className="pointer-events-none absolute inset-x-0 z-20 flex justify-center">
               {flight ? (
                 // Relevo del clon volador: aparece al aterrizar (crossfade invisible).
                 <motion.div
@@ -184,7 +331,7 @@ export default function ServiceDetail({
                         <img
                           src={item.img}
                           alt={sector.title}
-                          className="h-[36vh] w-auto object-contain"
+                          className="w-auto object-contain"
                         />
                       </button>
                     ) : (
@@ -192,7 +339,7 @@ export default function ServiceDetail({
                         <img
                           src={item.img}
                           alt={sector.title}
-                          className="h-[36vh] w-auto object-contain"
+                          className="w-auto object-contain"
                         />
                       </Link>
                     )}
@@ -210,7 +357,7 @@ export default function ServiceDetail({
                         <img
                           src={item.img}
                           alt={sector.title}
-                          className="h-[36vh] w-auto object-contain"
+                          className="w-auto object-contain"
                         />
                       </button>
                     ) : (
@@ -218,7 +365,7 @@ export default function ServiceDetail({
                         <img
                           src={item.img}
                           alt={sector.title}
-                          className="h-[36vh] w-auto object-contain"
+                          className="w-auto object-contain"
                         />
                       </Link>
                     )}
