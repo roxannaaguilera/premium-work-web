@@ -7,6 +7,48 @@ import FixedHeader from "@/components/chrome/FixedHeader";
 import { Footer } from "@/components/Footer";
 import { useLang } from "@/components/i18n/lang";
 
+type InkBox = { frac: number; center: number };
+const inkCache = new Map<string, InkBox>();
+
+/** Altura opaca de la foto, para que el objeto (no el margen transparente) iguale al título. */
+function imageInk(img: HTMLImageElement): InkBox {
+  const key = img.currentSrc || img.src;
+  const cached = inkCache.get(key);
+  if (cached) return cached;
+  const fallback: InkBox = { frac: 1, center: 0.5 };
+  const w = img.naturalWidth;
+  const h = img.naturalHeight;
+  if (!w || !h) return fallback;
+  const canvas = document.createElement("canvas");
+  canvas.width = w;
+  canvas.height = h;
+  const ctx = canvas.getContext("2d", { willReadFrequently: true });
+  if (!ctx) return fallback;
+  ctx.drawImage(img, 0, 0);
+  let data: Uint8ClampedArray;
+  try {
+    data = ctx.getImageData(0, 0, w, h).data;
+  } catch {
+    return fallback;
+  }
+  let minY = h;
+  let maxY = 0;
+  const step = Math.max(1, Math.floor(w / 480));
+  for (let y = 0; y < h; y++) {
+    for (let x = 0; x < w; x += step) {
+      if (data[(y * w + x) * 4 + 3] > 16) {
+        if (y < minY) minY = y;
+        if (y > maxY) maxY = y;
+        break;
+      }
+    }
+  }
+  if (maxY <= minY) return fallback;
+  const box = { frac: (maxY - minY + 1) / h, center: (minY + maxY) / 2 / h };
+  inkCache.set(key, box);
+  return box;
+}
+
 /** Divide un título en dos líneas equilibradas (p. ej. EVENTOS / PRIVADOS). */
 function splitTitle(title: string): string[] {
   const words = title.split(" ");
@@ -108,23 +150,31 @@ export default function ServiceDetail({
       const titleH = title.offsetHeight;
       const titleMid = title.offsetTop + titleH / 2;
       const objectMid = top + h / 2;
-      riseTarget.set(titleMid - objectMid);
-      riseScale.set(Math.min(1, titleH / h));
+      const ink = img && img.complete && img.naturalWidth ? imageInk(img) : { frac: 1, center: 0.5 };
+      const frac = ink.frac || 1;
+      const s = Math.min(1, titleH / (h * frac));
+      const shift = (ink.center - 0.5) * h * s;
+      riseTarget.set(titleMid - objectMid - shift);
+      riseScale.set(s);
       const half = viewH / 2;
+      const endMid = titleMid - shift;
       (window as Window & { __pwDetailPose?: { drop: number; end: number; fill: number; fillEnd: number } }).__pwDetailPose = {
         drop: (objectMid - half) / half,
-        end: (titleMid - half) / half,
+        end: (endMid - half) / half,
         fill: h / viewH,
-        fillEnd: titleH / viewH,
+        fillEnd: titleH / (viewH * frac),
       };
     };
     place();
     const ro = new ResizeObserver(place);
     if (titleRef.current) ro.observe(titleRef.current);
+    const imgEl = objectRef.current?.querySelector("img");
+    imgEl?.addEventListener("load", place);
     window.addEventListener("resize", place);
     document.fonts?.ready.then(place).catch(() => {});
     return () => {
       ro.disconnect();
+      imgEl?.removeEventListener("load", place);
       window.removeEventListener("resize", place);
       delete (window as Window & { __pwDetailPose?: { drop: number; end: number; fill: number; fillEnd: number } }).__pwDetailPose;
     };
