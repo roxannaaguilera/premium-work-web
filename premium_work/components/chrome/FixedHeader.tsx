@@ -5,7 +5,7 @@ import gsap from "gsap";
 import { getLenis } from "@/lib/lenis-instance";
 import { useLang } from "@/components/i18n/lang";
 
-const LINK_HREFS = ["#inicio", "#servicios", "#nosotros", "#contacto"];
+const LINK_HREFS = ["/", "/servicios", "/nosotros", "/solicitar-servicio"];
 
 function LangToggle() {
   const { lang, setLang } = useLang();
@@ -94,13 +94,13 @@ export default function FixedHeader() {
           scrolled
             ? "bg-[#fdf3eb]/90 backdrop-blur-md border-b border-[#131834]/10"
             : "bg-transparent border-b border-transparent"
-        }`}
+        } ${open ? "pointer-events-none opacity-0" : ""}`}
       >
         <div className="grid grid-cols-[1fr_auto_1fr] items-center px-5 md:px-8 pt-7 md:pt-9 pb-3">
           <div className="justify-self-start">
             <LangToggle />
           </div>
-          <a href="#inicio" aria-label={t("header.logoLabel")} className="block justify-self-center">
+          <a href="/" aria-label={t("header.logoLabel")} className="block justify-self-center">
             <img
               src="/images/logo-premium-work.png"
               alt="Premium Work"
@@ -178,7 +178,7 @@ export default function FixedHeader() {
         </nav>
         <div className="flex flex-col md:flex-row gap-2 md:items-center md:justify-between px-5 md:px-16 pb-8 text-sm text-[#faf6ee]/70">
           <span>{t("header.tagline")}</span>
-          <a href="#contacto" onClick={close} className="underline underline-offset-4 hover:text-[#eab308]">
+          <a href="/solicitar-servicio" onClick={close} className="underline underline-offset-4 hover:text-[#eab308]">
             {t("header.requestService")} →
           </a>
         </div>
