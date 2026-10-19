@@ -70,11 +70,12 @@ export default function ServiceDetail({
     };
   }, [titleSize]);
 
-  // Título arriba. El objeto conserva un tamaño grande y fijo: la mitad de
-  // arriba asoma bajo las letras y la mitad de abajo la recorta el viewport.
-  // El scroll lo sube al centro del título. No se encoge para “caber”.
+  // En reposo el objeto es grande: la mitad asoma bajo el título y el viewport
+  // recorta el resto. Al hacer scroll sube al centro y se encoge hasta la
+  // altura de una línea del título.
   const objectRef = useRef<HTMLDivElement>(null);
   const riseTarget = useMotionValue(0);
+  const riseScale = useMotionValue(1);
   useLayoutEffect(() => {
     const place = () => {
       const title = titleRef.current;
@@ -93,14 +94,18 @@ export default function ServiceDetail({
         wrap.style.bottom = "auto";
       }
       if (img) img.style.height = `${h}px`;
+      const line = title.querySelector("span");
+      const lineH = line ? (line as HTMLElement).offsetHeight : title.offsetHeight;
       const titleMid = title.offsetTop + title.offsetHeight / 2;
       const objectMid = top + h / 2;
       riseTarget.set(titleMid - objectMid);
+      riseScale.set(Math.min(1, lineH / h));
       const half = viewH / 2;
-      (window as Window & { __pwDetailPose?: { drop: number; end: number; fill: number } }).__pwDetailPose = {
+      (window as Window & { __pwDetailPose?: { drop: number; end: number; fill: number; fillEnd: number } }).__pwDetailPose = {
         drop: (objectMid - half) / half,
         end: (titleMid - half) / half,
         fill: h / viewH,
+        fillEnd: lineH / viewH,
       };
     };
     place();
@@ -111,9 +116,9 @@ export default function ServiceDetail({
     return () => {
       ro.disconnect();
       window.removeEventListener("resize", place);
-      delete (window as Window & { __pwDetailPose?: { drop: number; end: number; fill: number } }).__pwDetailPose;
+      delete (window as Window & { __pwDetailPose?: { drop: number; end: number; fill: number; fillEnd: number } }).__pwDetailPose;
     };
-  }, [titleSize, riseTarget, slug]);
+  }, [titleSize, riseTarget, riseScale, slug]);
 
   // Vuelo del clon (técnica Agrumea, sin panel): si hay datos de vuelo en
   // sessionStorage, un clon fixed vuela desde el rect del héroe hasta el reposo,
@@ -174,6 +179,10 @@ export default function ServiceDetail({
   const riseY = useTransform([scrollYProgress, riseTarget], ([progress, target]: number[]) => {
     const t = Math.min(1, Math.max(0, progress / 0.55));
     return target * t;
+  });
+  const riseS = useTransform([scrollYProgress, riseScale], ([progress, scale]: number[]) => {
+    const t = Math.min(1, Math.max(0, progress / 0.55));
+    return 1 + (scale - 1) * t;
   });
 
   return (
@@ -256,7 +265,7 @@ export default function ServiceDetail({
                   animate={{ opacity: landed ? 1 : 0 }}
                   transition={{ duration: 0.25 }}
                 >
-                  <motion.div style={{ y: riseY }} className="pointer-events-auto">
+                  <motion.div style={{ y: riseY, scale: riseS }} className="pointer-events-auto">
                     {onClose ? (
                       <button onClick={onClose} {...backProps}>
                         <img
@@ -282,7 +291,7 @@ export default function ServiceDetail({
                   animate={{ y: ["-35vh", "2.4vh", "-1.1vh", "0vh"] }}
                   transition={{ duration: 1, times: [0, 0.62, 0.84, 1], ease: ["easeOut", "easeOut", "easeOut"] }}
                 >
-                  <motion.div style={{ y: riseY }} className="pointer-events-auto">
+                  <motion.div style={{ y: riseY, scale: riseS }} className="pointer-events-auto">
                     {onClose ? (
                       <button onClick={onClose} {...backProps}>
                         <img
