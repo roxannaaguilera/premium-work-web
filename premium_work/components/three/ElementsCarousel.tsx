@@ -189,10 +189,11 @@ export default function ElementsCarousel() {
     composer.addPass(new RenderPass(scene, camera));
     const bokeh = new BokehPass(scene, camera, {
       focus: 2.6,
-      aperture: 0.01,
-      maxblur: 0.007,
+      aperture: 0.0028,
+      maxblur: 0.0016,
     });
     composer.addPass(bokeh);
+    const focusPoint = new THREE.Vector3();
 
     // ---------- Fotos reales en planos, en diagonal ----------
     const loader = new THREE.TextureLoader();
@@ -204,6 +205,28 @@ export default function ElementsCarousel() {
         const aspect = t.image.width / t.image.height;
         const w = aspect >= 1 ? ITEM_SIZE : ITEM_SIZE * aspect;
         const h = aspect >= 1 ? ITEM_SIZE / aspect : ITEM_SIZE;
+        // El RGB de los píxeles transparentes es negro; el desenfoque lo
+        // extendería como una mancha. Se sustituye por el crema de la página.
+        const canvas = document.createElement("canvas");
+        canvas.width = t.image.width;
+        canvas.height = t.image.height;
+        const ctx = canvas.getContext("2d");
+        if (ctx) {
+          ctx.drawImage(t.image, 0, 0);
+          const img = ctx.getImageData(0, 0, canvas.width, canvas.height);
+          const d = img.data;
+          for (let p = 0; p < d.length; p += 4) {
+            const a = d[p + 3] / 255;
+            if (a < 0.995) {
+              d[p] = d[p] * a + 253 * (1 - a);
+              d[p + 1] = d[p + 1] * a + 243 * (1 - a);
+              d[p + 2] = d[p + 2] * a + 235 * (1 - a);
+            }
+          }
+          ctx.putImageData(img, 0, 0);
+          t.image = canvas;
+          t.needsUpdate = true;
+        }
         const mesh = new THREE.Mesh(
           new THREE.PlaneGeometry(w, h),
           new THREE.MeshBasicMaterial({ map: t, transparent: true, alphaTest: 0.05, depthWrite: false })
@@ -621,9 +644,27 @@ export default function ElementsCarousel() {
         renderer.setClearColor(0xfdf3eb, 1);
         renderer.setClearAlpha(1);
         scene.background = cream;
+        items[index].updateMatrixWorld(true);
+        items[index].getWorldPosition(focusPoint);
+        focusPoint.applyMatrix4(camera.matrixWorldInverse);
+        bokeh.uniforms.focus.value = -focusPoint.z;
+
+        const frontWasVisible = items[index].visible;
+        items[index].visible = false;
+        composer.render();
+        items[index].visible = frontWasVisible;
+
+        scene.background = null;
+        const autoClear = renderer.autoClear;
+        renderer.autoClear = false;
         renderer.setRenderTarget(null);
-        renderer.autoClear = true;
+        renderer.clearDepth();
+        const visibility = items.map((wrap) => wrap.visible);
+        items.forEach((wrap, i) => { wrap.visible = i === index; });
         renderer.render(scene, camera);
+        items.forEach((wrap, i) => { wrap.visible = visibility[i]; });
+        scene.background = cream;
+        renderer.autoClear = autoClear;
       };
 
       // En el hueco del detalle solo se dibuja el mesh clicado, transparente.
