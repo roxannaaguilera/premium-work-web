@@ -116,7 +116,7 @@ export function ServiceFooter() {
           className="translate-y-[24%] text-center font-black whitespace-nowrap text-[#f6ede1]/[0.05] select-none"
           style={{ fontSize: "12.6vw", lineHeight: 0.85, letterSpacing: "-0.02em" }}
         >
-          PREMIUM WORK
+          PREMIUM WORK<span className="text-[#e8b13a]/40">.</span>
         </p>
       </div>
     </footer>
