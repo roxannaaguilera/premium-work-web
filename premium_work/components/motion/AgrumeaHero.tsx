@@ -21,14 +21,14 @@ export default function AgrumeaHero() {
         <ElementsCarousel />
 
         {/* Desliza para descubrir, como Agrumea */}
-        <p className="pointer-events-none absolute inset-x-0 bottom-8 z-[2] text-center text-[11px] font-semibold uppercase tracking-[0.4em] text-[#131834]/70">
+        <p className="pointer-events-none absolute inset-x-0 bottom-16 z-[2] text-center text-[11px] font-semibold uppercase tracking-[0.4em] text-[#131834]/70 md:bottom-8">
           {t("hero.hint")}
         </p>
       </div>
 
       {/* Privacidad y cookies */}
       <a
-        href="/privacidad"
+        href="/politica-de-privacidad"
         className="absolute bottom-6 left-6 z-[2] text-xs text-[#131834]/70 underline underline-offset-4 hover:text-[#131834]"
       >
         {t("hero.privacy")}
