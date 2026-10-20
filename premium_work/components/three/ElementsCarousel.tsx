@@ -521,12 +521,12 @@ export default function ElementsCarousel() {
         const halfW = halfH * camera.aspect;
         const halfH0 = Math.tan(vFov / 2) * distF;
 
+        const phone = camera.aspect < 0.9;
         slotCenter.copy(camera.position).addScaledVector(viewDir, dist);
         wrap.position.copy(slotCenter);
-        wrap.position.addScaledVector(camRight, reach * halfW * 0.88);
-        // Diagonal suave: entra por arriba-izquierda, sale por abajo-derecha.
-        // Aire entre el logo y el objeto, y entre el objeto y el final del header.
-        wrap.position.addScaledVector(camUp, -halfH0 * 0.08 - reach * halfH * 0.30 + Math.sin(elapsed * 1.3 + i * 0.9) * 0.02 * (fallStart[i] < 0 || elapsed - fallStart[i] > 0.64 ? 1 : 0));
+        wrap.position.addScaledVector(camRight, reach * halfW * (phone ? 1.05 : 0.88));
+        // En el móvil el objeto queda en el centro, lejos de las letras de abajo.
+        wrap.position.addScaledVector(camUp, halfH0 * (phone ? 0.1 : -0.08) - reach * halfH * (phone ? 0.12 : 0.30) + Math.sin(elapsed * 1.3 + i * 0.9) * 0.02 * (fallStart[i] < 0 || elapsed - fallStart[i] > 0.64 ? 1 : 0));
 
         // La caída de presentación empieza cuando las cortinas empiezan a abrirse.
         // Si un objeto entra después, cae en ese momento, no espera otro telón.
@@ -551,9 +551,10 @@ export default function ElementsCarousel() {
         const gh = plane?.parameters.height || ITEM_SIZE;
         const viewH = halfH0 * 2;
         const viewW = halfH0 * camera.aspect * 2;
-        const fit = Math.min((viewH * 0.56) / gh, (viewW * 0.82) / gw);
+        const phoneFit = camera.aspect < 0.9;
+        const fit = Math.min((viewH * (phoneFit ? 0.3 : 0.56)) / gh, (viewW * (phoneFit ? 0.46 : 0.82)) / gw);
         const boost = isFront ? 1 + 0.14 * hoverT : 1;
-        wrap.scale.setScalar(!inView ? 0.001 : isFront ? fit * boost : fit * 0.66);
+        wrap.scale.setScalar(!inView ? 0.001 : isFront ? fit * boost : fit * (phoneFit ? 0.45 : 0.66));
         wrap.visible = inView && i !== hiddenIdxRef.current;
 
         // El mesh clicado se desplaza desde la pose del héroe hasta la del

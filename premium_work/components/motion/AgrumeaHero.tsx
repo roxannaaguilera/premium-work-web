@@ -20,31 +20,25 @@ export default function AgrumeaHero() {
       <div className="relative h-full">
         <ElementsCarousel />
 
-        <a
-          href="/politica-de-cookies"
-          aria-label={t("legal.cookies")}
-          data-pw-cookie
-          className="absolute bottom-24 left-4 z-[40] flex h-14 w-14 items-center justify-center rounded-full"
-        >
-          <svg viewBox="0 0 56 56" aria-hidden="true" className="h-14 w-14 drop-shadow-[0_6px_14px_rgba(19,24,52,0.35)]">
-            <circle cx="28" cy="28" r="24" fill="#f6e2b8" stroke="#131834" strokeWidth="3.5" />
-            <circle cx="18" cy="22" r="3.4" fill="#131834" />
-            <circle cx="31" cy="17" r="2.5" fill="#131834" />
-            <circle cx="38" cy="28" r="3.1" fill="#131834" />
-            <circle cx="24" cy="32" r="3.6" fill="#131834" />
-            <circle cx="35" cy="38" r="2.4" fill="#131834" />
-            <circle cx="16" cy="36" r="2.2" fill="#131834" />
-          </svg>
-        </a>
-
-        <div className="pointer-events-none absolute inset-x-0 bottom-0 z-[2] flex flex-col items-center gap-2 px-4 pb-[max(1rem,env(safe-area-inset-bottom))]">
-          <p
-            data-pw-front-name
-            className="max-w-[calc(100%-9.5rem)] truncate text-center text-[clamp(0.85rem,3.6vw,1.15rem)] font-semibold uppercase tracking-[0.12em] text-[#131834]"
-          />
-          <p className="max-w-[calc(100%-9.5rem)] px-2 text-center text-[11px] font-semibold uppercase leading-snug tracking-[0.08em] text-[#131834]/70 sm:tracking-[0.16em]">
-            {t("hero.hint")}
-          </p>
+        <div className="pointer-events-none absolute inset-x-0 bottom-0 z-[40] grid grid-cols-[4.25rem_minmax(0,1fr)_4.25rem] items-center gap-2 px-3 pb-[max(0.75rem,env(safe-area-inset-bottom))]">
+          <a
+            href="/politica-de-cookies"
+            aria-label={t("legal.cookies")}
+            data-pw-cookie
+            className="pointer-events-auto h-14 w-14 overflow-hidden rounded-full"
+          >
+            <img src="/images/cookie.png" alt="" className="h-full w-full object-cover" />
+          </a>
+          <div className="flex min-w-0 flex-col items-center gap-1">
+            <p
+              data-pw-front-name
+              className="max-w-full truncate text-center text-[clamp(0.85rem,3.6vw,1.15rem)] font-semibold uppercase tracking-[0.12em] text-[#131834]"
+            />
+            <p className="max-w-full text-center text-[11px] font-semibold uppercase leading-snug tracking-[0.08em] text-[#131834]/70 sm:tracking-[0.16em]">
+              {t("hero.hint")}
+            </p>
+          </div>
+          <span aria-hidden="true" />
         </div>
       </div>
     </section>
