@@ -134,6 +134,7 @@ export default function ServiceDetail({
   const objectRef = useRef<HTMLDivElement>(null);
   const riseTarget = useMotionValue(0);
   const riseScale = useMotionValue(1);
+  const padsRef = useRef({ rest: 0, end: 0, lift: 0 });
   useLayoutEffect(() => {
     const place = () => {
       const title = titleRef.current;
@@ -151,7 +152,7 @@ export default function ServiceDetail({
         if (h * aspect > maxW) h = maxW / aspect;
       }
       const top = viewH - h / 2;
-      sticky.style.paddingBottom = `${h / 2 + gap}px`;
+      const restPad = h / 2 + gap;
       sticky.style.justifyContent = "flex-end";
       if (wrap) {
         wrap.style.top = `${top}px`;
@@ -159,16 +160,30 @@ export default function ServiceDetail({
       }
       if (img) img.style.height = `${h}px`;
       const titleH = title.offsetHeight;
-      const titleMid = title.offsetTop + titleH / 2;
       const objectMid = top + h / 2;
       const ink = img && img.complete && img.naturalWidth ? imageInk(img) : { frac: 1, center: 0.5 };
       const frac = ink.frac || 1;
       const s = Math.min(1, titleH / (h * frac));
       const shift = (ink.center - 0.5) * h * s;
-      riseTarget.set(titleMid - objectMid - shift);
+      // Al terminar el scroll el bloque queda en el tercio alto, no perdido
+      // abajo con un vacío enorme encima y otro debajo.
+      const desiredMid = Math.min(viewH * 0.36, viewH - titleH / 2 - 28);
+      const endPad = Math.max(restPad, viewH - desiredMid - titleH / 2);
+      const sec = secRef.current;
+      const scrollAtEnd = sec ? Math.max(1, (sec.offsetHeight - viewH) * 0.55) : viewH * 0.25;
+      const descDoc = sec?.offsetHeight ?? viewH * 1.45;
+      const wantDoc = desiredMid + titleH / 2 + 40 + scrollAtEnd;
+      const lift = Math.max(0, descDoc - wantDoc);
+      padsRef.current = { rest: restPad, end: endPad, lift };
+      const progress = Math.min(1, Math.max(0, ((window as Window & { __pwDetailT?: number }).__pwDetailT ?? 0) / 0.55));
+      sticky.style.paddingBottom = `${restPad + (endPad - restPad) * progress}px`;
+      const next = sec?.nextElementSibling as HTMLElement | null;
+      if (next) next.style.marginTop = `${-lift * progress}px`;
+      const endTitleMid = viewH - (restPad + (endPad - restPad)) - titleH / 2;
+      riseTarget.set(endTitleMid - objectMid - shift);
       riseScale.set(s);
       const half = viewH / 2;
-      const endMid = titleMid - shift;
+      const endMid = endTitleMid - shift;
       (window as Window & { __pwDetailPose?: { drop: number; end: number; fill: number; fillEnd: number } }).__pwDetailPose = {
         drop: (objectMid - half) / half,
         end: (endMid - half) / half,
@@ -246,6 +261,13 @@ export default function ServiceDetail({
   });
   useMotionValueEvent(scrollYProgress, "change", (value) => {
     (window as Window & { __pwDetailT?: number }).__pwDetailT = value;
+    const sticky = titleRef.current?.parentElement;
+    if (!sticky) return;
+    const t = Math.min(1, Math.max(0, value / 0.55));
+    const { rest, end, lift } = padsRef.current;
+    sticky.style.paddingBottom = `${rest + (end - rest) * t}px`;
+    const next = secRef.current?.nextElementSibling as HTMLElement | null;
+    if (next) next.style.marginTop = `${-lift * t}px`;
   });
   const riseY = useTransform([scrollYProgress, riseTarget], ([progress, target]: number[]) => {
     const t = Math.min(1, Math.max(0, progress / 0.55));
@@ -287,7 +309,7 @@ export default function ServiceDetail({
       )}
       <main className="touch-pan-y overflow-x-clip bg-[#fdf3eb] text-[#131834]">
         {/* Nombre centrado + elemento que sube con el scroll */}
-        <section ref={secRef} aria-label={sector.title} className="relative h-[240vh]">
+        <section ref={secRef} aria-label={sector.title} className="relative h-[145vh]">
           <div className="sticky top-0 flex h-dvh flex-col items-center justify-end overflow-visible pb-[calc(32vh+32px)]">
             {liveMesh && (
               <div

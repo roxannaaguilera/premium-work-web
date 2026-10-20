@@ -9,25 +9,16 @@ const LINK_HREFS = ["/", "/servicios", "/nosotros", "/solicitar-servicio"];
 
 function LangToggle() {
   const { lang, setLang } = useLang();
+  const next = lang === "es" ? "en" : "es";
   return (
-    <div role="group" aria-label="Language / Idioma" className="flex items-center gap-2">
-      {(["es", "en"] as const).map((l) => (
-        <button
-          key={l}
-          type="button"
-          onClick={() => setLang(l)}
-          aria-pressed={lang === l}
-          aria-label={l === "es" ? "Español" : "English"}
-          className={`flex h-10 w-10 items-center justify-center rounded-full text-xs font-bold uppercase tracking-wider transition-colors md:h-9 md:w-9 ${
-            lang === l
-              ? "bg-[#131834] text-[#faf6ee]"
-              : "border border-[#131834]/25 text-[#131834]/60 hover:border-[#131834]/60 hover:text-[#131834]"
-          }`}
-        >
-          {l}
-        </button>
-      ))}
-    </div>
+    <button
+      type="button"
+      onClick={() => setLang(next)}
+      aria-label={lang === "es" ? "Español" : "English"}
+      className="flex h-11 w-11 items-center justify-center rounded-full bg-[#131834] text-xs font-bold uppercase tracking-wider text-[#faf6ee]"
+    >
+      {lang}
+    </button>
   );
 }
 
@@ -109,7 +100,7 @@ export default function FixedHeader({ hideUntilTop = false }: { hideUntilTop?: b
           hidden && !open ? "-translate-y-full pointer-events-none opacity-0" : "translate-y-0 opacity-100"
         } ${open ? "pointer-events-none opacity-0" : ""}`}
       >
-        <div className="grid grid-cols-[auto_minmax(0,1fr)_auto] items-center gap-2 px-3 pt-3 pb-2 md:grid-cols-[1fr_auto_1fr] md:gap-0 md:px-8 md:pt-9 md:pb-3">
+        <div className="grid grid-cols-[2.75rem_minmax(0,1fr)_2.75rem] items-center px-3 pt-3 pb-2 md:grid-cols-[4.5rem_minmax(0,1fr)_4.5rem] md:px-8 md:pt-9 md:pb-3">
           <div className="justify-self-start">
             <LangToggle />
           </div>
@@ -117,7 +108,7 @@ export default function FixedHeader({ hideUntilTop = false }: { hideUntilTop?: b
             <img
               src="/images/logo-premium-work.png"
               alt="Premium Work"
-              className="mx-auto h-14 w-auto max-w-[34vw] object-contain md:h-36 md:max-w-none"
+              className="mx-auto h-12 w-auto max-w-[calc(100vw-8.5rem)] object-contain md:h-36 md:max-w-[42vw]"
             />
           </a>
           <div className="flex items-center justify-self-end">

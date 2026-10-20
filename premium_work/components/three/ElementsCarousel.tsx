@@ -193,7 +193,6 @@ export default function ElementsCarousel() {
       maxblur: 0.007,
     });
     composer.addPass(bokeh);
-    const focusPoint = new THREE.Vector3();
 
     // ---------- Fotos reales en planos, en diagonal ----------
     const loader = new THREE.TextureLoader();
@@ -207,7 +206,7 @@ export default function ElementsCarousel() {
         const h = aspect >= 1 ? ITEM_SIZE / aspect : ITEM_SIZE;
         const mesh = new THREE.Mesh(
           new THREE.PlaneGeometry(w, h),
-          new THREE.MeshBasicMaterial({ map: t, transparent: true, alphaTest: 0.02 })
+          new THREE.MeshBasicMaterial({ map: t, transparent: true, alphaTest: 0.05, depthWrite: false })
         );
         mesh.userData.sectorIndex = idx;
         planeMeshes.push(mesh);
@@ -446,7 +445,7 @@ export default function ElementsCarousel() {
         detailFallAt = elapsed;
         detailFallPending = false;
       }
-      const t = Math.max(0, Math.min(1, ((window as Window & { __pwDetailT?: number }).__pwDetailT ?? 0) / 0.45));
+      const t = Math.max(0, Math.min(1, ((window as Window & { __pwDetailT?: number }).__pwDetailT ?? 0) / 0.55));
       // t=0: objeto grande, mitad bajo el borde. t=1: centro de las letras.
       const pose = (window as Window & { __pwDetailPose?: { drop: number; end: number; fill: number; fillEnd: number } }).__pwDetailPose;
       const fill0 = pose?.fill ?? 0.64;
@@ -618,29 +617,11 @@ export default function ElementsCarousel() {
 
       const renderHero = () => {
         renderer.setClearColor(0xfdf3eb, 1);
+        renderer.setClearAlpha(1);
         scene.background = cream;
-        items[index].updateMatrixWorld(true);
-        items[index].getWorldPosition(focusPoint);
-        focusPoint.applyMatrix4(camera.matrixWorldInverse);
-        bokeh.uniforms.focus.value = -focusPoint.z;
-
-        // El del frente no entra en el desenfoque: solo lo de detrás y los lados.
-        const frontWasVisible = items[index].visible;
-        items[index].visible = false;
-        composer.render();
-        items[index].visible = frontWasVisible;
-
-        scene.background = null;
-        const autoClear = renderer.autoClear;
-        renderer.autoClear = false;
         renderer.setRenderTarget(null);
-        renderer.clearDepth();
-        const visibility = items.map((wrap) => wrap.visible);
-        items.forEach((wrap, i) => { wrap.visible = i === index; });
+        renderer.autoClear = true;
         renderer.render(scene, camera);
-        items.forEach((wrap, i) => { wrap.visible = visibility[i]; });
-        scene.background = cream;
-        renderer.autoClear = autoClear;
       };
 
       // En el hueco del detalle solo se dibuja el mesh clicado, transparente.

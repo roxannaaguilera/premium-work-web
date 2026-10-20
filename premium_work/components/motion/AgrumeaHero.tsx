@@ -23,17 +23,17 @@ export default function AgrumeaHero() {
         <a
           href="/politica-de-cookies"
           aria-label={t("legal.cookies")}
-          className="absolute bottom-[max(1rem,env(safe-area-inset-bottom))] left-4 z-[3] flex h-12 w-12 items-center justify-center"
+          data-pw-cookie
+          className="absolute bottom-24 left-4 z-[40] flex h-14 w-14 items-center justify-center rounded-full"
         >
-          <svg viewBox="0 0 48 48" aria-hidden="true" className="h-11 w-11 drop-shadow-[0_4px_10px_rgba(19,24,52,0.22)]">
-            <circle cx="23" cy="25" r="16" fill="#e7b86a" stroke="#c4923e" strokeWidth="1.5" />
-            <circle cx="35" cy="13" r="7.5" fill="#fdf3eb" />
-            <circle cx="15" cy="20" r="2.1" fill="#6a3d22" />
-            <circle cx="24" cy="18" r="1.5" fill="#6a3d22" />
-            <circle cx="19" cy="28" r="2.3" fill="#6a3d22" />
-            <circle cx="28" cy="27" r="1.7" fill="#6a3d22" />
-            <circle cx="26" cy="34" r="1.9" fill="#6a3d22" />
-            <circle cx="15" cy="34" r="1.3" fill="#6a3d22" />
+          <svg viewBox="0 0 56 56" aria-hidden="true" className="h-14 w-14 drop-shadow-[0_6px_14px_rgba(19,24,52,0.35)]">
+            <circle cx="28" cy="28" r="24" fill="#f6e2b8" stroke="#131834" strokeWidth="3.5" />
+            <circle cx="18" cy="22" r="3.4" fill="#131834" />
+            <circle cx="31" cy="17" r="2.5" fill="#131834" />
+            <circle cx="38" cy="28" r="3.1" fill="#131834" />
+            <circle cx="24" cy="32" r="3.6" fill="#131834" />
+            <circle cx="35" cy="38" r="2.4" fill="#131834" />
+            <circle cx="16" cy="36" r="2.2" fill="#131834" />
           </svg>
         </a>
 
