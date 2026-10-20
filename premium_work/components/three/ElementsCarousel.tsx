@@ -612,7 +612,8 @@ export default function ElementsCarousel() {
         const x = Math.min(maxX, Math.max(pad, tagX + 16));
         const y = Math.min(maxY, Math.max(pad, tagY - th - 8));
         tagRef.current.style.transform = `translate(${x}px, ${y}px)`;
-        tagRef.current.style.opacity = hovered ? "1" : "0";
+        // En el móvil ya está "Desliza para descubrir". Esta pastilla no se apila sobre el objeto.
+        tagRef.current.style.opacity = hovered && window.innerWidth >= 768 ? "1" : "0";
       }
 
       const renderHero = () => {
@@ -687,7 +688,7 @@ export default function ElementsCarousel() {
       {/* Etiqueta que aparece al posar el cursor sobre el objeto principal */}
       <div
         ref={tagRef}
-        className="pointer-events-none absolute left-0 top-0 z-[3] opacity-0 transition-opacity duration-200"
+        className="pointer-events-none absolute left-0 top-0 z-[3] hidden opacity-0 transition-opacity duration-200 md:block"
         aria-hidden="true"
       >
         <span className="inline-flex max-w-[calc(100vw-1.5rem)] items-center gap-3 whitespace-normal rounded-full bg-[#131834] px-4 py-2 text-[11px] font-semibold uppercase leading-snug tracking-[0.12em] text-[#f3ead6] shadow-lg">
