@@ -10,6 +10,15 @@
   0%, 100% { transform: translate(-50%, 0); }
   50% { transform: translate(-50%, -14px); }
 }
+@keyframes fab-bob {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-8px); }
+}
+.fab-bob { animation: fab-bob 3.2s ease-in-out infinite; }
+.fab-bob-late { animation-delay: -1.5s; }
+@media (prefers-reduced-motion: reduce) {
+  .fab-bob { animation: none; }
+}
 
 :root {
   --paper: #ffffff;
