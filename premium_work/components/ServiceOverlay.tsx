@@ -50,16 +50,12 @@ export default function ServiceOverlay() {
     } catch {
       /* Lenis no disponible */
     }
-    document.body.style.overflow = "hidden";
-    document.documentElement.style.overflow = "hidden";
     return () => {
       try {
         getLenis()?.start();
       } catch {
         /* Lenis no disponible */
       }
-      document.body.style.overflow = "";
-      document.documentElement.style.overflow = "";
     };
   }, [flight]);
 
@@ -107,7 +103,10 @@ export default function ServiceOverlay() {
   return (
     <div
       ref={scrollerRef}
-      className="fixed inset-0 z-[200] overflow-y-auto bg-[#fdf3eb]"
+      data-lenis-prevent
+      data-pw-service-scroll
+      onScroll={() => window.dispatchEvent(new Event("pw-detail-scroll"))}
+      className="fixed inset-0 z-[200] h-dvh touch-pan-y overflow-y-auto overscroll-contain bg-[#fdf3eb]"
       role="dialog"
       aria-modal="true"
       aria-label={flight.slug}

@@ -42,7 +42,8 @@ export default function FixedHeader({ hideUntilTop = false }: { hideUntilTop?: b
 
   useEffect(() => {
     const onScroll = () => {
-      const y = window.scrollY || document.documentElement.scrollTop || 0;
+      const overlay = document.querySelector("[data-pw-service-scroll]") as HTMLElement | null;
+      const y = overlay ? overlay.scrollTop : window.scrollY || document.documentElement.scrollTop || 0;
       if (hideUntilTop) {
         // Service pages: visible only at rest. Any scroll hides it until the top.
         setHidden(y > 16);
@@ -53,7 +54,11 @@ export default function FixedHeader({ hideUntilTop = false }: { hideUntilTop?: b
     };
     onScroll();
     window.addEventListener("scroll", onScroll, { passive: true });
-    return () => window.removeEventListener("scroll", onScroll);
+    window.addEventListener("pw-detail-scroll", onScroll);
+    return () => {
+      window.removeEventListener("scroll", onScroll);
+      window.removeEventListener("pw-detail-scroll", onScroll);
+    };
   }, [hideUntilTop]);
 
   const close = useCallback(() => setOpen(false), []);
@@ -115,16 +120,7 @@ export default function FixedHeader({ hideUntilTop = false }: { hideUntilTop?: b
               className="mx-auto h-14 w-auto max-w-[34vw] object-contain md:h-36 md:max-w-none"
             />
           </a>
-          <div className="flex items-center gap-2 justify-self-end">
-            <button
-              type="button"
-              onClick={() => setOpen(true)}
-              aria-haspopup="dialog"
-              aria-expanded={open}
-              className="hidden items-center rounded-full bg-[#131834] px-5 py-2 text-sm font-semibold tracking-wide text-[#faf6ee] hover:bg-[#1e2450] transition-colors md:inline-flex"
-            >
-              {t("header.menu")}
-            </button>
+          <div className="flex items-center justify-self-end">
             <button
               type="button"
               onClick={() => setOpen(true)}
@@ -133,7 +129,11 @@ export default function FixedHeader({ hideUntilTop = false }: { hideUntilTop?: b
               aria-label={t("header.openMenu")}
               className="flex h-11 w-11 items-center justify-center rounded-full bg-[#131834] hover:bg-[#1e2450] transition-colors"
             >
-              <span aria-hidden="true" className="inline-block h-2.5 w-2.5 rotate-45 bg-[#eab308]" />
+              <span aria-hidden="true" className="flex w-[22px] flex-col gap-1">
+                <span className="block h-[3px] w-full rounded-full bg-[#faf6ee]" />
+                <span className="block h-[3px] w-full rounded-full bg-[#faf6ee]" />
+                <span className="block h-[3px] w-full rounded-full bg-[#faf6ee]" />
+              </span>
             </button>
           </div>
         </div>

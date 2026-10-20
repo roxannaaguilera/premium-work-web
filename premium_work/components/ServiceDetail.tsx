@@ -143,7 +143,13 @@ export default function ServiceDetail({
       const img = wrap?.querySelector("img");
       const gap = 32;
       const viewH = sticky.clientHeight || window.innerHeight;
-      const h = viewH * 0.64;
+      const viewW = Math.min(window.innerWidth || viewH, sticky.clientWidth || window.innerWidth || viewH);
+      let h = viewH * 0.64;
+      if (img && img.naturalWidth && img.naturalHeight) {
+        const aspect = img.naturalWidth / img.naturalHeight;
+        const maxW = viewW * 0.88;
+        if (h * aspect > maxW) h = maxW / aspect;
+      }
       const top = viewH - h / 2;
       sticky.style.paddingBottom = `${h / 2 + gap}px`;
       sticky.style.justifyContent = "flex-end";
@@ -230,7 +236,7 @@ export default function ServiceDetail({
   const backProps = {
     "aria-label": dict.header.logoLabel,
     title: dict.header.logoLabel,
-    className: "block cursor-pointer",
+    className: "block cursor-pointer touch-pan-y",
   } as const;
 
   const { scrollYProgress } = useScroll({
@@ -279,7 +285,7 @@ export default function ServiceDetail({
           </motion.div>
         </div>
       )}
-      <main className="overflow-x-clip bg-[#fdf3eb] text-[#131834]">
+      <main className="touch-pan-y overflow-x-clip bg-[#fdf3eb] text-[#131834]">
         {/* Nombre centrado + elemento que sube con el scroll */}
         <section ref={secRef} aria-label={sector.title} className="relative h-[240vh]">
           <div className="sticky top-0 flex h-dvh flex-col items-center justify-end overflow-visible pb-[calc(32vh+32px)]">
@@ -336,7 +342,8 @@ export default function ServiceDetail({
                         <img
                           src={item.img}
                           alt={sector.title}
-                          className="w-auto object-contain"
+                          draggable={false}
+                          className="w-auto max-w-[88vw] touch-pan-y object-contain"
                         />
                       </button>
                     ) : (
@@ -344,7 +351,8 @@ export default function ServiceDetail({
                         <img
                           src={item.img}
                           alt={sector.title}
-                          className="w-auto object-contain"
+                          draggable={false}
+                          className="w-auto max-w-[88vw] touch-pan-y object-contain"
                         />
                       </Link>
                     )}
@@ -362,7 +370,8 @@ export default function ServiceDetail({
                         <img
                           src={item.img}
                           alt={sector.title}
-                          className="w-auto object-contain"
+                          draggable={false}
+                          className="w-auto max-w-[88vw] touch-pan-y object-contain"
                         />
                       </button>
                     ) : (
@@ -370,7 +379,8 @@ export default function ServiceDetail({
                         <img
                           src={item.img}
                           alt={sector.title}
-                          className="w-auto object-contain"
+                          draggable={false}
+                          className="w-auto max-w-[88vw] touch-pan-y object-contain"
                         />
                       </Link>
                     )}

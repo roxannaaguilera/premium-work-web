@@ -88,7 +88,9 @@ function serviceFallLift(age: number): number {
  * Arrastra o desplaza para girar 360° entre sectores.
  */
 export default function ElementsCarousel() {
-  const { t } = useLang();
+  const { t, dict } = useLang();
+  const labelsRef = useRef<string[]>([]);
+  labelsRef.current = SECTORS.map((s) => dict.sectors.items[s.di]?.title ?? s.name);
   const mountRef = useRef<HTMLDivElement>(null);
   const tagRef = useRef<HTMLDivElement>(null);
   // Navegación cliente con un <Link> REAL que envuelve el canvas: el clic del
@@ -328,6 +330,9 @@ export default function ElementsCarousel() {
       detailFallAt = -1;
       detailFallPending = false;
       clearCanvasChrome();
+      renderer.domElement.style.touchAction = "none";
+      renderer.domElement.style.pointerEvents = "";
+      renderer.domElement.style.position = "";
       if (renderer.domElement.parentElement !== mount) mount.appendChild(renderer.domElement);
       renderer.domElement.dataset.pwPark = "hero";
       resizeTo(mount.clientWidth || 1, mount.clientHeight || 1);
@@ -352,6 +357,7 @@ export default function ElementsCarousel() {
       canvas.style.height = "100%";
       canvas.style.zIndex = "auto";
       canvas.style.pointerEvents = "none";
+      canvas.style.touchAction = "pan-y";
       canvas.style.background = "transparent";
       canvas.style.border = "none";
       canvas.style.outline = "none";
@@ -449,7 +455,10 @@ export default function ElementsCarousel() {
       const rest = pose?.drop ?? 1;
       const end = pose?.end ?? 0;
       const drop = halfHD * (rest + (end - rest) * t);
-      const scale = (halfHD * 2 * fill) / gh;
+      const gw = (mesh?.geometry as THREE.PlaneGeometry | undefined)?.parameters.width || ITEM_SIZE;
+      let scale = (halfHD * 2 * fill) / gh;
+      const maxWorldW = halfHD * camera.aspect * 2 * 0.88;
+      if (gw * scale > maxWorldW) scale = maxWorldW / gw;
       items.forEach((wrap, i) => {
         if (i !== detail.idx) {
           wrap.visible = false;
@@ -510,12 +519,12 @@ export default function ElementsCarousel() {
         const distF = camera.position.z - 2.15 - (isFront ? 0.4 * hoverT : 0);
         const dist = distF + ad * 1.0;
         const halfH = Math.tan(vFov / 2) * dist;
-        const halfW = halfH * Math.max(camera.aspect, 1);
+        const halfW = halfH * camera.aspect;
         const halfH0 = Math.tan(vFov / 2) * distF;
 
         slotCenter.copy(camera.position).addScaledVector(viewDir, dist);
         wrap.position.copy(slotCenter);
-        wrap.position.addScaledVector(camRight, reach * halfW * 0.62);
+        wrap.position.addScaledVector(camRight, reach * halfW * 0.88);
         // Diagonal suave: entra por arriba-izquierda, sale por abajo-derecha.
         // Aire entre el logo y el objeto, y entre el objeto y el final del header.
         wrap.position.addScaledVector(camUp, -halfH0 * 0.08 - reach * halfH * 0.30 + Math.sin(elapsed * 1.3 + i * 0.9) * 0.02 * (fallStart[i] < 0 || elapsed - fallStart[i] > 0.64 ? 1 : 0));
@@ -537,8 +546,13 @@ export default function ElementsCarousel() {
         wrap.rotation.y = isFront ? 0 : reach * 0.18;
         wrap.rotation.x = 0;
         wrap.rotation.z = isFront ? 0 : -reach * 0.08;
-        // El principal entra entero en pantalla; los laterales más pequeños.
-        const fit = (halfH0 * 1.15) / ITEM_SIZE;
+        // El principal cabe en el ancho con aire a los lados. Los laterales asoman.
+        const plane = (wrap.children[0] as THREE.Mesh | undefined)?.geometry as THREE.PlaneGeometry | undefined;
+        const gw = plane?.parameters.width || ITEM_SIZE;
+        const gh = plane?.parameters.height || ITEM_SIZE;
+        const viewH = halfH0 * 2;
+        const viewW = halfH0 * camera.aspect * 2;
+        const fit = Math.min((viewH * 0.56) / gh, (viewW * 0.82) / gw);
         const boost = isFront ? 1 + 0.14 * hoverT : 1;
         wrap.scale.setScalar(!inView ? 0.001 : isFront ? fit * boost : fit * 0.66);
         wrap.visible = inView && i !== hiddenIdxRef.current;
@@ -570,8 +584,9 @@ export default function ElementsCarousel() {
       const index = ((Math.round(rotation / STEP) % COUNT) + COUNT) % COUNT;
       frontRef.current.idx = index;
       frontRef.current.hoverT = hoverT;
-      const s = SLUGS[SECTORS[index].di];
-      // (slug frontal disponible en s si se necesita)
+      const nameEl = document.querySelector("[data-pw-front-name]");
+      const frontName = labelsRef.current[index] ?? "";
+      if (nameEl && nameEl.textContent !== frontName) nameEl.textContent = frontName;
 
       // Hover solo sobre el objeto principal: avanza un poco hacia adelante.
       if (detailRef.current) hovered = false;
@@ -589,7 +604,15 @@ export default function ElementsCarousel() {
       tagX += (tagTX - tagX) * (1 - Math.exp(-dt * 14));
       tagY += (tagTY - tagY) * (1 - Math.exp(-dt * 14));
       if (tagRef.current) {
-        tagRef.current.style.transform = `translate(${tagX + 20}px, ${tagY - 18}px)`;
+        const shell = shellRef.current;
+        const pad = 12;
+        const tw = tagRef.current.offsetWidth || 160;
+        const th = tagRef.current.offsetHeight || 36;
+        const maxX = Math.max(pad, (shell?.clientWidth || tw) - tw - pad);
+        const maxY = Math.max(pad, (shell?.clientHeight || th) - th - pad);
+        const x = Math.min(maxX, Math.max(pad, tagX + 16));
+        const y = Math.min(maxY, Math.max(pad, tagY - th - 8));
+        tagRef.current.style.transform = `translate(${x}px, ${y}px)`;
         tagRef.current.style.opacity = hovered ? "1" : "0";
       }
 
@@ -686,7 +709,7 @@ export default function ElementsCarousel() {
         className="pointer-events-none absolute left-0 top-0 z-[3] opacity-0 transition-opacity duration-200"
         aria-hidden="true"
       >
-        <span className="inline-flex items-center gap-3 whitespace-nowrap rounded-full bg-[#131834] px-4 py-2 text-[11px] font-semibold uppercase tracking-[0.2em] text-[#f3ead6] shadow-lg">
+        <span className="inline-flex max-w-[calc(100vw-1.5rem)] items-center gap-3 whitespace-normal rounded-full bg-[#131834] px-4 py-2 text-[11px] font-semibold uppercase leading-snug tracking-[0.12em] text-[#f3ead6] shadow-lg">
           <span className="inline-block h-2 w-2 rotate-45 bg-[#d9a83f]" />
           {t("hero.discoverTag")}
         </span>

@@ -20,19 +20,22 @@ export default function AgrumeaHero() {
       <div className="relative h-full">
         <ElementsCarousel />
 
-        {/* Desliza para descubrir, como Agrumea */}
-        <p className="pointer-events-none absolute inset-x-4 bottom-5 z-[2] text-center text-[10px] font-semibold uppercase tracking-[0.18em] text-[#131834]/70 sm:bottom-8 sm:text-[11px] sm:tracking-[0.4em]">
-          {t("hero.hint")}
-        </p>
+        <div className="pointer-events-none absolute inset-x-0 bottom-0 z-[2] flex flex-col items-center gap-2 px-4 pb-[max(1rem,env(safe-area-inset-bottom))]">
+          <p
+            data-pw-front-name
+            className="max-w-full truncate text-center text-[clamp(0.85rem,3.6vw,1.15rem)] font-semibold uppercase tracking-[0.12em] text-[#131834]"
+          />
+          <p className="max-w-full px-2 text-center text-[11px] font-semibold uppercase leading-snug tracking-[0.08em] text-[#131834]/70 sm:tracking-[0.16em]">
+            {t("hero.hint")}
+          </p>
+          <a
+            href="/politica-de-cookies"
+            className="pointer-events-auto inline-flex min-h-11 items-center rounded-full bg-[#131834] px-4 text-xs font-semibold tracking-wide text-[#faf6ee]"
+          >
+            {t("legal.cookies")}
+          </a>
+        </div>
       </div>
-
-      {/* Privacidad y cookies */}
-      <a
-        href="/privacidad"
-        className="absolute bottom-12 left-4 z-[2] max-w-[46%] text-[11px] text-[#131834]/70 underline underline-offset-4 hover:text-[#131834] sm:bottom-6 sm:left-6 sm:max-w-none sm:text-xs"
-      >
-        {t("hero.privacy")}
-      </a>
     </section>
   );
 }
