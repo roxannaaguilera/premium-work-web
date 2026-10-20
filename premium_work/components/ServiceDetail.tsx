@@ -138,7 +138,7 @@ export default function ServiceDetail({
       const img = wrap?.querySelector("img");
       const gap = 32;
       const viewH = sticky.clientHeight || window.innerHeight;
-      const h = viewH * 0.64;
+      const h = viewH * 0.5;
       const top = viewH - h / 2;
       sticky.style.paddingBottom = `${h / 2 + gap}px`;
       sticky.style.justifyContent = "flex-end";

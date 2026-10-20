@@ -442,7 +442,7 @@ export default function ElementsCarousel() {
       const t = Math.max(0, Math.min(1, ((window as Window & { __pwDetailT?: number }).__pwDetailT ?? 0) / 0.45));
       // t=0: objeto grande, mitad bajo el borde. t=1: centro de las letras.
       const pose = (window as Window & { __pwDetailPose?: { drop: number; end: number; fill: number; fillEnd: number } }).__pwDetailPose;
-      const fill0 = pose?.fill ?? 0.64;
+      const fill0 = pose?.fill ?? 0.5;
       const fill1 = pose?.fillEnd ?? fill0;
       const fill = fill0 + (fill1 - fill0) * t;
       const rest = pose?.drop ?? 1;
@@ -552,7 +552,7 @@ export default function ElementsCarousel() {
             const distD = 2.15;
             const halfHD = Math.tan(vFov / 2) * distD;
             const detailScale =
-              (halfHD * 1.7 * Math.min(1, camera.aspect)) / ITEM_SIZE;
+              (halfHD * 1.33 * Math.min(1, camera.aspect)) / ITEM_SIZE;
             const rest = (window as Window & { __pwDetailPose?: { drop: number } }).__pwDetailPose?.drop ?? 1;
             detailAnchor
               .copy(camera.position)
