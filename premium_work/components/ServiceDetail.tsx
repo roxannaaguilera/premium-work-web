@@ -383,33 +383,86 @@ export default function ServiceDetail({
           </div>
         </section>
 
-        {/* Descripción y qué incluye */}
-        <section className="px-5 md:px-10 py-14 md:py-20">
-          <p className="max-w-2xl font-serif text-2xl md:text-3xl italic text-[#131834]/85">
-            {item.tagline}
-          </p>
-          <p className="mt-6 max-w-3xl text-lg md:text-xl leading-relaxed text-[#131834]/85">
-            {sector.copy}
-          </p>
-          <h2 className="mt-12 text-xs font-bold uppercase tracking-[0.35em] text-[#131834]/60">
-            {dict.serviceDetail.includesTitle}
-          </h2>
-          <ul className="mt-6 grid gap-4 sm:grid-cols-2 max-w-4xl">
-            {item.includes.map((inc) => (
-              <li key={inc} className="flex items-start gap-3 text-base md:text-lg">
-                <span aria-hidden="true" className="mt-2 inline-block h-2.5 w-2.5 shrink-0 rotate-45 bg-[#d9a83f]" />
-                <span>{inc}</span>
-              </li>
-            ))}
-          </ul>
-          <Link
-            href={`/solicitar-servicio?sector=${slug}`}
-            className="mt-10 inline-flex items-center gap-3 rounded-full bg-[#131834] px-8 py-4 text-sm font-bold uppercase tracking-[0.2em] text-[#faf6ee] transition-colors hover:bg-[#1e2450]"
-          >
-            <span aria-hidden="true" className="inline-block h-2.5 w-2.5 rotate-45 bg-[#eab308]" />
-            {dict.serviceDetail.cta}
-          </Link>
-        </section>
+        {/* Descripción y qué incluye. Con `split` (piloto: Festivales), la
+            descripción queda FIJA a la izquierda (sticky) y las
+            características suben a la derecha con el scroll, como en la
+            referencia de Roxanna; sin `split`, la sección clásica. */}
+        {item.split ? (
+          <section className="px-5 py-16 md:px-10 md:py-24">
+            <div className="mx-auto grid max-w-6xl gap-14 md:grid-cols-[1.05fr_1fr] md:gap-20">
+              <div className="self-start md:sticky md:top-36">
+                <p className="font-serif text-3xl leading-snug italic text-[#131834] md:text-[2.6rem] md:leading-[1.25]">
+                  {item.tagline}
+                </p>
+                <p className="mt-8 max-w-xl text-lg leading-relaxed text-[#131834]/85 md:text-xl">
+                  {sector.copy}
+                </p>
+                <div className="mt-10">
+                  <Link
+                    href={`/solicitar-servicio?sector=${slug}`}
+                    className="inline-flex items-center gap-3 rounded-full bg-[#131834] px-8 py-4 text-sm font-bold uppercase tracking-[0.2em] text-[#faf6ee] transition-colors hover:bg-[#1e2450]"
+                  >
+                    <span aria-hidden="true" className="inline-block h-2.5 w-2.5 rotate-45 bg-[#eab308]" />
+                    {item.cta ?? dict.serviceDetail.cta}
+                  </Link>
+                  {item.note && <p className="mt-5 text-sm text-[#131834]/60">{item.note}</p>}
+                </div>
+              </div>
+              <div>
+                <h2 className="flex items-center gap-5 text-xs font-bold uppercase tracking-[0.35em] text-[#131834]/60">
+                  {dict.serviceDetail.includesTitle}
+                  <span aria-hidden="true" className="h-px flex-1 bg-[#131834]/15" />
+                </h2>
+                <ul>
+                  {item.includes.map((inc, i) => (
+                    <li
+                      key={inc}
+                      className="flex items-baseline gap-5 border-b border-[#131834]/10 py-10 md:py-12"
+                    >
+                      <span className="font-mono text-sm text-[#131834]/40">
+                        {String(i + 1).padStart(2, "0")}
+                      </span>
+                      <span
+                        aria-hidden="true"
+                        className="inline-block h-2.5 w-2.5 shrink-0 rotate-45 bg-[#d9a83f]"
+                      />
+                      <span className="text-xl leading-snug font-medium text-[#131834] md:text-2xl">
+                        {inc}
+                      </span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            </div>
+          </section>
+        ) : (
+          <section className="px-5 py-14 md:px-10 md:py-20">
+            <p className="max-w-2xl font-serif text-2xl italic text-[#131834]/85 md:text-3xl">
+              {item.tagline}
+            </p>
+            <p className="mt-6 max-w-3xl text-lg leading-relaxed text-[#131834]/85 md:text-xl">
+              {sector.copy}
+            </p>
+            <h2 className="mt-12 text-xs font-bold uppercase tracking-[0.35em] text-[#131834]/60">
+              {dict.serviceDetail.includesTitle}
+            </h2>
+            <ul className="mt-6 grid max-w-4xl gap-4 sm:grid-cols-2">
+              {item.includes.map((inc) => (
+                <li key={inc} className="flex items-start gap-3 text-base md:text-lg">
+                  <span aria-hidden="true" className="mt-2 inline-block h-2.5 w-2.5 shrink-0 rotate-45 bg-[#d9a83f]" />
+                  <span>{inc}</span>
+                </li>
+              ))}
+            </ul>
+            <Link
+              href={`/solicitar-servicio?sector=${slug}`}
+              className="mt-10 inline-flex items-center gap-3 rounded-full bg-[#131834] px-8 py-4 text-sm font-bold uppercase tracking-[0.2em] text-[#faf6ee] transition-colors hover:bg-[#1e2450]"
+            >
+              <span aria-hidden="true" className="inline-block h-2.5 w-2.5 rotate-45 bg-[#eab308]" />
+              {dict.serviceDetail.cta}
+            </Link>
+          </section>
+        )}
 
         {/* Los otros servicios */}
         <section className="border-t border-[#131834]/10 px-5 md:px-10 py-14 md:py-20">

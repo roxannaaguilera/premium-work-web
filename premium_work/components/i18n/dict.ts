@@ -63,7 +63,7 @@ const es = {
       { title: "Catering", copy: "Equipos completos de sala, cocina y office para servicios dentro y fuera de tus instalaciones." },
       { title: "Eventos corporativos", copy: "Personal de recepción, sala y coordinación para congresos, convenciones y actos de empresa." },
       { title: "Eventos deportivos", copy: "Equipos ágiles para hospitality, palcos y zonas VIP en competiciones y torneos." },
-      { title: "Festivales", copy: "Refuerzos numerosos y supervisados para barras, accesos y zonas de restauración." },
+      { title: "Festivales y grandes eventos", copy: "Cubrimos barras, accesos, pulseras y restauración con personal seleccionado y supervisado en el recinto. Tú te ocupas del cartel, nosotros de que la operativa funcione." },
       { title: "Eventos privados", copy: "Discreción y excelencia para celebraciones privadas, con un solo interlocutor." },
     ],
   },
@@ -77,9 +77,9 @@ const es = {
       { slug: "catering", img: "/images/elementos-reales/catering.png", tagline: "Tu cocina, donde sea que esté el evento.", includes: ["Equipos completos de sala, cocina y office", "Montaje y desmontaje del servicio", "Maîtres para coordinar cada pase", "Logística dentro y fuera de tus instalaciones"] },
       { slug: "eventos-corporativos", img: "/images/elementos-reales/corporativos.png", tagline: "La imagen de tu empresa, en buenas manos.", includes: ["Recepción y acreditación de asistentes", "Personal de sala para congresos y convenciones", "Coordinación y protocolo", "Imagen uniforme y profesional"] },
       { slug: "eventos-deportivos", img: "/images/elementos-reales/deportivos.png", tagline: "El partido también se juega en las gradas VIP.", includes: ["Hospitality y palcos VIP", "Barras y zonas de restauración", "Accesos y control de aforo", "Equipos ágiles para grandes volúmenes"] },
-      { slug: "festivales", img: "/images/elementos-reales/festivales.png", tagline: "Miles de personas, cero improvisación.", includes: ["Refuerzos numerosos para barras", "Accesos y pulseras", "Zonas de restauración", "Supervisores por zona"] },
+      { slug: "festivales", img: "/images/elementos-reales/festivales.png", tagline: "Tu festival no puede permitirse huecos. Nosotros tampoco.", includes: ["Personal de barra formado", "Control de accesos y pulseras", "Zonas de restauración", "Supervisor dedicado por zona", "Coordinador directo con producción", "Reemplazo garantizado ante bajas"], cta: "Pedir presupuesto para mi festival", note: "Respuesta en menos de 24 h. Sin compromiso.", split: true },
       { slug: "experiencias-privadas", img: "/images/elementos-reales/privados.png", tagline: "Discreción absoluta, excelencia visible.", includes: ["Un solo interlocutor", "Personal de máxima confianza", "Servicio a medida", "Confidencialidad garantizada"] },
-    ] as { slug: string; img: string; tagline: string; includes: string[] }[],
+    ] as { slug: string; img: string; tagline: string; includes: string[]; cta?: string; note?: string; split?: boolean }[],
   },
 
   contact: {
@@ -302,7 +302,7 @@ const en: Dict = {
       { title: "Catering", copy: "Full front-of-house, kitchen and back-office teams for services on and off your premises." },
       { title: "Corporate events", copy: "Reception, service and coordination staff for congresses, conventions and company events." },
       { title: "Sports events", copy: "Agile teams for hospitality, boxes and VIP areas at competitions and tournaments." },
-      { title: "Festivals", copy: "Large, supervised reinforcements for bars, entrances and catering areas." },
+      { title: "Festivals and large events", copy: "We cover bars, access points, wristbands and food areas with selected staff, supervised on site. You take care of the line-up; we make sure the operation works." },
       { title: "Private events", copy: "Discretion and excellence for private celebrations, with a single point of contact." },
     ],
   },
@@ -316,9 +316,9 @@ const en: Dict = {
       { slug: "catering", img: "/images/elementos-reales/catering.png", tagline: "Your kitchen, wherever the event is.", includes: ["Complete front, kitchen and back-of-house teams", "Service setup and teardown", "Ma\u00eetres d' to coordinate every course", "Logistics in and out of your venues"] },
       { slug: "eventos-corporativos", img: "/images/elementos-reales/corporativos.png", tagline: "Your company's image, in good hands.", includes: ["Guest reception and accreditation", "Floor staff for congresses and conventions", "Coordination and protocol", "Uniform, professional image"] },
       { slug: "eventos-deportivos", img: "/images/elementos-reales/deportivos.png", tagline: "The match is also played in the VIP stands.", includes: ["Hospitality and VIP boxes", "Bars and catering areas", "Access and capacity control", "Agile teams for large crowds"] },
-      { slug: "festivales", img: "/images/elementos-reales/festivales.png", tagline: "Thousands of people, zero improvisation.", includes: ["Large reinforcements for bars", "Access and wristbands", "Food & beverage areas", "Supervisors per zone"] },
+      { slug: "festivales", img: "/images/elementos-reales/festivales.png", tagline: "Your festival can't afford gaps. Neither can we.", includes: ["Trained bar staff", "Access control and wristbands", "Food & beverage areas", "A dedicated supervisor for each zone", "A direct coordinator with production", "Guaranteed cover for last-minute dropouts"], cta: "Get a quote for my festival", note: "Reply within 24 h. No strings attached.", split: true },
       { slug: "experiencias-privadas", img: "/images/elementos-reales/privados.png", tagline: "Absolute discretion, visible excellence.", includes: ["A single point of contact", "Staff of the utmost trust", "Tailor-made service", "Guaranteed confidentiality"] },
-    ] as { slug: string; img: string; tagline: string; includes: string[] }[],
+    ] as { slug: string; img: string; tagline: string; includes: string[]; cta?: string; note?: string; split?: boolean }[],
   },
 
   contact: {
