@@ -40,13 +40,13 @@ export function ServiceFooter() {
         <span className="absolute top-0 bottom-0 left-3/4 w-px bg-white/[0.05]" />
       </div>
 
-      <div className="relative mx-auto flex w-full max-w-[1600px] flex-1 flex-col px-5 pt-16 md:px-10 md:pt-20">
-        <div className="grid gap-12 md:grid-cols-[1.3fr_1fr_1fr_1fr] md:gap-10">
+      <div className="relative mx-auto flex w-full max-w-[1600px] flex-1 flex-col px-5 pt-12 md:px-10 md:pt-20">
+        <div className="grid grid-cols-2 gap-x-6 gap-y-10 md:grid-cols-[1.3fr_1fr_1fr_1fr] md:gap-10">
           {/* Contacto */}
-          <div>
+          <div className="col-span-2 md:col-span-1">
             <a
               href={`mailto:${EMAIL}`}
-              className="text-2xl font-semibold tracking-tight break-all transition-colors hover:text-[#e8b13a] md:text-[1.7rem]"
+              className="text-[1.4rem] font-semibold tracking-tight break-all transition-colors hover:text-[#e8b13a] md:text-[1.7rem]"
             >
               {EMAIL}
             </a>
@@ -105,7 +105,7 @@ export function ServiceFooter() {
         </div>
 
         {/* Párrafo de la marca */}
-        <p className="mt-auto max-w-5xl pt-16 text-base leading-relaxed text-[#f6ede1]/50 md:pt-20 md:text-lg">
+        <p className="mt-auto max-w-5xl pt-12 text-base leading-relaxed text-[#f6ede1]/50 md:pt-20 md:text-lg">
           {dict.footer.tagline}
         </p>
       </div>
