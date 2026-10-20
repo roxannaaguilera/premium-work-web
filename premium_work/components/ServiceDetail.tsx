@@ -398,9 +398,9 @@ export default function ServiceDetail({
                 <span className="absolute top-0 bottom-0 left-2/4 w-px bg-[#131834]/[0.06]" />
                 <span className="absolute top-0 bottom-0 left-3/4 w-px bg-[#131834]/[0.06]" />
               </div>
-              <div className="relative mx-auto grid max-w-6xl gap-14 px-5 py-16 md:grid-cols-2 md:gap-24 md:px-10 md:py-24">
+              <div className="relative mx-auto grid max-w-6xl gap-14 px-5 pt-16 pb-10 md:grid-cols-[0.85fr_1.15fr] md:gap-24 md:px-10 md:pt-24 md:pb-6">
                 {/* Columna fija: la descripción del servicio */}
-                <div className="self-start md:sticky md:top-36">
+                <div className="self-start md:sticky md:top-1/2 md:-translate-y-1/2">
                   <p className="font-mono text-xs tracking-[0.3em] text-[#131834]/50 uppercase">
                     {sector.title.split(/\s+(?:y|and|&)\s+/)[0]}
                   </p>
@@ -411,7 +411,7 @@ export default function ServiceDetail({
                       </span>
                     ))}
                   </p>
-                  <div className="mt-10">
+                  <div className="mt-10 flex justify-center">
                     <Link
                       href={`/solicitar-servicio?sector=${slug}`}
                       className="inline-flex min-h-[64px] items-center gap-3 rounded-full bg-[#e8b13a] px-9 text-lg font-semibold text-[#131834] transition-transform duration-300 hover:-translate-y-0.5"
@@ -422,7 +422,7 @@ export default function ServiceDetail({
                 </div>
                 {/* Características: bloques altos que suben con el scroll y le
                     dan a la columna fija su recorrido, como en el mockup */}
-                <ul>
+                <ul className="[&>li:last-child]:md:min-h-[240px]">
                   {(item.features ?? []).map((f, i) => (
                     <li
                       key={f.icon}
