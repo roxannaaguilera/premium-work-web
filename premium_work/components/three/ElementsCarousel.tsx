@@ -524,9 +524,9 @@ export default function ElementsCarousel() {
         const phone = camera.aspect < 0.9;
         slotCenter.copy(camera.position).addScaledVector(viewDir, dist);
         wrap.position.copy(slotCenter);
-        wrap.position.addScaledVector(camRight, reach * halfW * (phone ? 1.05 : 0.88));
-        // En el móvil el objeto queda en el centro, lejos de las letras de abajo.
-        wrap.position.addScaledVector(camUp, halfH0 * (phone ? 0.1 : -0.08) - reach * halfH * (phone ? 0.12 : 0.30) + Math.sin(elapsed * 1.3 + i * 0.9) * 0.02 * (fallStart[i] < 0 || elapsed - fallStart[i] > 0.64 ? 1 : 0));
+        wrap.position.addScaledVector(camRight, reach * halfW * (phone ? 0.78 : 0.88));
+        // En el móvil los laterales entran por las esquinas, sin tapar las letras.
+        wrap.position.addScaledVector(camUp, halfH0 * (phone ? 0.06 : -0.08) - reach * halfH * (phone ? 0.26 : 0.30) + Math.sin(elapsed * 1.3 + i * 0.9) * 0.02 * (fallStart[i] < 0 || elapsed - fallStart[i] > 0.64 ? 1 : 0));
 
         // La caída de presentación empieza cuando las cortinas empiezan a abrirse.
         // Si un objeto entra después, cae en ese momento, no espera otro telón.
@@ -554,7 +554,7 @@ export default function ElementsCarousel() {
         const phoneFit = camera.aspect < 0.9;
         const fit = Math.min((viewH * (phoneFit ? 0.3 : 0.56)) / gh, (viewW * (phoneFit ? 0.46 : 0.82)) / gw);
         const boost = isFront ? 1 + 0.14 * hoverT : 1;
-        wrap.scale.setScalar(!inView ? 0.001 : isFront ? fit * boost : fit * (phoneFit ? 0.45 : 0.66));
+        wrap.scale.setScalar(!inView ? 0.001 : isFront ? fit * boost : fit * (phoneFit ? 0.62 : 0.66));
         wrap.visible = inView && i !== hiddenIdxRef.current;
 
         // El mesh clicado se desplaza desde la pose del héroe hasta la del
