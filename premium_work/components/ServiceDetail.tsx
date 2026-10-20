@@ -4,7 +4,7 @@ import Link from "next/link";
 import { useEffect, useLayoutEffect, useRef, useState, type RefObject } from "react";
 import { motion, useMotionValue, useMotionValueEvent, useScroll, useTransform } from "framer-motion";
 import FixedHeader from "@/components/chrome/FixedHeader";
-import { Footer } from "@/components/Footer";
+import { ServiceFooter } from "@/components/ServiceFooter";
 import { useLang } from "@/components/i18n/lang";
 
 type InkBox = { frac: number; center: number };
@@ -595,57 +595,66 @@ export default function ServiceDetail({
             características suben a la derecha con el scroll, como en la
             referencia de Roxanna; sin `split`, la sección clásica. */}
         {item.split ? (
-          <section className="relative px-5 py-16 md:px-10 md:py-24">
-            {/* Guías verticales tenues, como en Yellowball */}
-            <div aria-hidden="true" className="pointer-events-none absolute inset-0">
-              <span className="absolute top-0 bottom-0 left-1/4 w-px bg-[#131834]/[0.07]" />
-              <span className="absolute top-0 bottom-0 left-2/4 w-px bg-[#131834]/[0.07]" />
-              <span className="absolute top-0 bottom-0 left-3/4 w-px bg-[#131834]/[0.07]" />
-            </div>
-            <div className="relative mx-auto grid max-w-6xl gap-14 md:grid-cols-2 md:gap-24">
-              {/* Columna fija: la descripción del servicio */}
-              <div className="self-start md:sticky md:top-36">
-                <p className="font-mono text-xs tracking-[0.3em] text-[#131834]/50 uppercase">
-                  {sector.title}
-                </p>
-                <p className="mt-7 text-4xl leading-[1.08] font-black tracking-tight text-[#131834] md:text-[3.4rem]">
-                  {item.tagline}
-                </p>
-                <p className="mt-8 max-w-xl text-lg leading-relaxed text-[#131834]/75 md:text-xl">
-                  {sector.copy}
-                </p>
-                <div className="mt-10">
-                  <Link
-                    href={`/solicitar-servicio?sector=${slug}`}
-                    className="inline-flex min-h-[60px] items-center gap-3 rounded-full bg-[#e8b13a] px-8 text-base font-bold text-[#131834] transition-transform duration-300 hover:-translate-y-0.5"
-                  >
-                    {item.cta ?? dict.serviceDetail.cta}
-                    <span aria-hidden="true">↗</span>
-                  </Link>
-                </div>
+          <section className="px-3 pt-2 pb-6 md:px-5 md:pb-8">
+            {/* La sección va encerrada en un rectángulo de puntas redondeadas,
+                como en Yellowball, sobre el fondo melocotón de la página */}
+            <div className="relative overflow-hidden rounded-[2rem] bg-[#faf6ee] md:rounded-[2.5rem]">
+              {/* Guías verticales tenues dentro del panel */}
+              <div aria-hidden="true" className="pointer-events-none absolute inset-0">
+                <span className="absolute top-0 bottom-0 left-1/4 w-px bg-[#131834]/[0.06]" />
+                <span className="absolute top-0 bottom-0 left-2/4 w-px bg-[#131834]/[0.06]" />
+                <span className="absolute top-0 bottom-0 left-3/4 w-px bg-[#131834]/[0.06]" />
               </div>
-              {/* Características: bloques altos que suben con el scroll y le
-                  dan a la columna fija su recorrido, como en el mockup */}
-              <ul>
-                {(item.features ?? []).map((f, i) => (
-                  <li
-                    key={f.icon}
-                    className="flex flex-col justify-center gap-6 py-12 md:min-h-[480px] md:py-0"
-                  >
-                    <div className="flex items-center gap-5">
-                      <span className="flex h-16 w-16 shrink-0 items-center justify-center rounded-2xl bg-[#131834] text-[#e8b13a]">
-                        <FeatureIcon icon={f.icon} />
+              <div className="relative mx-auto grid max-w-6xl gap-14 px-5 py-16 md:grid-cols-2 md:gap-24 md:px-10 md:py-24">
+                {/* Columna fija: la descripción del servicio */}
+                <div className="self-start md:sticky md:top-36">
+                  <p className="font-mono text-xs tracking-[0.3em] text-[#131834]/50 uppercase">
+                    {sector.title}
+                  </p>
+                  <p className="mt-7 text-[2.55rem] leading-[1.04] font-bold tracking-[-0.03em] text-[#131834] md:text-[4.15rem]">
+                    {item.tagline.split(/(?<=[.;,])\s+/).map((part, pi) => (
+                      <span key={pi} className={pi > 0 ? "block md:ml-[14%]" : "block"}>
+                        {part}
                       </span>
-                      <h3 className="text-3xl font-semibold tracking-tight text-[#131834] md:text-4xl">
-                        {item.includes[i]}
-                      </h3>
-                    </div>
-                    <p className="max-w-md text-lg leading-relaxed text-[#131834]/70 md:pl-[84px]">
-                      {f.text}
-                    </p>
-                  </li>
-                ))}
-              </ul>
+                    ))}
+                  </p>
+                  <p className="mt-8 max-w-xl text-lg leading-relaxed text-[#131834]/70 md:text-[1.3rem] md:leading-[1.55]">
+                    {sector.copy}
+                  </p>
+                  <div className="mt-10">
+                    <Link
+                      href={`/solicitar-servicio?sector=${slug}`}
+                      className="inline-flex min-h-[64px] items-center gap-3 rounded-full bg-[#e8b13a] px-9 text-lg font-semibold text-[#131834] transition-transform duration-300 hover:-translate-y-0.5"
+                    >
+                      {item.cta ?? dict.serviceDetail.cta}
+                      <span aria-hidden="true">↗</span>
+                    </Link>
+                  </div>
+                </div>
+                {/* Características: bloques altos que suben con el scroll y le
+                    dan a la columna fija su recorrido, como en el mockup */}
+                <ul>
+                  {(item.features ?? []).map((f, i) => (
+                    <li
+                      key={f.icon}
+                      className="flex flex-col justify-center gap-6 py-12 md:min-h-[480px] md:py-0"
+                    >
+                      <div className="flex items-center gap-5">
+                        <span className="flex h-16 w-16 shrink-0 items-center justify-center rounded-2xl bg-[#131834] text-[#e8b13a]">
+                          <FeatureIcon icon={f.icon} />
+                        </span>
+                        <h3 className="text-[1.65rem] font-medium tracking-[-0.01em] text-[#131834] md:text-[2rem]">
+                          {item.includes[i]}
+                          <span aria-hidden="true" className="ml-2 text-[#131834]/35">↗</span>
+                        </h3>
+                      </div>
+                      <p className="max-w-md text-lg leading-relaxed text-[#131834]/65 md:pl-[84px] md:text-xl">
+                        {f.text}
+                      </p>
+                    </li>
+                  ))}
+                </ul>
+              </div>
             </div>
           </section>
         ) : (
@@ -703,7 +712,7 @@ export default function ServiceDetail({
           </div>
         </section>
       </main>
-      <Footer />
+      <ServiceFooter />
     </>
   );
 }
