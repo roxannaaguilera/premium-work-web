@@ -400,7 +400,7 @@ export default function ServiceDetail({
               </div>
               <div className="relative mx-auto grid max-w-6xl gap-14 px-5 py-16 md:grid-cols-[0.85fr_1.15fr] md:gap-24 md:px-10 md:py-24">
                 {/* Columna fija: la descripción del servicio */}
-                <div className="self-start md:sticky md:top-36">
+                <div className="self-start md:sticky md:top-1/2 md:-translate-y-1/2">
                   <p className="font-mono text-xs tracking-[0.3em] text-[#131834]/50 uppercase">
                     {sector.title.split(/\s+(?:y|and|&)\s+/)[0]}
                   </p>
