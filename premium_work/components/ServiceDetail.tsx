@@ -411,7 +411,7 @@ export default function ServiceDetail({
                       </span>
                     ))}
                   </p>
-                  <div className="mt-10 flex justify-center">
+                  <div className="mt-10 text-center">
                     <Link
                       href={`/solicitar-servicio?sector=${slug}`}
                       className="inline-flex min-h-[64px] items-center gap-3 rounded-full bg-[#e8b13a] px-9 text-lg font-semibold text-[#131834] transition-transform duration-300 hover:-translate-y-0.5"
