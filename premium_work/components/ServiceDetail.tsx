@@ -128,6 +128,145 @@ function FeatureIcon({ icon }: { icon: string }) {
           <path d="M3 3v5h5" />
         </svg>
       );
+    case "cloche":
+      return (
+        <svg {...p}>
+          <path d="M4 18.5h16" />
+          <path d="M5.5 18.5a6.5 6.5 0 0 1 13 0" />
+          <path d="M12 12V10.6" />
+          <circle cx="12" cy="9.4" r="1.1" />
+        </svg>
+      );
+    case "sparkle":
+      return (
+        <svg {...p}>
+          <path d="M11 4l1.3 4.2 4.2 1.3-4.2 1.3L11 15l-1.3-4.2L5.5 9.5l4.2-1.3L11 4z" />
+          <path d="M18.2 14.8l.7 2 2 .7-2 .7-.7 2-.7-2-2-.7 2-.7.7-2z" />
+        </svg>
+      );
+    case "bell":
+      return (
+        <svg {...p}>
+          <path d="M6.5 16.2a5.5 5 0 0 1 11 0" />
+          <circle cx="12" cy="10" r="1" />
+          <path d="M12 11V9.8" />
+          <path d="M4 16.4h16" />
+          <path d="M3.4 19.8h17.2" />
+        </svg>
+      );
+    case "users":
+      return (
+        <svg {...p}>
+          <circle cx="9" cy="8.5" r="3.2" />
+          <path d="M3.5 19.5a5.5 5.5 0 0 1 11 0" />
+          <path d="M15.8 5.7a3.2 3.2 0 0 1 0 5.9" />
+          <path d="M17.6 14.4a5.5 5.5 0 0 1 2.9 5.1" />
+        </svg>
+      );
+    case "pan":
+      return (
+        <svg {...p}>
+          <circle cx="10" cy="14" r="6.2" />
+          <path d="M14.6 9.4L20.8 3.4" />
+        </svg>
+      );
+    case "calendar":
+      return (
+        <svg {...p}>
+          <rect x="3.5" y="5" width="17" height="16" rx="2" />
+          <path d="M3.5 9.8h17" />
+          <path d="M8 3v4M16 3v4" />
+        </svg>
+      );
+    case "shield":
+      return (
+        <svg {...p}>
+          <path d="M12 3l7 2.6v5.2c0 4.8-3.4 7.9-7 9.7-3.6-1.8-7-4.9-7-9.7V5.6L12 3z" />
+          <path d="M9 11.6l2.1 2.1 3.9-4" />
+        </svg>
+      );
+    case "boxes":
+      return (
+        <svg {...p}>
+          <path d="M12 3.2L4 7.4v9.2l8 4.2 8-4.2V7.4L12 3.2z" />
+          <path d="M4 7.4l8 4.2 8-4.2" />
+          <path d="M12 11.6v9.2" />
+        </svg>
+      );
+    case "truck":
+      return (
+        <svg {...p}>
+          <path d="M2.5 6.5H14V16H2.5z" />
+          <path d="M14 10h4l3 3.2V16h-7" />
+          <circle cx="6.8" cy="17.8" r="1.7" />
+          <circle cx="17.2" cy="17.8" r="1.7" />
+          <path d="M8.5 17.8h6.9" />
+        </svg>
+      );
+    case "mic":
+      return (
+        <svg {...p}>
+          <rect x="9" y="3" width="6" height="11" rx="3" />
+          <path d="M5.5 11.5a6.5 6.5 0 0 0 13 0" />
+          <path d="M12 18v3" />
+        </svg>
+      );
+    case "clipboard":
+      return (
+        <svg {...p}>
+          <rect x="5.5" y="4.5" width="13" height="17" rx="2" />
+          <path d="M9.2 4.6a2.9 2.9 0 0 1 5.6 0" />
+          <path d="M9 11h6M9 14.8h6" />
+        </svg>
+      );
+    case "tie":
+      return (
+        <svg {...p}>
+          <path d="M10 3.5h4l-1.1 3L14.5 18 12 20.8 9.5 18l1.6-11.5L10 3.5z" />
+        </svg>
+      );
+    case "trophy":
+      return (
+        <svg {...p}>
+          <path d="M7 4h10v5a5 5 0 0 1-10 0V4z" />
+          <path d="M7 5.6H4.2a2.8 2.8 0 0 0 3 4.3" />
+          <path d="M17 5.6h2.8a2.8 2.8 0 0 1-3 4.3" />
+          <path d="M12 14v3.2" />
+          <path d="M8.6 20.4a3.4 3.4 0 0 1 6.8 0" />
+        </svg>
+      );
+    case "zap":
+      return (
+        <svg {...p}>
+          <path d="M13 2.8L4.8 13.8h5.4l-.8 7.4 8.2-11h-5.4l.8-7.4z" />
+        </svg>
+      );
+    case "sliders":
+      return (
+        <svg {...p}>
+          <path d="M4 7h9.2M17.8 7H20" />
+          <circle cx="15.4" cy="7" r="2.1" />
+          <path d="M4 17h3.6M12.2 17H20" />
+          <circle cx="9.8" cy="17" r="2.1" />
+        </svg>
+      );
+    case "lock":
+      return (
+        <svg {...p}>
+          <rect x="5" y="10.5" width="14" height="9.5" rx="2" />
+          <path d="M8.5 10.5V8a3.5 3.5 0 0 1 7 0v2.5" />
+          <circle cx="12" cy="15.2" r="1.3" />
+        </svg>
+      );
+    case "id":
+      return (
+        <svg {...p}>
+          <rect x="3.5" y="5" width="17" height="14" rx="2" />
+          <circle cx="8.8" cy="11" r="2" />
+          <path d="M5.8 16.6a3.2 3.2 0 0 1 6 0" />
+          <path d="M15.5 10h4M15.5 13.4h4" />
+        </svg>
+      );
     default:
       return (
         <svg {...p}>
@@ -483,7 +622,6 @@ export default function ServiceDetail({
                     {item.cta ?? dict.serviceDetail.cta}
                     <span aria-hidden="true">↗</span>
                   </Link>
-                  {item.note && <p className="mt-5 text-sm text-[#131834]/55">{item.note}</p>}
                 </div>
               </div>
               {/* Características: bloques altos que suben con el scroll y le
