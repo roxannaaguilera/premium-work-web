@@ -189,11 +189,10 @@ export default function ElementsCarousel() {
     composer.addPass(new RenderPass(scene, camera));
     const bokeh = new BokehPass(scene, camera, {
       focus: 2.6,
-      aperture: 0.0028,
-      maxblur: 0.0016,
+      aperture: 0.01,
+      maxblur: 0.007,
     });
     composer.addPass(bokeh);
-    const focusPoint = new THREE.Vector3();
 
     // ---------- Fotos reales en planos, en diagonal ----------
     const loader = new THREE.TextureLoader();
@@ -205,28 +204,6 @@ export default function ElementsCarousel() {
         const aspect = t.image.width / t.image.height;
         const w = aspect >= 1 ? ITEM_SIZE : ITEM_SIZE * aspect;
         const h = aspect >= 1 ? ITEM_SIZE / aspect : ITEM_SIZE;
-        // El RGB de los píxeles transparentes es negro; el desenfoque lo
-        // extendería como una mancha. Se sustituye por el crema de la página.
-        const canvas = document.createElement("canvas");
-        canvas.width = t.image.width;
-        canvas.height = t.image.height;
-        const ctx = canvas.getContext("2d");
-        if (ctx) {
-          ctx.drawImage(t.image, 0, 0);
-          const img = ctx.getImageData(0, 0, canvas.width, canvas.height);
-          const d = img.data;
-          for (let p = 0; p < d.length; p += 4) {
-            const a = d[p + 3] / 255;
-            if (a < 0.995) {
-              d[p] = d[p] * a + 253 * (1 - a);
-              d[p + 1] = d[p + 1] * a + 243 * (1 - a);
-              d[p + 2] = d[p + 2] * a + 235 * (1 - a);
-            }
-          }
-          ctx.putImageData(img, 0, 0);
-          t.image = canvas;
-          t.needsUpdate = true;
-        }
         const mesh = new THREE.Mesh(
           new THREE.PlaneGeometry(w, h),
           new THREE.MeshBasicMaterial({ map: t, transparent: true, alphaTest: 0.05, depthWrite: false })
@@ -547,9 +524,50 @@ export default function ElementsCarousel() {
         const phone = camera.aspect < 0.9;
         slotCenter.copy(camera.position).addScaledVector(viewDir, dist);
         wrap.position.copy(slotCenter);
-        wrap.position.addScaledVector(camRight, reach * halfW * (phone ? 0.78 : 0.88));
-        // En el móvil los laterales entran por las esquinas, sin tapar las letras.
-        wrap.position.addScaledVector(camUp, halfH0 * (phone ? 0.06 : -0.08) - reach * halfH * (phone ? 0.26 : 0.30) + Math.sin(elapsed * 1.3 + i * 0.9) * 0.02 * (fallStart[i] < 0 || elapsed - fallStart[i] > 0.64 ? 1 : 0));
+        const bob = Math.sin(elapsed * 1.3 + i * 0.9) * 0.02 * (fallStart[i] < 0 || elapsed - fallStart[i] > 0.64 ? 1 : 0);
+        const planeEarly = (wrap.children[0] as THREE.Mesh | undefined)?.geometry as THREE.PlaneGeometry | undefined;
+        const gw = planeEarly?.parameters.width || ITEM_SIZE;
+        const gh = planeEarly?.parameters.height || ITEM_SIZE;
+        if (!phone) {
+          // Escritorio: composición original. No cambiar estos números.
+          wrap.position.addScaledVector(camRight, reach * halfW * 0.88);
+          wrap.position.addScaledVector(camUp, halfH0 * -0.08 - reach * halfH * 0.30 + bob);
+        } else {
+          // Móvil: la misma diagonal y la misma proporción que el escritorio,
+          // en fracciones de pantalla. El frustum estrecho no recorta los
+          // laterales hasta dejar una raja deformada.
+          const aspectG = gw / gh;
+          let fW: number;
+          let fH: number;
+          let cx = 0.5;
+          let cy = 0.46;
+          if (isFront) {
+            fW = 0.7;
+            fH = (fW * camera.aspect) / aspectG;
+            if (fH > 0.4) {
+              fH = 0.4;
+              fW = (fH * aspectG) / camera.aspect;
+            }
+          } else {
+            fH = 0.2;
+            fW = (fH * aspectG) / camera.aspect;
+            if (fW > 0.68) {
+              fW = 0.68;
+              fH = (fW * camera.aspect) / aspectG;
+            }
+            if (reach < 0) {
+              cx = fW / 2 - 0.03;
+              cy = 0.105 + fH / 2;
+            } else {
+              cx = 1.03 - fW / 2;
+              cy = 0.845 - fH / 2;
+            }
+          }
+          wrap.position.addScaledVector(camRight, (cx * 2 - 1) * halfW);
+          wrap.position.addScaledVector(camUp, (1 - 2 * cy) * halfH + bob);
+          const scale = (fH * 2 * halfH) / gh;
+          wrap.userData.phoneScale = !inView ? 0.001 : scale * (isFront ? 1 + 0.14 * hoverT : 1);
+        }
 
         // La caída de presentación empieza cuando las cortinas empiezan a abrirse.
         // Si un objeto entra después, cae en ese momento, no espera otro telón.
@@ -568,16 +586,16 @@ export default function ElementsCarousel() {
         wrap.rotation.y = isFront ? 0 : reach * 0.18;
         wrap.rotation.x = 0;
         wrap.rotation.z = isFront ? 0 : -reach * 0.08;
-        // El principal cabe en el ancho con aire a los lados. Los laterales asoman.
-        const plane = (wrap.children[0] as THREE.Mesh | undefined)?.geometry as THREE.PlaneGeometry | undefined;
-        const gw = plane?.parameters.width || ITEM_SIZE;
-        const gh = plane?.parameters.height || ITEM_SIZE;
-        const viewH = halfH0 * 2;
-        const viewW = halfH0 * camera.aspect * 2;
-        const phoneFit = camera.aspect < 0.9;
-        const fit = Math.min((viewH * (phoneFit ? 0.3 : 0.56)) / gh, (viewW * (phoneFit ? 0.46 : 0.82)) / gw);
-        const boost = isFront ? 1 + 0.14 * hoverT : 1;
-        wrap.scale.setScalar(!inView ? 0.001 : isFront ? fit * boost : fit * (phoneFit ? 0.62 : 0.66));
+        if (phone) {
+          wrap.scale.setScalar(wrap.userData.phoneScale as number);
+        } else {
+          // El principal cabe en el ancho con aire a los lados. Los laterales asoman.
+          const viewH = halfH0 * 2;
+          const viewW = halfH0 * camera.aspect * 2;
+          const fit = Math.min((viewH * 0.56) / gh, (viewW * 0.82) / gw);
+          const boost = isFront ? 1 + 0.14 * hoverT : 1;
+          wrap.scale.setScalar(!inView ? 0.001 : isFront ? fit * boost : fit * 0.66);
+        }
         wrap.visible = inView && i !== hiddenIdxRef.current;
 
         // El mesh clicado se desplaza desde la pose del héroe hasta la del
@@ -644,27 +662,9 @@ export default function ElementsCarousel() {
         renderer.setClearColor(0xfdf3eb, 1);
         renderer.setClearAlpha(1);
         scene.background = cream;
-        items[index].updateMatrixWorld(true);
-        items[index].getWorldPosition(focusPoint);
-        focusPoint.applyMatrix4(camera.matrixWorldInverse);
-        bokeh.uniforms.focus.value = -focusPoint.z;
-
-        const frontWasVisible = items[index].visible;
-        items[index].visible = false;
-        composer.render();
-        items[index].visible = frontWasVisible;
-
-        scene.background = null;
-        const autoClear = renderer.autoClear;
-        renderer.autoClear = false;
         renderer.setRenderTarget(null);
-        renderer.clearDepth();
-        const visibility = items.map((wrap) => wrap.visible);
-        items.forEach((wrap, i) => { wrap.visible = i === index; });
+        renderer.autoClear = true;
         renderer.render(scene, camera);
-        items.forEach((wrap, i) => { wrap.visible = visibility[i]; });
-        scene.background = cream;
-        renderer.autoClear = autoClear;
       };
 
       // En el hueco del detalle solo se dibuja el mesh clicado, transparente.
