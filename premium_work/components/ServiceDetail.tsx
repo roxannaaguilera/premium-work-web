@@ -215,6 +215,8 @@ export default function ServiceDetail({
   // a un tamaño proporcionado con la tipografía.
   const secRef = useRef<HTMLElement>(null);
   const meshSlotRef = useRef<HTMLDivElement>(null);
+  const splitHeadRef = useRef<HTMLParagraphElement>(null);
+  const splitCtaRef = useRef<HTMLDivElement>(null);
   useLayoutEffect(() => {
     if (!liveMesh) return;
     const slot = meshSlotRef.current;
@@ -225,6 +227,42 @@ export default function ServiceDetail({
       window.dispatchEvent(new CustomEvent("pw-mesh-slot", { detail: null }));
     };
   }, [liveMesh]);
+  // El botón de la sección dividida se centra entre el principio y el
+  // final reales del titular: se mide el texto renderizado (la columna es
+  // más ancha que las líneas del titular) y el contenedor del botón se
+  // ajusta a ese tramo.
+  useEffect(() => {
+    const head = splitHeadRef.current;
+    const cta = splitCtaRef.current;
+    if (!head || !cta) return;
+    const col = head.parentElement;
+    if (!col) return;
+    const align = () => {
+      const colR = col.getBoundingClientRect();
+      let minL = Infinity;
+      let maxR = -Infinity;
+      head.querySelectorAll("span").forEach((sp) => {
+        const range = document.createRange();
+        range.selectNodeContents(sp);
+        const rects = range.getClientRects();
+        for (let i = 0; i < rects.length; i++) {
+          minL = Math.min(minL, rects[i].left);
+          maxR = Math.max(maxR, rects[i].right);
+        }
+      });
+      if (!isFinite(minL) || maxR <= minL) return;
+      cta.style.marginLeft = `${Math.max(0, Math.round(minL - colR.left))}px`;
+      cta.style.width = `${Math.round(maxR - minL)}px`;
+    };
+    align();
+    const t = setTimeout(align, 350);
+    window.addEventListener("resize", align);
+    return () => {
+      clearTimeout(t);
+      window.removeEventListener("resize", align);
+    };
+  }, [item.tagline, slug]);
+
   // En modo overlay (SPA), el objeto cierra el overlay en vez de navegar.
   // Se define fuera del JSX para evitar remontajes.
   const backProps = {
@@ -404,14 +442,14 @@ export default function ServiceDetail({
                   <p className="font-mono text-xs tracking-[0.3em] text-[#131834]/50 uppercase">
                     {sector.title.split(/\s+(?:y|and|&)\s+/)[0]}
                   </p>
-                  <p className="mt-7 text-[2.55rem] leading-[1.04] font-bold tracking-[-0.03em] text-[#131834] md:text-[4.15rem]">
+                  <p ref={splitHeadRef} className="mt-7 text-[2.55rem] leading-[1.04] font-bold tracking-[-0.03em] text-[#131834] md:text-[4.15rem]">
                     {item.tagline.split(/(?<=[.;,])\s+/).map((part, pi) => (
                       <span key={pi} className={pi > 0 ? "block md:ml-[50%]" : "block"}>
                         {part.replace(/[,;]/g, "")}
                       </span>
                     ))}
                   </p>
-                  <div className="mt-10 text-center">
+                  <div ref={splitCtaRef} className="mt-10 text-center">
                     <Link
                       href={`/solicitar-servicio?sector=${slug}`}
                       className="inline-flex min-h-[64px] items-center gap-3 rounded-full bg-[#e8b13a] px-9 text-lg font-semibold text-[#131834] transition-transform duration-300 hover:-translate-y-0.5"
