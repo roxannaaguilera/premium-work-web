@@ -598,7 +598,7 @@ export default function ServiceDetail({
           <section className="px-3 pt-2 pb-6 md:px-5 md:pb-8">
             {/* La sección va encerrada en un rectángulo de puntas redondeadas,
                 como en Yellowball, sobre el fondo melocotón de la página */}
-            <div className="relative overflow-hidden rounded-[2rem] bg-[#faf6ee] md:rounded-[2.5rem]">
+            <div className="relative rounded-[2rem] bg-[#faf6ee] md:rounded-[2.5rem]">
               {/* Guías verticales tenues dentro del panel */}
               <div aria-hidden="true" className="pointer-events-none absolute inset-0">
                 <span className="absolute top-0 bottom-0 left-1/4 w-px bg-[#131834]/[0.06]" />
@@ -609,11 +609,11 @@ export default function ServiceDetail({
                 {/* Columna fija: la descripción del servicio */}
                 <div className="self-start md:sticky md:top-36">
                   <p className="font-mono text-xs tracking-[0.3em] text-[#131834]/50 uppercase">
-                    {sector.title}
+                    {sector.title.split(/\s+(?:y|and|&)\s+/)[0]}
                   </p>
                   <p className="mt-7 text-[2.55rem] leading-[1.04] font-bold tracking-[-0.03em] text-[#131834] md:text-[4.15rem]">
                     {item.tagline.split(/(?<=[.;,])\s+/).map((part, pi) => (
-                      <span key={pi} className={pi > 0 ? "block md:ml-[14%]" : "block"}>
+                      <span key={pi} className={pi > 0 ? "block md:ml-[50%]" : "block"}>
                         {part}
                       </span>
                     ))}
