@@ -372,3 +372,11 @@ body {
 @media (prefers-reduced-motion: reduce) {
   .card-float { animation: none; }
 }
+@keyframes pw-float {
+  0%, 100% { transform: translateY(-7px); }
+  50% { transform: translateY(7px); }
+}
+.pw-float { animation: pw-float 5.5s ease-in-out infinite; }
+@media (prefers-reduced-motion: reduce) {
+  .pw-float { animation: none; }
+}

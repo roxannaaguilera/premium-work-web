@@ -100,6 +100,11 @@ const es = {
     legal: ["Aviso legal", "Privacidad", "Cookies"] as string[],
     services: ["Camareros/as", "Maîtres", "Office y Housekeeping", "Hostess", "Personal de cocina", "Supervisores"] as string[],
   },
+  serviceFooter: {
+    servicesTitle: "Servicios",
+    linksTitle: "Enlaces",
+    legalTitle: "Legal",
+  },
   navbar: {
     home: "Inicio",
     professionals: "Profesionales",
@@ -338,6 +343,11 @@ const en: Dict = {
     navAria: "Footer navigation",
     legal: ["Legal notice", "Privacy", "Cookies"],
     services: ["Waiters", "Maîtres", "Office & Housekeeping", "Hostesses", "Kitchen staff", "Supervisors"],
+  },
+  serviceFooter: {
+    servicesTitle: "Services",
+    linksTitle: "Quick links",
+    legalTitle: "Legal",
   },
   navbar: {
     home: "Home",
