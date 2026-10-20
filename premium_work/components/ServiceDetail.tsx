@@ -398,7 +398,7 @@ export default function ServiceDetail({
                 <span className="absolute top-0 bottom-0 left-2/4 w-px bg-[#131834]/[0.06]" />
                 <span className="absolute top-0 bottom-0 left-3/4 w-px bg-[#131834]/[0.06]" />
               </div>
-              <div className="relative mx-auto grid max-w-6xl gap-14 px-5 py-16 md:grid-cols-[3fr_7fr] md:gap-24 md:px-10 md:py-24">
+              <div className="relative mx-auto grid max-w-6xl gap-14 px-5 py-16 md:grid-cols-[0.85fr_1.15fr] md:gap-24 md:px-10 md:py-24">
                 {/* Columna fija: la descripción del servicio */}
                 <div className="self-start md:sticky md:top-36">
                   <p className="font-mono text-xs tracking-[0.3em] text-[#131834]/50 uppercase">
@@ -426,23 +426,18 @@ export default function ServiceDetail({
                   {(item.features ?? []).map((f, i) => (
                     <li
                       key={f.icon}
-                      className="flex flex-col justify-center py-12 md:min-h-[430px] md:py-0"
+                      className="flex items-center gap-6 py-12 md:min-h-[430px] md:gap-9 md:py-0"
                     >
-                      <div className="flex items-center gap-6 md:gap-9">
-                        <img
-                          src={`/images/iconos3d/${f.icon}.png`}
-                          alt=""
-                          loading="lazy"
-                          className="pw-float w-32 shrink-0 mix-blend-multiply md:w-44"
-                          style={{ animationDelay: `${(i % 6) * 0.7}s` }}
-                        />
-                        <h3 className="text-[1.65rem] font-medium tracking-[-0.01em] text-[#131834] md:text-[2rem]">
-                          {item.includes[i]}
-                        </h3>
-                      </div>
-                      <p className="mt-5 text-lg leading-relaxed text-[#131834]/65">
-                        {f.text}
-                      </p>
+                      <img
+                        src={`/images/iconos3d/${f.icon}.png`}
+                        alt=""
+                        loading="lazy"
+                        className="pw-float w-32 shrink-0 mix-blend-multiply md:w-44"
+                        style={{ animationDelay: `${(i % 6) * 0.7}s` }}
+                      />
+                      <h3 className="text-[1.65rem] font-medium tracking-[-0.01em] text-[#131834] md:text-[2rem]">
+                        {item.includes[i]}
+                      </h3>
                     </li>
                   ))}
                 </ul>
