@@ -398,7 +398,7 @@ export default function ServiceDetail({
                 <span className="absolute top-0 bottom-0 left-2/4 w-px bg-[#131834]/[0.06]" />
                 <span className="absolute top-0 bottom-0 left-3/4 w-px bg-[#131834]/[0.06]" />
               </div>
-              <div className="relative mx-auto grid max-w-6xl gap-14 px-5 py-16 md:grid-cols-2 md:gap-24 md:px-10 md:py-24">
+              <div className="relative mx-auto grid max-w-6xl gap-14 px-5 py-16 md:grid-cols-[0.85fr_1.15fr] md:gap-24 md:px-10 md:py-24">
                 {/* Columna fija: la descripción del servicio */}
                 <div className="self-start md:sticky md:top-36">
                   <p className="font-mono text-xs tracking-[0.3em] text-[#131834]/50 uppercase">
