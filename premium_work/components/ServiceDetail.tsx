@@ -280,7 +280,7 @@ export default function ServiceDetail({
           </motion.div>
         </div>
       )}
-      <main className="overflow-x-clip bg-[#faf6ee] text-[#131834]">
+      <main className="overflow-x-clip bg-[#fbe5d4] text-[#131834]">
         {/* Nombre centrado + elemento que sube con el scroll */}
         <section ref={secRef} aria-label={sector.title} className="relative h-[240vh]">
           <div className="sticky top-0 flex h-screen flex-col items-center justify-end overflow-visible pb-[calc(32vh+32px)]">
