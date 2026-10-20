@@ -32,7 +32,7 @@ export function ServiceFooter() {
   const linkCls = "text-[#f6ede1]/55 transition-colors hover:text-[#f6ede1]";
 
   return (
-    <footer className="relative overflow-hidden bg-[#131834] text-[#f6ede1]">
+    <footer className="relative flex min-h-dvh flex-col overflow-hidden bg-[#131834] text-[#f6ede1]">
       {/* Guías verticales tenues, como en Yellowball */}
       <div aria-hidden="true" className="pointer-events-none absolute inset-0">
         <span className="absolute top-0 bottom-0 left-1/4 w-px bg-white/[0.05]" />
@@ -40,7 +40,7 @@ export function ServiceFooter() {
         <span className="absolute top-0 bottom-0 left-3/4 w-px bg-white/[0.05]" />
       </div>
 
-      <div className="relative mx-auto max-w-[1600px] px-5 pt-16 md:px-10 md:pt-20">
+      <div className="relative mx-auto flex w-full max-w-[1600px] flex-1 flex-col px-5 pt-16 md:px-10 md:pt-20">
         <div className="grid gap-12 md:grid-cols-[1.3fr_1fr_1fr_1fr] md:gap-10">
           {/* Contacto */}
           <div>
@@ -105,7 +105,7 @@ export function ServiceFooter() {
         </div>
 
         {/* Párrafo de la marca */}
-        <p className="mt-16 max-w-5xl text-base leading-relaxed text-[#f6ede1]/50 md:mt-20 md:text-lg">
+        <p className="mt-auto max-w-5xl pt-16 text-base leading-relaxed text-[#f6ede1]/50 md:pt-20 md:text-lg">
           {dict.footer.tagline}
         </p>
       </div>
