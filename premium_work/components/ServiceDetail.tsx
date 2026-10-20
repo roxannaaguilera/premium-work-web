@@ -69,6 +69,74 @@ function splitTitle(title: string): string[] {
 
 export type Flight = { src: string; slug: string; fromY: number; fromH: number; rotate: number };
 
+/** Iconos de trazo para las características del layout `split`. */
+function FeatureIcon({ icon }: { icon: string }) {
+  const p = {
+    width: 28,
+    height: 28,
+    viewBox: "0 0 24 24",
+    fill: "none",
+    stroke: "currentColor",
+    strokeWidth: 1.7,
+    strokeLinecap: "round" as const,
+    strokeLinejoin: "round" as const,
+    "aria-hidden": true,
+  };
+  switch (icon) {
+    case "barra":
+      return (
+        <svg {...p}>
+          <path d="M4 5h16l-8 9-8-9z" />
+          <path d="M12 14v5" />
+          <path d="M8 21h8" />
+        </svg>
+      );
+    case "accesos":
+      return (
+        <svg {...p}>
+          <rect x="3" y="6" width="18" height="12" rx="2" />
+          <path d="M14 6v12" strokeDasharray="2 3" />
+        </svg>
+      );
+    case "restauracion":
+      return (
+        <svg {...p}>
+          <path d="M7 3v6M4.8 3v3.2a2.2 2.2 0 0 0 4.4 0V3M7 11v10" />
+          <path d="M17.5 3c-1.8 2.2-2.6 4.8-2.6 7.2 0 1.2.8 1.8 2.6 1.8v9" />
+        </svg>
+      );
+    case "supervisor":
+      return (
+        <svg {...p}>
+          <path d="M2.5 12S6 5.8 12 5.8 21.5 12 21.5 12 18 18.2 12 18.2 2.5 12 2.5 12z" />
+          <circle cx="12" cy="12" r="3" />
+        </svg>
+      );
+    case "coordinador":
+      return (
+        <svg {...p}>
+          <path d="M4 14v-2a8 8 0 0 1 16 0v2" />
+          <rect x="3" y="13.5" width="4" height="6" rx="1.6" />
+          <rect x="17" y="13.5" width="4" height="6" rx="1.6" />
+          <path d="M19.5 19.5c0 1.4-1.1 2-3 2h-2.5" />
+        </svg>
+      );
+    case "reemplazo":
+      return (
+        <svg {...p}>
+          <path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8" />
+          <path d="M3 3v5h5" />
+        </svg>
+      );
+    default:
+      return (
+        <svg {...p}>
+          <rect x="7.5" y="7.5" width="9" height="9" transform="rotate(45 12 12)" fill="currentColor" stroke="none" />
+        </svg>
+      );
+  }
+}
+
 export default function ServiceDetail({
   slug,
   initialFlight,
@@ -388,51 +456,58 @@ export default function ServiceDetail({
             características suben a la derecha con el scroll, como en la
             referencia de Roxanna; sin `split`, la sección clásica. */}
         {item.split ? (
-          <section className="px-5 py-16 md:px-10 md:py-24">
-            <div className="mx-auto grid max-w-6xl gap-14 md:grid-cols-[1.05fr_1fr] md:gap-20">
+          <section className="relative px-5 py-16 md:px-10 md:py-24">
+            {/* Guías verticales tenues, como en Yellowball */}
+            <div aria-hidden="true" className="pointer-events-none absolute inset-0">
+              <span className="absolute top-0 bottom-0 left-1/4 w-px bg-[#131834]/[0.07]" />
+              <span className="absolute top-0 bottom-0 left-2/4 w-px bg-[#131834]/[0.07]" />
+              <span className="absolute top-0 bottom-0 left-3/4 w-px bg-[#131834]/[0.07]" />
+            </div>
+            <div className="relative mx-auto grid max-w-6xl gap-14 md:grid-cols-2 md:gap-24">
+              {/* Columna fija: la descripción del servicio */}
               <div className="self-start md:sticky md:top-36">
-                <p className="font-serif text-3xl leading-snug italic text-[#131834] md:text-[2.6rem] md:leading-[1.25]">
+                <p className="font-mono text-xs tracking-[0.3em] text-[#131834]/50 uppercase">
+                  {sector.title}
+                </p>
+                <p className="mt-7 text-4xl leading-[1.08] font-black tracking-tight text-[#131834] md:text-[3.4rem]">
                   {item.tagline}
                 </p>
-                <p className="mt-8 max-w-xl text-lg leading-relaxed text-[#131834]/85 md:text-xl">
+                <p className="mt-8 max-w-xl text-lg leading-relaxed text-[#131834]/75 md:text-xl">
                   {sector.copy}
                 </p>
                 <div className="mt-10">
                   <Link
                     href={`/solicitar-servicio?sector=${slug}`}
-                    className="inline-flex items-center gap-3 rounded-full bg-[#131834] px-8 py-4 text-sm font-bold uppercase tracking-[0.2em] text-[#faf6ee] transition-colors hover:bg-[#1e2450]"
+                    className="inline-flex min-h-[60px] items-center gap-3 rounded-full bg-[#e8b13a] px-8 text-base font-bold text-[#131834] transition-transform duration-300 hover:-translate-y-0.5"
                   >
-                    <span aria-hidden="true" className="inline-block h-2.5 w-2.5 rotate-45 bg-[#eab308]" />
                     {item.cta ?? dict.serviceDetail.cta}
+                    <span aria-hidden="true">↗</span>
                   </Link>
-                  {item.note && <p className="mt-5 text-sm text-[#131834]/60">{item.note}</p>}
+                  {item.note && <p className="mt-5 text-sm text-[#131834]/55">{item.note}</p>}
                 </div>
               </div>
-              <div>
-                <h2 className="flex items-center gap-5 text-xs font-bold uppercase tracking-[0.35em] text-[#131834]/60">
-                  {dict.serviceDetail.includesTitle}
-                  <span aria-hidden="true" className="h-px flex-1 bg-[#131834]/15" />
-                </h2>
-                <ul>
-                  {item.includes.map((inc, i) => (
-                    <li
-                      key={inc}
-                      className="flex items-baseline gap-5 border-b border-[#131834]/10 py-10 md:py-12"
-                    >
-                      <span className="font-mono text-sm text-[#131834]/40">
-                        {String(i + 1).padStart(2, "0")}
+              {/* Características: bloques altos que suben con el scroll y le
+                  dan a la columna fija su recorrido, como en el mockup */}
+              <ul>
+                {(item.features ?? []).map((f, i) => (
+                  <li
+                    key={f.icon}
+                    className="flex flex-col justify-center gap-6 py-12 md:min-h-[480px] md:py-0"
+                  >
+                    <div className="flex items-center gap-5">
+                      <span className="flex h-16 w-16 shrink-0 items-center justify-center rounded-2xl bg-[#131834] text-[#e8b13a]">
+                        <FeatureIcon icon={f.icon} />
                       </span>
-                      <span
-                        aria-hidden="true"
-                        className="inline-block h-2.5 w-2.5 shrink-0 rotate-45 bg-[#d9a83f]"
-                      />
-                      <span className="text-xl leading-snug font-medium text-[#131834] md:text-2xl">
-                        {inc}
-                      </span>
-                    </li>
-                  ))}
-                </ul>
-              </div>
+                      <h3 className="text-3xl font-semibold tracking-tight text-[#131834] md:text-4xl">
+                        {item.includes[i]}
+                      </h3>
+                    </div>
+                    <p className="max-w-md text-lg leading-relaxed text-[#131834]/70 md:pl-[84px]">
+                      {f.text}
+                    </p>
+                  </li>
+                ))}
+              </ul>
             </div>
           </section>
         ) : (
