@@ -32,9 +32,11 @@
   --cream: #f8f7f4;
 }
 * { box-sizing: border-box; }
-html { scroll-behavior: smooth; }
+html { scroll-behavior: smooth; overflow-x: clip; }
 body {
   margin: 0;
+  max-width: 100%;
+  overflow-x: clip;
   background: var(--paper);
   color: var(--ink);
   font-family: "DM Sans", ui-sans-serif, system-ui, sans-serif;

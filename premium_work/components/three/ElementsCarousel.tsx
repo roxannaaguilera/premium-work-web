@@ -131,7 +131,7 @@ export default function ElementsCarousel() {
     const onClick = (e: MouseEvent) => {
       const d = down;
       down = null;
-      if (!d || Math.hypot(e.clientX - d.x, e.clientY - d.y) >= 6) return; // arrastre
+      if (!d || Math.hypot(e.clientX - d.x, e.clientY - d.y) >= 14) return; // arrastre
       const three = threeRef.current;
       if (!three || three.planeMeshes.length !== COUNT) return;
       const { camera, planeMeshes, raycaster, el } = three;
@@ -224,6 +224,7 @@ export default function ElementsCarousel() {
     let lastX = 0;
     let wheelAcc = 0;
     const el = renderer.domElement;
+    el.style.touchAction = "none";
 
     // ---------- Hover en el objeto principal: avanza + etiqueta ----------
     const raycaster = new THREE.Raycaster();

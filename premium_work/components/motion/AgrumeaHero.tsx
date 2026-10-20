@@ -14,14 +14,14 @@ export default function AgrumeaHero() {
     <section
       id="inicio"
       aria-label={t("hero.aria")}
-      className="relative h-screen overflow-hidden bg-[#fdf3eb]"
+      className="relative h-dvh overflow-hidden bg-[#fdf3eb]"
     >
       {/* Carrusel: cada objeto cae, rebota una vez y se queda */}
       <div className="relative h-full">
         <ElementsCarousel />
 
         {/* Desliza para descubrir, como Agrumea */}
-        <p className="pointer-events-none absolute inset-x-0 bottom-8 z-[2] text-center text-[11px] font-semibold uppercase tracking-[0.4em] text-[#131834]/70">
+        <p className="pointer-events-none absolute inset-x-4 bottom-5 z-[2] text-center text-[10px] font-semibold uppercase tracking-[0.18em] text-[#131834]/70 sm:bottom-8 sm:text-[11px] sm:tracking-[0.4em]">
           {t("hero.hint")}
         </p>
       </div>
@@ -29,7 +29,7 @@ export default function AgrumeaHero() {
       {/* Privacidad y cookies */}
       <a
         href="/privacidad"
-        className="absolute bottom-6 left-6 z-[2] text-xs text-[#131834]/70 underline underline-offset-4 hover:text-[#131834]"
+        className="absolute bottom-12 left-4 z-[2] max-w-[46%] text-[11px] text-[#131834]/70 underline underline-offset-4 hover:text-[#131834] sm:bottom-6 sm:left-6 sm:max-w-none sm:text-xs"
       >
         {t("hero.privacy")}
       </a>

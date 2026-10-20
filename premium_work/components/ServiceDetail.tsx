@@ -90,27 +90,32 @@ export default function ServiceDetail({
   const longest = Math.max(1, ...lines.map((l) => l.length));
   // Large hero type, near the old 10rem cap. Long lines scale down only
   // enough to stay inside the viewport; fit() keeps a short gap under the logo.
-  const titleSize = `clamp(1.6rem, ${Math.min(14, 92 / (longest * 0.82)).toFixed(2)}vw, 10rem)`;
+  const titleSize = `clamp(1.75rem, ${Math.min(16, 100 / (longest * 0.58)).toFixed(2)}vw, 10rem)`;
   useLayoutEffect(() => {
     const fit = () => {
       const el = titleRef.current;
       if (!el) return;
+      const fitWidth = () => {
+        const cs = getComputedStyle(el);
+        const available = el.clientWidth - parseFloat(cs.paddingLeft) - parseFloat(cs.paddingRight);
+        const needed = Math.max(0, ...[...el.querySelectorAll("span")].map((s) => s.scrollWidth));
+        if (needed > available && available > 0) {
+          const current = parseFloat(cs.fontSize);
+          el.style.fontSize = `${Math.max(18, (current * available) / needed * 0.98)}px`;
+        }
+      };
       el.style.fontSize = titleSize;
-      const available = el.clientWidth;
-      const needed = Math.max(0, ...[...el.querySelectorAll("span")].map((s) => s.scrollWidth));
-      if (needed > available && available > 0) {
-        const current = parseFloat(getComputedStyle(el).fontSize);
-        el.style.fontSize = `${Math.max(28, (current * available) / needed * 0.98)}px`;
-      }
+      fitWidth();
       const header = document.querySelector("header");
-      const minTop = (header?.getBoundingClientRect().bottom ?? 0) + 36;
+      const minTop = (header?.getBoundingClientRect().bottom ?? 0) + 28;
       let guard = 0;
-      while (el.getBoundingClientRect().top < minTop && guard < 12) {
+      while (el.getBoundingClientRect().top < minTop && guard < 16) {
         const current = parseFloat(getComputedStyle(el).fontSize);
-        if (current <= 48) break;
-        el.style.fontSize = `${Math.max(48, current * 0.97)}px`;
+        if (current <= 20) break;
+        el.style.fontSize = `${Math.max(20, current * 0.96)}px`;
         guard++;
       }
+      fitWidth();
     };
     fit();
     document.fonts?.ready.then(fit).catch(() => {});
@@ -277,7 +282,7 @@ export default function ServiceDetail({
       <main className="overflow-x-clip bg-[#fdf3eb] text-[#131834]">
         {/* Nombre centrado + elemento que sube con el scroll */}
         <section ref={secRef} aria-label={sector.title} className="relative h-[240vh]">
-          <div className="sticky top-0 flex h-screen flex-col items-center justify-end overflow-visible pb-[calc(32vh+32px)]">
+          <div className="sticky top-0 flex h-dvh flex-col items-center justify-end overflow-visible pb-[calc(32vh+32px)]">
             {liveMesh && (
               <div
                 ref={meshSlotRef}
@@ -306,7 +311,7 @@ export default function ServiceDetail({
                     ? { duration: 0.9, delay: 0.3, ease: [0.22, 1, 0.36, 1] }
                     : { duration: 0.7, delay: 0.35, ease: [0.22, 1, 0.36, 1] }
               }
-              className="z-10 box-border w-full max-w-[100vw] px-5 text-center font-serif font-semibold uppercase leading-[0.9] tracking-tight text-[#131834]"
+              className="z-10 box-border w-full max-w-full px-4 text-center font-serif font-semibold uppercase leading-[0.9] tracking-tight text-[#131834] md:px-8"
             >
               {lines.map((l, i) => (
                 <span key={i} className="block whitespace-nowrap">

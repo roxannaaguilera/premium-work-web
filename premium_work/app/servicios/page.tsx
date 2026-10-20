@@ -15,7 +15,7 @@ export default function ServiciosPage() {
   return (
     <>
       <FixedHeader />
-      <main className="min-h-screen bg-[#faf6ee] px-5 pb-24 pt-44 text-[#131834] md:px-16 md:pt-52">
+      <main className="min-h-dvh overflow-x-clip bg-[#faf6ee] px-4 pb-24 pt-28 text-[#131834] md:px-16 md:pt-52">
         <p className="eyebrow flex items-center gap-2 text-[#131834]/60">
           <span className="text-[#eab308]" aria-hidden="true">◆</span> {dict.header.nav[1]}
         </p>
@@ -24,12 +24,12 @@ export default function ServiciosPage() {
             <li key={item.slug} className="border-t border-[#131834]/15 last:border-b">
               <Link
                 href={`/servicios/${item.slug}`}
-                className="group flex flex-wrap items-baseline gap-x-6 gap-y-1 py-5 md:py-7"
+                className="group flex min-w-0 flex-wrap items-baseline gap-x-4 gap-y-1 py-5 md:gap-x-6 md:py-7"
               >
                 <span className="font-mono text-sm text-[#131834]/40">
                   {String(i + 1).padStart(2, "0")}
                 </span>
-                <span className="font-serif text-4xl font-semibold leading-tight transition-colors group-hover:text-[#eab308] md:text-6xl">
+                <span className="min-w-0 font-serif text-[clamp(1.7rem,8vw,3.5rem)] font-semibold leading-tight transition-colors group-hover:text-[#eab308] md:text-6xl">
                   {dict.sectors.items[i].title}
                 </span>
                 <span className="w-full text-sm text-[#131834]/60 md:w-auto md:text-base">

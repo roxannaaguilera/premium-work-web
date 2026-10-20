@@ -10,7 +10,7 @@ export default function NosotrosPage() {
     <>
       <FixedHeader />
       <main className="min-h-screen bg-[#faf6ee]">
-        <div aria-hidden="true" className="h-40 md:h-48" />
+        <div aria-hidden="true" className="h-28 md:h-48" />
         <WhyUs />
       </main>
     </>

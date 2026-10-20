@@ -18,7 +18,7 @@ function LangToggle() {
           onClick={() => setLang(l)}
           aria-pressed={lang === l}
           aria-label={l === "es" ? "Español" : "English"}
-          className={`flex h-9 w-9 items-center justify-center rounded-full text-xs font-bold uppercase tracking-wider transition-colors ${
+          className={`flex h-10 w-10 items-center justify-center rounded-full text-xs font-bold uppercase tracking-wider transition-colors md:h-9 md:w-9 ${
             lang === l
               ? "bg-[#131834] text-[#faf6ee]"
               : "border border-[#131834]/25 text-[#131834]/60 hover:border-[#131834]/60 hover:text-[#131834]"
@@ -104,15 +104,15 @@ export default function FixedHeader({ hideUntilTop = false }: { hideUntilTop?: b
           hidden && !open ? "-translate-y-full pointer-events-none opacity-0" : "translate-y-0 opacity-100"
         } ${open ? "pointer-events-none opacity-0" : ""}`}
       >
-        <div className="grid grid-cols-[1fr_auto_1fr] items-center px-5 md:px-8 pt-7 md:pt-9 pb-3">
+        <div className="grid grid-cols-[auto_minmax(0,1fr)_auto] items-center gap-2 px-3 pt-3 pb-2 md:grid-cols-[1fr_auto_1fr] md:gap-0 md:px-8 md:pt-9 md:pb-3">
           <div className="justify-self-start">
             <LangToggle />
           </div>
-          <a href="/" aria-label={t("header.logoLabel")} className="block justify-self-center">
+          <a href="/" aria-label={t("header.logoLabel")} className="block min-w-0 justify-self-center">
             <img
               src="/images/logo-premium-work.png"
               alt="Premium Work"
-              className="h-28 md:h-36 w-auto"
+              className="mx-auto h-14 w-auto max-w-[34vw] object-contain md:h-36 md:max-w-none"
             />
           </a>
           <div className="flex items-center gap-2 justify-self-end">
@@ -121,7 +121,7 @@ export default function FixedHeader({ hideUntilTop = false }: { hideUntilTop?: b
               onClick={() => setOpen(true)}
               aria-haspopup="dialog"
               aria-expanded={open}
-              className="inline-flex items-center rounded-full bg-[#131834] px-5 py-2 text-sm font-semibold tracking-wide text-[#faf6ee] hover:bg-[#1e2450] transition-colors"
+              className="hidden items-center rounded-full bg-[#131834] px-5 py-2 text-sm font-semibold tracking-wide text-[#faf6ee] hover:bg-[#1e2450] transition-colors md:inline-flex"
             >
               {t("header.menu")}
             </button>
@@ -131,7 +131,7 @@ export default function FixedHeader({ hideUntilTop = false }: { hideUntilTop?: b
               aria-haspopup="dialog"
               aria-expanded={open}
               aria-label={t("header.openMenu")}
-              className="flex h-9 w-9 items-center justify-center rounded-full bg-[#131834] hover:bg-[#1e2450] transition-colors"
+              className="flex h-11 w-11 items-center justify-center rounded-full bg-[#131834] hover:bg-[#1e2450] transition-colors"
             >
               <span aria-hidden="true" className="inline-block h-2.5 w-2.5 rotate-45 bg-[#eab308]" />
             </button>
@@ -146,11 +146,11 @@ export default function FixedHeader({ hideUntilTop = false }: { hideUntilTop?: b
         aria-modal="true"
         aria-label={t("header.menuLabel")}
         style={{ display: "none", opacity: 0 }}
-        className="fixed inset-0 z-[70] flex-col bg-[#131834] text-[#faf6ee]"
+        className="fixed inset-0 z-[70] flex-col overflow-y-auto bg-[#131834] text-[#faf6ee]"
       >
-        <div className="grid grid-cols-[1fr_auto_1fr] items-center px-5 md:px-8 pt-7 md:pt-9 pb-3">
+        <div className="grid grid-cols-[1fr_auto_1fr] items-center px-4 pt-4 pb-3 md:px-8 md:pt-9">
           <div aria-hidden="true" />
-          <span className="font-serif text-xl md:text-2xl tracking-[0.25em] font-semibold justify-self-center">
+          <span className="justify-self-center font-serif text-base font-semibold tracking-[0.14em] md:text-2xl md:tracking-[0.25em]">
             PREMIUM WORK
           </span>
           <div className="flex items-center justify-self-end">
@@ -158,14 +158,14 @@ export default function FixedHeader({ hideUntilTop = false }: { hideUntilTop?: b
               type="button"
               onClick={close}
               aria-label={t("header.closeMenu")}
-              className="flex h-9 w-9 items-center justify-center rounded-full border border-[#faf6ee]/40 text-[#faf6ee] hover:bg-[#faf6ee] hover:text-[#131834] transition-colors"
+              className="flex h-11 w-11 items-center justify-center rounded-full border border-[#faf6ee]/40 text-[#faf6ee] hover:bg-[#faf6ee] hover:text-[#131834] transition-colors"
             >
               <span aria-hidden="true" className="text-lg leading-none">✕</span>
             </button>
           </div>
         </div>
-        <nav className="flex flex-1 items-center px-5 md:px-16">
-          <ul ref={linksRef} className="space-y-2 md:space-y-4">
+        <nav className="flex flex-1 items-center px-4 md:px-16">
+          <ul ref={linksRef} className="w-full space-y-2 md:space-y-4">
             {LINKS.map((l, i) => (
               <li key={l.href}>
                 <a
@@ -176,7 +176,7 @@ export default function FixedHeader({ hideUntilTop = false }: { hideUntilTop?: b
                   <span className="text-sm text-[#faf6ee]/50 font-mono">
                     0{i + 1}
                   </span>
-                  <span className="font-serif text-5xl md:text-7xl font-semibold leading-tight text-[#faf6ee] group-hover:text-[#eab308] transition-colors">
+                  <span className="font-serif text-[clamp(2.25rem,12vw,4.5rem)] font-semibold leading-none text-[#faf6ee] transition-colors group-hover:text-[#eab308] md:text-7xl md:leading-tight">
                     {l.label}
                   </span>
                 </a>

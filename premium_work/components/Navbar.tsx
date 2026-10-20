@@ -44,11 +44,11 @@ export function Navbar() {
         <a
           href="/#inicio"
           aria-label={t("navbar.logoLabel")}
-          className="shrink-0 rounded-full border border-[#e5e7eb] bg-white px-5 py-2.5 shadow-sm transition-shadow hover:shadow-md"
+          className="min-w-0 shrink rounded-full border border-[#e5e7eb] bg-white px-3 py-2 shadow-sm transition-shadow hover:shadow-md sm:px-5 sm:py-2.5"
         >
           <span className="flex items-center gap-2">
             <span aria-hidden="true" className="text-[15px] leading-none text-[#eab308]">◆</span>
-            <span className="text-[13px] font-extrabold lowercase tracking-[.28em] text-[#131313]">premium work</span>
+            <span className="truncate text-[12px] font-extrabold lowercase tracking-[.12em] text-[#131313] sm:text-[13px] sm:tracking-[.28em]">premium work</span>
           </span>
         </a>
 
