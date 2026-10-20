@@ -69,213 +69,6 @@ function splitTitle(title: string): string[] {
 
 export type Flight = { src: string; slug: string; fromY: number; fromH: number; rotate: number };
 
-/** Iconos de trazo para las características del layout `split`. */
-function FeatureIcon({ icon }: { icon: string }) {
-  const p = {
-    width: 28,
-    height: 28,
-    viewBox: "0 0 24 24",
-    fill: "none",
-    stroke: "currentColor",
-    strokeWidth: 1.7,
-    strokeLinecap: "round" as const,
-    strokeLinejoin: "round" as const,
-    "aria-hidden": true,
-  };
-  switch (icon) {
-    case "barra":
-      return (
-        <svg {...p}>
-          <path d="M4 5h16l-8 9-8-9z" />
-          <path d="M12 14v5" />
-          <path d="M8 21h8" />
-        </svg>
-      );
-    case "accesos":
-      return (
-        <svg {...p}>
-          <rect x="3" y="6" width="18" height="12" rx="2" />
-          <path d="M14 6v12" strokeDasharray="2 3" />
-        </svg>
-      );
-    case "restauracion":
-      return (
-        <svg {...p}>
-          <path d="M7 3v6M4.8 3v3.2a2.2 2.2 0 0 0 4.4 0V3M7 11v10" />
-          <path d="M17.5 3c-1.8 2.2-2.6 4.8-2.6 7.2 0 1.2.8 1.8 2.6 1.8v9" />
-        </svg>
-      );
-    case "supervisor":
-      return (
-        <svg {...p}>
-          <path d="M2.5 12S6 5.8 12 5.8 21.5 12 21.5 12 18 18.2 12 18.2 2.5 12 2.5 12z" />
-          <circle cx="12" cy="12" r="3" />
-        </svg>
-      );
-    case "coordinador":
-      return (
-        <svg {...p}>
-          <path d="M4 14v-2a8 8 0 0 1 16 0v2" />
-          <rect x="3" y="13.5" width="4" height="6" rx="1.6" />
-          <rect x="17" y="13.5" width="4" height="6" rx="1.6" />
-          <path d="M19.5 19.5c0 1.4-1.1 2-3 2h-2.5" />
-        </svg>
-      );
-    case "reemplazo":
-      return (
-        <svg {...p}>
-          <path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8" />
-          <path d="M3 3v5h5" />
-        </svg>
-      );
-    case "cloche":
-      return (
-        <svg {...p}>
-          <path d="M4 18.5h16" />
-          <path d="M5.5 18.5a6.5 6.5 0 0 1 13 0" />
-          <path d="M12 12V10.6" />
-          <circle cx="12" cy="9.4" r="1.1" />
-        </svg>
-      );
-    case "sparkle":
-      return (
-        <svg {...p}>
-          <path d="M11 4l1.3 4.2 4.2 1.3-4.2 1.3L11 15l-1.3-4.2L5.5 9.5l4.2-1.3L11 4z" />
-          <path d="M18.2 14.8l.7 2 2 .7-2 .7-.7 2-.7-2-2-.7 2-.7.7-2z" />
-        </svg>
-      );
-    case "bell":
-      return (
-        <svg {...p}>
-          <path d="M6.5 16.2a5.5 5 0 0 1 11 0" />
-          <circle cx="12" cy="10" r="1" />
-          <path d="M12 11V9.8" />
-          <path d="M4 16.4h16" />
-          <path d="M3.4 19.8h17.2" />
-        </svg>
-      );
-    case "users":
-      return (
-        <svg {...p}>
-          <circle cx="9" cy="8.5" r="3.2" />
-          <path d="M3.5 19.5a5.5 5.5 0 0 1 11 0" />
-          <path d="M15.8 5.7a3.2 3.2 0 0 1 0 5.9" />
-          <path d="M17.6 14.4a5.5 5.5 0 0 1 2.9 5.1" />
-        </svg>
-      );
-    case "pan":
-      return (
-        <svg {...p}>
-          <circle cx="10" cy="14" r="6.2" />
-          <path d="M14.6 9.4L20.8 3.4" />
-        </svg>
-      );
-    case "calendar":
-      return (
-        <svg {...p}>
-          <rect x="3.5" y="5" width="17" height="16" rx="2" />
-          <path d="M3.5 9.8h17" />
-          <path d="M8 3v4M16 3v4" />
-        </svg>
-      );
-    case "shield":
-      return (
-        <svg {...p}>
-          <path d="M12 3l7 2.6v5.2c0 4.8-3.4 7.9-7 9.7-3.6-1.8-7-4.9-7-9.7V5.6L12 3z" />
-          <path d="M9 11.6l2.1 2.1 3.9-4" />
-        </svg>
-      );
-    case "boxes":
-      return (
-        <svg {...p}>
-          <path d="M12 3.2L4 7.4v9.2l8 4.2 8-4.2V7.4L12 3.2z" />
-          <path d="M4 7.4l8 4.2 8-4.2" />
-          <path d="M12 11.6v9.2" />
-        </svg>
-      );
-    case "truck":
-      return (
-        <svg {...p}>
-          <path d="M2.5 6.5H14V16H2.5z" />
-          <path d="M14 10h4l3 3.2V16h-7" />
-          <circle cx="6.8" cy="17.8" r="1.7" />
-          <circle cx="17.2" cy="17.8" r="1.7" />
-          <path d="M8.5 17.8h6.9" />
-        </svg>
-      );
-    case "mic":
-      return (
-        <svg {...p}>
-          <rect x="9" y="3" width="6" height="11" rx="3" />
-          <path d="M5.5 11.5a6.5 6.5 0 0 0 13 0" />
-          <path d="M12 18v3" />
-        </svg>
-      );
-    case "clipboard":
-      return (
-        <svg {...p}>
-          <rect x="5.5" y="4.5" width="13" height="17" rx="2" />
-          <path d="M9.2 4.6a2.9 2.9 0 0 1 5.6 0" />
-          <path d="M9 11h6M9 14.8h6" />
-        </svg>
-      );
-    case "tie":
-      return (
-        <svg {...p}>
-          <path d="M10 3.5h4l-1.1 3L14.5 18 12 20.8 9.5 18l1.6-11.5L10 3.5z" />
-        </svg>
-      );
-    case "trophy":
-      return (
-        <svg {...p}>
-          <path d="M7 4h10v5a5 5 0 0 1-10 0V4z" />
-          <path d="M7 5.6H4.2a2.8 2.8 0 0 0 3 4.3" />
-          <path d="M17 5.6h2.8a2.8 2.8 0 0 1-3 4.3" />
-          <path d="M12 14v3.2" />
-          <path d="M8.6 20.4a3.4 3.4 0 0 1 6.8 0" />
-        </svg>
-      );
-    case "zap":
-      return (
-        <svg {...p}>
-          <path d="M13 2.8L4.8 13.8h5.4l-.8 7.4 8.2-11h-5.4l.8-7.4z" />
-        </svg>
-      );
-    case "sliders":
-      return (
-        <svg {...p}>
-          <path d="M4 7h9.2M17.8 7H20" />
-          <circle cx="15.4" cy="7" r="2.1" />
-          <path d="M4 17h3.6M12.2 17H20" />
-          <circle cx="9.8" cy="17" r="2.1" />
-        </svg>
-      );
-    case "lock":
-      return (
-        <svg {...p}>
-          <rect x="5" y="10.5" width="14" height="9.5" rx="2" />
-          <path d="M8.5 10.5V8a3.5 3.5 0 0 1 7 0v2.5" />
-          <circle cx="12" cy="15.2" r="1.3" />
-        </svg>
-      );
-    case "id":
-      return (
-        <svg {...p}>
-          <rect x="3.5" y="5" width="17" height="14" rx="2" />
-          <circle cx="8.8" cy="11" r="2" />
-          <path d="M5.8 16.6a3.2 3.2 0 0 1 6 0" />
-          <path d="M15.5 10h4M15.5 13.4h4" />
-        </svg>
-      );
-    default:
-      return (
-        <svg {...p}>
-          <rect x="7.5" y="7.5" width="9" height="9" transform="rotate(45 12 12)" fill="currentColor" stroke="none" />
-        </svg>
-      );
-  }
-}
-
 export default function ServiceDetail({
   slug,
   initialFlight,
@@ -614,12 +407,9 @@ export default function ServiceDetail({
                   <p className="mt-7 text-[2.55rem] leading-[1.04] font-bold tracking-[-0.03em] text-[#131834] md:text-[4.15rem]">
                     {item.tagline.split(/(?<=[.;,])\s+/).map((part, pi) => (
                       <span key={pi} className={pi > 0 ? "block md:ml-[50%]" : "block"}>
-                        {part}
+                        {part.replace(/[,;]/g, "")}
                       </span>
                     ))}
-                  </p>
-                  <p className="mt-8 max-w-xl text-lg leading-relaxed text-[#131834]/70 md:text-[1.3rem] md:leading-[1.55]">
-                    {sector.copy}
                   </p>
                   <div className="mt-10">
                     <Link
@@ -627,7 +417,6 @@ export default function ServiceDetail({
                       className="inline-flex min-h-[64px] items-center gap-3 rounded-full bg-[#e8b13a] px-9 text-lg font-semibold text-[#131834] transition-transform duration-300 hover:-translate-y-0.5"
                     >
                       {item.cta ?? dict.serviceDetail.cta}
-                      <span aria-hidden="true">↗</span>
                     </Link>
                   </div>
                 </div>
@@ -637,20 +426,18 @@ export default function ServiceDetail({
                   {(item.features ?? []).map((f, i) => (
                     <li
                       key={f.icon}
-                      className="flex flex-col justify-center gap-6 py-12 md:min-h-[480px] md:py-0"
+                      className="flex items-center gap-6 py-12 md:min-h-[430px] md:gap-9 md:py-0"
                     >
-                      <div className="flex items-center gap-5">
-                        <span className="flex h-16 w-16 shrink-0 items-center justify-center rounded-2xl bg-[#131834] text-[#e8b13a]">
-                          <FeatureIcon icon={f.icon} />
-                        </span>
-                        <h3 className="text-[1.65rem] font-medium tracking-[-0.01em] text-[#131834] md:text-[2rem]">
-                          {item.includes[i]}
-                          <span aria-hidden="true" className="ml-2 text-[#131834]/35">↗</span>
-                        </h3>
-                      </div>
-                      <p className="max-w-md text-lg leading-relaxed text-[#131834]/65 md:pl-[84px] md:text-xl">
-                        {f.text}
-                      </p>
+                      <img
+                        src={`/images/iconos3d/${f.icon}.png`}
+                        alt=""
+                        loading="lazy"
+                        className="pw-float w-32 shrink-0 mix-blend-multiply md:w-44"
+                        style={{ animationDelay: `${(i % 6) * 0.7}s` }}
+                      />
+                      <h3 className="text-[1.65rem] font-medium tracking-[-0.01em] text-[#131834] md:text-[2rem]">
+                        {item.includes[i]}
+                      </h3>
                     </li>
                   ))}
                 </ul>
