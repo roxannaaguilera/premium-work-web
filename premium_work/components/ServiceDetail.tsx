@@ -528,7 +528,7 @@ export default function ServiceDetail({
                   <Link
                     key={o.slug}
                     href={`/servicios/${o.slug}`}
-                    className="group w-[280px] shrink-0 snap-start overflow-hidden rounded-[1.5rem] bg-[#faf6ee] md:w-[360px]"
+                    className="group w-[280px] shrink-0 snap-start overflow-hidden rounded-[1.5rem] bg-[#faf6ee] transition-transform duration-500 ease-out hover:rotate-2 md:w-[360px]"
                   >
                     <div className="relative aspect-[3/4] overflow-hidden">
                       <div
