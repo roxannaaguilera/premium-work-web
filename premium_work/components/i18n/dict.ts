@@ -69,7 +69,7 @@ const es = {
   },
   serviceDetail: {
     includesTitle: "Qué incluye",
-    otherTitle: "Descubre más",
+    otherTitle: "Otros servicios",
     discover: "Descubrir el servicio",
     cta: "Solicitar este servicio",
     items: [
@@ -314,7 +314,7 @@ const en: Dict = {
   },
   serviceDetail: {
     includesTitle: "What's included",
-    otherTitle: "Discover more",
+    otherTitle: "Other services",
     discover: "Discover the service",
     cta: "Request this service",
     items: [

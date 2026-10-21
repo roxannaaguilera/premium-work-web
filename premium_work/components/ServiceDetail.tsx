@@ -516,7 +516,7 @@ export default function ServiceDetail({
             rayado del inicio se cierra POR DETRÁS del objeto (el objeto queda
             por delante). En táctil y con movimiento reducido no hay telón. */}
         <section className="py-16 md:py-24">
-          <h2 className="px-5 text-center text-[2.75rem] font-bold uppercase leading-[0.95] tracking-[-0.02em] text-[#131834] md:text-[4.5rem]">
+          <h2 className="px-5 text-center font-serif text-[2.5rem] font-semibold uppercase leading-[1.02] tracking-[-0.01em] text-[#131834] md:text-[3.75rem]">
             {dict.serviceDetail.otherTitle}
           </h2>
           <div className="mt-10 flex snap-x snap-mandatory gap-4 overflow-x-auto px-5 pb-4 [scrollbar-width:none] md:mt-14 md:gap-6 md:px-10 [&::-webkit-scrollbar]:hidden">
