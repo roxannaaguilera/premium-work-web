@@ -515,11 +515,11 @@ export default function ServiceDetail({
             objeto tras un telón de dos hojas que se abre al pasar el cursor
             y se cierra al salir. En táctil y con movimiento reducido el telón
             no se muestra y el objeto queda siempre visible. */}
-        <section className="px-5 py-16 md:px-10 md:py-24">
-          <h2 className="text-center text-[2.75rem] font-bold uppercase leading-[0.95] tracking-[-0.02em] text-[#131834] md:text-[4.5rem]">
+        <section className="py-16 md:py-24">
+          <h2 className="px-5 text-center text-[2.75rem] font-bold uppercase leading-[0.95] tracking-[-0.02em] text-[#131834] md:text-[4.5rem]">
             {dict.serviceDetail.otherTitle}
           </h2>
-          <div className="mx-auto mt-10 grid max-w-6xl grid-cols-2 gap-4 md:mt-14 md:gap-6 lg:grid-cols-3">
+          <div className="mt-10 flex snap-x snap-mandatory gap-4 overflow-x-auto px-5 pb-4 [scrollbar-width:none] md:mt-14 md:gap-6 md:px-10 [&::-webkit-scrollbar]:hidden">
             {items
               .filter((o) => o.slug !== slug)
               .map((o) => {
@@ -528,9 +528,9 @@ export default function ServiceDetail({
                   <Link
                     key={o.slug}
                     href={`/servicios/${o.slug}`}
-                    className="group overflow-hidden rounded-[1.5rem] bg-[#faf6ee]"
+                    className="group w-[280px] shrink-0 snap-start overflow-hidden rounded-[1.5rem] bg-[#faf6ee] md:w-[360px]"
                   >
-                    <div className="relative aspect-[4/5] overflow-hidden">
+                    <div className="relative aspect-[3/4] overflow-hidden">
                       <img
                         src={o.img}
                         alt=""
@@ -544,6 +544,10 @@ export default function ServiceDetail({
                         <div className="absolute inset-y-0 left-0 w-1/2 border-r-2 border-[#e8b13a] bg-[#131834] transition-transform duration-700 ease-[cubic-bezier(0.65,0,0.35,1)] group-hover:-translate-x-[101%]" />
                         <div className="absolute inset-y-0 right-0 w-1/2 bg-[#131834] transition-transform duration-700 ease-[cubic-bezier(0.65,0,0.35,1)] group-hover:translate-x-[101%]" />
                       </div>
+                      <span className="absolute left-1/2 top-4 z-20 -translate-x-1/2 -translate-y-2 whitespace-nowrap rounded-full bg-white px-4 py-2 text-xs font-bold uppercase tracking-wider text-[#131834] opacity-0 shadow-lg transition-all duration-500 group-hover:translate-y-0 group-hover:opacity-100 motion-reduce:hidden [@media(hover:none)]:hidden">
+                        <span aria-hidden="true" className="mr-2 text-[#e8b13a]">◆</span>
+                        {dict.serviceDetail.discover}
+                      </span>
                     </div>
                     <p className="px-4 pb-6 text-center text-sm font-bold uppercase tracking-wider text-[#131834] md:text-base">
                       {dict.sectors.items[oi].title}
