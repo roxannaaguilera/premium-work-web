@@ -511,12 +511,15 @@ export default function ServiceDetail({
           </section>
         )}
 
-        {/* Los otros servicios */}
-        <section className="border-t border-[#131834]/10 px-5 md:px-10 py-14 md:py-20">
-          <h2 className="text-xs font-bold uppercase tracking-[0.35em] text-[#131834]/60">
+        {/* Los otros servicios, estilo Agrumea: tarjetas claras con el
+            objeto tras un telón de dos hojas que se abre al pasar el cursor
+            y se cierra al salir. En táctil y con movimiento reducido el telón
+            no se muestra y el objeto queda siempre visible. */}
+        <section className="px-5 py-16 md:px-10 md:py-24">
+          <h2 className="text-center text-[2.75rem] font-bold uppercase leading-[0.95] tracking-[-0.02em] text-[#131834] md:text-[4.5rem]">
             {dict.serviceDetail.otherTitle}
           </h2>
-          <div className="mt-8 grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4">
+          <div className="mx-auto mt-10 grid max-w-6xl grid-cols-2 gap-4 md:mt-14 md:gap-6 lg:grid-cols-3">
             {items
               .filter((o) => o.slug !== slug)
               .map((o) => {
@@ -525,10 +528,24 @@ export default function ServiceDetail({
                   <Link
                     key={o.slug}
                     href={`/servicios/${o.slug}`}
-                    className="group rounded-2xl bg-[#faf6ee] p-5 transition-transform hover:-translate-y-1"
+                    className="group overflow-hidden rounded-[1.5rem] bg-[#faf6ee]"
                   >
-                    <img src={o.img} alt="" className="mx-auto h-28 w-auto object-contain transition-transform group-hover:scale-105" />
-                    <p className="mt-4 text-center text-sm font-bold uppercase tracking-wider text-[#131834]">
+                    <div className="relative aspect-[4/5] overflow-hidden">
+                      <img
+                        src={o.img}
+                        alt=""
+                        loading="lazy"
+                        className="absolute inset-0 m-auto max-h-[78%] w-auto max-w-[86%] object-contain"
+                      />
+                      <div
+                        aria-hidden="true"
+                        className="absolute inset-0 motion-reduce:hidden [@media(hover:none)]:hidden"
+                      >
+                        <div className="absolute inset-y-0 left-0 w-1/2 border-r-2 border-[#e8b13a] bg-[#131834] transition-transform duration-700 ease-[cubic-bezier(0.65,0,0.35,1)] group-hover:-translate-x-[101%]" />
+                        <div className="absolute inset-y-0 right-0 w-1/2 bg-[#131834] transition-transform duration-700 ease-[cubic-bezier(0.65,0,0.35,1)] group-hover:translate-x-[101%]" />
+                      </div>
+                    </div>
+                    <p className="px-4 pb-6 text-center text-sm font-bold uppercase tracking-wider text-[#131834] md:text-base">
                       {dict.sectors.items[oi].title}
                     </p>
                   </Link>
