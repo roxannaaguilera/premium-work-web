@@ -528,7 +528,7 @@ export default function ServiceDetail({
                   <Link
                     key={o.slug}
                     href={`/servicios/${o.slug}`}
-                    className="group w-[280px] shrink-0 snap-start overflow-hidden rounded-[1.5rem] bg-[#faf6ee] transition-transform duration-500 ease-out hover:rotate-2 md:w-[360px]"
+                    className="group w-[280px] shrink-0 snap-start overflow-hidden rounded-[1.5rem] bg-[#faf6ee] md:w-[360px]"
                   >
                     <div className="relative aspect-[3/4] overflow-hidden">
                       <div
@@ -552,7 +552,7 @@ export default function ServiceDetail({
                         src={o.img}
                         alt=""
                         loading="lazy"
-                        className="absolute inset-0 m-auto max-h-[78%] w-auto max-w-[86%] object-contain"
+                        className="absolute inset-0 m-auto max-h-[78%] w-auto max-w-[86%] object-contain transition-transform duration-500 ease-out group-hover:rotate-2"
                       />
                       <span className="absolute left-1/2 top-4 z-20 -translate-x-1/2 -translate-y-2 whitespace-nowrap rounded-full bg-white px-4 py-2 text-xs font-bold uppercase tracking-wider text-[#131834] opacity-0 shadow-lg transition-all duration-500 group-hover:translate-y-0 group-hover:opacity-100 motion-reduce:hidden [@media(hover:none)]:hidden">
                         <span aria-hidden="true" className="mr-2 text-[#e8b13a]">◆</span>
