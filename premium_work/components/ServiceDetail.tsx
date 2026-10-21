@@ -511,10 +511,10 @@ export default function ServiceDetail({
           </section>
         )}
 
-        {/* Los otros servicios, estilo Agrumea: tarjetas claras con el
-            objeto tras un telón de dos hojas que se abre al pasar el cursor
-            y se cierra al salir. En táctil y con movimiento reducido el telón
-            no se muestra y el objeto queda siempre visible. */}
+        {/* Los otros servicios, estilo Agrumea: fila horizontal de tarjetas
+            claras con el objeto visible. Al pasar el cursor, el mismo telón
+            rayado del inicio se cierra POR DETRÁS del objeto (el objeto queda
+            por delante). En táctil y con movimiento reducido no hay telón. */}
         <section className="py-16 md:py-24">
           <h2 className="px-5 text-center text-[2.75rem] font-bold uppercase leading-[0.95] tracking-[-0.02em] text-[#131834] md:text-[4.5rem]">
             {dict.serviceDetail.otherTitle}
@@ -531,19 +531,29 @@ export default function ServiceDetail({
                     className="group w-[280px] shrink-0 snap-start overflow-hidden rounded-[1.5rem] bg-[#faf6ee] md:w-[360px]"
                   >
                     <div className="relative aspect-[3/4] overflow-hidden">
+                      <div
+                        aria-hidden="true"
+                        className="absolute inset-0 motion-reduce:hidden [@media(hover:none)]:hidden"
+                      >
+                        <div
+                          className="absolute inset-y-0 left-0 w-1/2 -translate-x-[101%] transition-transform duration-700 ease-[cubic-bezier(0.65,0,0.35,1)] group-hover:translate-x-0"
+                          style={{ background: "repeating-linear-gradient(90deg, #131834 0px, #131834 22px, #1b2148 22px, #1b2148 44px)" }}
+                        >
+                          <div className="absolute inset-x-0 bottom-0 h-1.5 bg-[#eab308]" />
+                        </div>
+                        <div
+                          className="absolute inset-y-0 right-0 w-1/2 translate-x-[101%] transition-transform duration-700 ease-[cubic-bezier(0.65,0,0.35,1)] group-hover:translate-x-0"
+                          style={{ background: "repeating-linear-gradient(90deg, #131834 0px, #131834 22px, #1b2148 22px, #1b2148 44px)" }}
+                        >
+                          <div className="absolute inset-x-0 bottom-0 h-1.5 bg-[#eab308]" />
+                        </div>
+                      </div>
                       <img
                         src={o.img}
                         alt=""
                         loading="lazy"
                         className="absolute inset-0 m-auto max-h-[78%] w-auto max-w-[86%] object-contain"
                       />
-                      <div
-                        aria-hidden="true"
-                        className="absolute inset-0 motion-reduce:hidden [@media(hover:none)]:hidden"
-                      >
-                        <div className="absolute inset-y-0 left-0 w-1/2 border-r-2 border-[#e8b13a] bg-[#131834] transition-transform duration-700 ease-[cubic-bezier(0.65,0,0.35,1)] group-hover:-translate-x-[101%]" />
-                        <div className="absolute inset-y-0 right-0 w-1/2 bg-[#131834] transition-transform duration-700 ease-[cubic-bezier(0.65,0,0.35,1)] group-hover:translate-x-[101%]" />
-                      </div>
                       <span className="absolute left-1/2 top-4 z-20 -translate-x-1/2 -translate-y-2 whitespace-nowrap rounded-full bg-white px-4 py-2 text-xs font-bold uppercase tracking-wider text-[#131834] opacity-0 shadow-lg transition-all duration-500 group-hover:translate-y-0 group-hover:opacity-100 motion-reduce:hidden [@media(hover:none)]:hidden">
                         <span aria-hidden="true" className="mr-2 text-[#e8b13a]">◆</span>
                         {dict.serviceDetail.discover}
