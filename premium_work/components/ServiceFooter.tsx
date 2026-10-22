@@ -24,7 +24,7 @@ function FacebookIcon() {
 
 /**
  * Pie de las páginas de servicio, estilo Yellowball: fondo azul noche,
- * columnas de enlaces y el nombre gigante en dos líneas a ancho completo.
+ * columnas de enlaces y el nombre gigante recortado por el borde inferior.
  *
  * Al hacer scroll, cada bloque aparece y desaparece en orden de izquierda
  * a derecha (contacto, servicios, enlaces, legal y, por último, el
@@ -50,7 +50,7 @@ export function ServiceFooter() {
   const { dict } = useLang();
   const year = new Date().getFullYear();
   const sf = dict.serviceFooter;
-  const linkCls = "text-[#f6ede1]/55 transition-colors hover:text-[#f6ede1]";
+  const linkCls = "text-lg text-[#f6ede1]/55 transition-colors hover:text-[#f6ede1]";
 
   return (
     <footer id="contacto" className="relative flex min-h-dvh flex-col overflow-hidden bg-[#131834] text-[#f6ede1]">
@@ -67,7 +67,7 @@ export function ServiceFooter() {
           <Reveal index={0} className="col-span-2 md:col-span-1">
             <a
               href={`mailto:${EMAIL}`}
-              className="font-logo text-[1.4rem] font-semibold tracking-tight break-all transition-colors hover:text-[#e8b13a] md:text-[1.7rem]"
+              className="font-logo text-[1.75rem] font-semibold tracking-tight break-all transition-colors hover:text-[#e8b13a] md:text-[2.25rem]"
             >
               {EMAIL}
             </a>
@@ -75,24 +75,24 @@ export function ServiceFooter() {
               href={`https://wa.me/${WHATSAPP_NUMBER}`}
               target="_blank"
               rel="noreferrer"
-              className="mt-4 block text-lg text-[#f6ede1]/70 transition-colors hover:text-[#f6ede1]"
+              className="mt-5 block text-xl text-[#f6ede1]/70 transition-colors hover:text-[#f6ede1]"
             >
               {dict.footer.whatsapp} <span aria-hidden="true">↗</span>
             </a>
-            <p className="mt-8 text-sm font-semibold">{dict.footer.follow}</p>
-            <div className="mt-3 flex gap-2">
-              <a href="https://www.instagram.com/" target="_blank" rel="noopener noreferrer" aria-label="Instagram" className="flex size-10 items-center justify-center rounded-full border border-white/20 text-[#f6ede1]/80 transition hover:border-[#e8b13a] hover:text-[#e8b13a]"><InstagramIcon /></a>
-              <a href="https://www.linkedin.com/" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn" className="flex size-10 items-center justify-center rounded-full border border-white/20 text-[#f6ede1]/80 transition hover:border-[#e8b13a] hover:text-[#e8b13a]"><LinkedInIcon /></a>
-              <a href="https://www.facebook.com/" target="_blank" rel="noopener noreferrer" aria-label="Facebook" className="flex size-10 items-center justify-center rounded-full border border-white/20 text-[#f6ede1]/80 transition hover:border-[#e8b13a] hover:text-[#e8b13a]"><FacebookIcon /></a>
+            <p className="mt-10 text-base font-semibold">{dict.footer.follow}</p>
+            <div className="mt-4 flex gap-2">
+              <a href="https://www.instagram.com/" target="_blank" rel="noopener noreferrer" aria-label="Instagram" className="flex size-12 items-center justify-center rounded-full border border-white/20 text-[#f6ede1]/80 transition hover:border-[#e8b13a] hover:text-[#e8b13a]"><InstagramIcon /></a>
+              <a href="https://www.linkedin.com/" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn" className="flex size-12 items-center justify-center rounded-full border border-white/20 text-[#f6ede1]/80 transition hover:border-[#e8b13a] hover:text-[#e8b13a]"><LinkedInIcon /></a>
+              <a href="https://www.facebook.com/" target="_blank" rel="noopener noreferrer" aria-label="Facebook" className="flex size-12 items-center justify-center rounded-full border border-white/20 text-[#f6ede1]/80 transition hover:border-[#e8b13a] hover:text-[#e8b13a]"><FacebookIcon /></a>
             </div>
-            <p className="mt-10 text-sm text-[#f6ede1]/40">© Premium Work {year}</p>
+            <p className="mt-12 text-base text-[#f6ede1]/40">© Premium Work {year}</p>
           </Reveal>
 
           {/* Servicios */}
           <Reveal index={1}>
           <nav aria-label={sf.servicesTitle}>
-            <p className="font-logo text-sm font-semibold">{sf.servicesTitle}</p>
-            <ul className="mt-5 space-y-3">
+            <p className="font-logo text-lg font-semibold">{sf.servicesTitle}</p>
+            <ul className="mt-6 space-y-4">
               {dict.serviceDetail.items.map((it, i) => (
                 <li key={it.slug}>
                   <Link href={`/servicios/${it.slug}`} className={linkCls}>{dict.sectors.items[i]?.title ?? it.slug}</Link>
@@ -105,8 +105,8 @@ export function ServiceFooter() {
           {/* Enlaces */}
           <Reveal index={2}>
           <nav aria-label={sf.linksTitle}>
-            <p className="font-logo text-sm font-semibold">{sf.linksTitle}</p>
-            <ul className="mt-5 space-y-3">
+            <p className="font-logo text-lg font-semibold">{sf.linksTitle}</p>
+            <ul className="mt-6 space-y-4">
               {NAV_HREFS.map((href, i) => (
                 <li key={href}>
                   <Link href={href} className={linkCls}>{dict.header.nav[i]}</Link>
@@ -119,8 +119,8 @@ export function ServiceFooter() {
           {/* Legal */}
           <Reveal index={3}>
           <nav aria-label={sf.legalTitle}>
-            <p className="font-logo text-sm font-semibold">{sf.legalTitle}</p>
-            <ul className="mt-5 space-y-3">
+            <p className="font-logo text-lg font-semibold">{sf.legalTitle}</p>
+            <ul className="mt-6 space-y-4">
               {LEGAL_HREFS.map((href, i) => (
                 <li key={href}>
                   <Link href={href} className={linkCls}>{dict.footer.legal[i]}</Link>
@@ -132,20 +132,14 @@ export function ServiceFooter() {
         </div>
       </div>
 
-      {/* Nombre gigante en dos líneas, a ancho completo */}
+      {/* Nombre gigante recortado por el borde inferior */}
       <Reveal index={5} className="relative mt-4 overflow-hidden md:mt-6">
       <div aria-hidden="true" className="px-5 md:px-10">
         <p
-          className="font-logo text-center font-black whitespace-nowrap text-[#f6ede1]/[0.05] select-none text-[calc((100vw_-_40px)/4.92)] md:text-[calc((100vw_-_80px)/4.92)]"
+          className="font-logo translate-y-[24%] text-center font-black whitespace-nowrap text-[#f6ede1]/[0.05] select-none text-[calc((100vw_-_40px)/8.566)] md:text-[calc((100vw_-_80px)/8.566)]"
           style={{ lineHeight: 0.85, letterSpacing: "-0.02em" }}
         >
-          PREMIUM
-        </p>
-        <p
-          className="font-logo text-center font-black whitespace-nowrap text-[#f6ede1]/[0.05] select-none text-[calc((100vw_-_40px)/4.92)] md:text-[calc((100vw_-_80px)/4.92)]"
-          style={{ lineHeight: 0.85, letterSpacing: "-0.02em" }}
-        >
-          WORK<span className="text-[#eab308]">.</span>
+          PREMIUM WORK<span className="text-[#eab308]">.</span>
         </p>
       </div>
       </Reveal>
