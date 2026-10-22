@@ -626,7 +626,7 @@ export default function ServiceDetail({
                     key={o.slug}
                     href={`/servicios/${o.slug}`}
                     img={o.img}
-                    discover={dict.serviceDetail.discover}
+                    discover={dict.serviceDetail.cardTooltip}
                     title={dict.sectors.items[oi].title}
                     index={fi}
                   />

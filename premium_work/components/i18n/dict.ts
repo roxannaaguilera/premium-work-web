@@ -84,6 +84,7 @@ const es = {
     includesTitle: "Qué incluye",
     otherTitle: "Otros servicios",
     discover: "Descubrir el servicio",
+    cardTooltip: "Saber más",
     cta: "Solicitar este servicio",
     items: [
       { slug: "hoteles", img: "/images/elementos-reales/hoteles.png", tagline: "El hotel nunca duerme; nuestro equipo tampoco.", includes: ["Camareros y maîtres para sala y desayunos", "Personal de housekeeping y pisos", "Hostess y recepción para eventos del hotel", "Supervisión en cada turno"], split: true, features: [{ icon: "cloche", text: "Sala y desayunos servidos con el protocolo de tu hotel, puntuales en cada pase." }, { icon: "sparkle", text: "Habitaciones y zonas comunes listas en los tiempos de tu operativa, revisadas piso a piso." }, { icon: "bell", text: "La primera cara de tu evento: bienvenida, acreditación y acompañamiento de invitados." }, { icon: "supervisor", text: "Un responsable nuestro en cada turno, en contacto directo con la dirección del hotel." }] },
@@ -354,6 +355,7 @@ const en: Dict = {
     includesTitle: "What's included",
     otherTitle: "Other services",
     discover: "Discover the service",
+    cardTooltip: "Learn more",
     cta: "Request this service",
     items: [
       { slug: "hoteles", img: "/images/elementos-reales/hoteles.png", tagline: "The hotel never sleeps; neither does our team.", includes: ["Waiters and ma\u00eetres d' for dining and breakfast service", "Housekeeping and floor staff", "Hostesses and reception for hotel events", "Supervision on every shift"], split: true, features: [{ icon: "cloche", text: "Dining room and breakfast service run to your hotel's protocol, on time at every pass." }, { icon: "sparkle", text: "Rooms and common areas ready on your operation's schedule, checked floor by floor." }, { icon: "bell", text: "The first face of your event: welcome, accreditation and guest assistance." }, { icon: "supervisor", text: "One of our supervisors on every shift, in direct contact with the hotel management." }] },
