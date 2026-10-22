@@ -145,7 +145,7 @@ export function ServiceFooter() {
       <div aria-hidden="true">
         <p
           className="font-logo translate-y-[24%] text-center font-black whitespace-nowrap text-[#f6ede1]/[0.05] select-none"
-          style={{ fontSize: "12.6vw", lineHeight: 0.85, letterSpacing: "-0.02em" }}
+          style={{ fontSize: "10vw", lineHeight: 0.85, letterSpacing: "-0.02em" }}
         >
           PREMIUM WORK<span className="text-[#e8b13a]/40">.</span>
         </p>
