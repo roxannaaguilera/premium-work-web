@@ -69,6 +69,92 @@ function splitTitle(title: string): string[] {
 
 export type Flight = { src: string; slug: string; fromY: number; fromH: number; rotate: number };
 
+/** Tarjeta de «Otros servicios»: entra con un leve ascenso escalonado y su
+    píldora «Descubrir el servicio» sigue al cursor por encima de la tarjeta
+    (solo con puntero fino; en táctil y con movimiento reducido no hay píldora). */
+function OtherServiceCard({
+  href,
+  img,
+  discover,
+  title,
+  index,
+}: {
+  href: string;
+  img: string;
+  discover: string;
+  title: string;
+  index: number;
+}) {
+  const reduceMotion = useReducedMotion();
+  const areaRef = useRef<HTMLDivElement>(null);
+  const [pos, setPos] = useState<{ x: number; y: number } | null>(null);
+  return (
+    <motion.div
+      initial={reduceMotion ? false : { opacity: 0, y: 28 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true }}
+      transition={{ duration: 0.6, delay: 0.1 + index * 0.08, ease: "easeOut" }}
+      className="w-[78vw] shrink-0 snap-start md:w-[360px]"
+    >
+      <Link href={href} className="group block overflow-hidden rounded-[1.5rem] bg-[#faf6ee]">
+        <div
+          ref={areaRef}
+          onMouseMove={(e) => {
+            const r = areaRef.current?.getBoundingClientRect();
+            if (!r) return;
+            const rawX = e.clientX - r.left;
+            const rawY = e.clientY - r.top;
+            setPos({
+              x: Math.min(Math.max(rawX, 104), Math.max(104, r.width - 104)),
+              y: Math.min(Math.max(rawY, 56), r.height - 8),
+            });
+          }}
+          onMouseLeave={() => setPos(null)}
+          className="relative aspect-[3/4] overflow-hidden"
+        >
+          <div
+            aria-hidden="true"
+            className="absolute inset-0 motion-reduce:hidden [@media(hover:none)]:hidden"
+          >
+            <div
+              className="absolute inset-y-0 left-0 w-1/2 -translate-x-[101%] transition-transform duration-700 ease-[cubic-bezier(0.65,0,0.35,1)] group-hover:translate-x-0"
+              style={{ background: "repeating-linear-gradient(90deg, #131834 0px, #131834 22px, #1b2148 22px, #1b2148 44px)" }}
+            >
+              <div className="absolute inset-x-0 bottom-0 h-1.5 bg-[#eab308]" />
+            </div>
+            <div
+              className="absolute inset-y-0 right-0 w-1/2 translate-x-[101%] transition-transform duration-700 ease-[cubic-bezier(0.65,0,0.35,1)] group-hover:translate-x-0"
+              style={{ background: "repeating-linear-gradient(90deg, #131834 0px, #131834 22px, #1b2148 22px, #1b2148 44px)" }}
+            >
+              <div className="absolute inset-x-0 bottom-0 h-1.5 bg-[#eab308]" />
+            </div>
+          </div>
+          <img
+            src={img}
+            alt=""
+            loading="lazy"
+            className="absolute inset-0 m-auto max-h-[78%] w-auto max-w-[86%] object-contain transition-transform duration-500 ease-out group-hover:rotate-2"
+          />
+          <motion.div
+            aria-hidden="true"
+            animate={{ x: pos ? pos.x : 0, y: pos ? pos.y : 0, opacity: pos ? 1 : 0 }}
+            transition={{ type: "spring", stiffness: 350, damping: 30 }}
+            className="pointer-events-none absolute left-0 top-0 z-30 motion-reduce:hidden [@media(hover:none)]:hidden"
+          >
+            <span className="block -translate-x-1/2 -translate-y-[135%] whitespace-nowrap rounded-full bg-white px-4 py-2 text-xs font-bold uppercase tracking-wider text-[#131834] shadow-lg">
+              <span aria-hidden="true" className="mr-2 text-[#e8b13a]">◆</span>
+              {discover}
+            </span>
+          </motion.div>
+        </div>
+        <p className="px-4 pb-6 text-center text-sm font-bold uppercase tracking-wider text-[#131834] md:text-base">
+          {title}
+        </p>
+      </Link>
+    </motion.div>
+  );
+}
+
 export default function ServiceDetail({
   slug,
   initialFlight,
@@ -519,20 +605,20 @@ export default function ServiceDetail({
         <section className="py-16 md:py-24">
           <h2 className="px-5 text-center font-serif text-[3.25rem] font-semibold uppercase leading-[0.95] tracking-[-0.01em] text-[#131834] md:text-[3.75rem] md:leading-[1.02]">
             <motion.span
-              initial={reduceMotion ? false : { y: -48, opacity: 0 }}
+              initial={reduceMotion ? false : { y: -80, opacity: 0 }}
               whileInView={{ y: 0, opacity: 1 }}
               viewport={{ once: true }}
-              transition={{ duration: 0.7, ease: [0.34, 1.56, 0.64, 1] }}
+              transition={{ duration: 0.85, ease: [0.34, 1.56, 0.64, 1] }}
               className="inline-block"
             >
               {dict.serviceDetail.otherTitle.split(" ")[0]}
             </motion.span>
             <br className="md:hidden" />{" "}
             <motion.span
-              initial={reduceMotion ? false : { y: -48, opacity: 0 }}
+              initial={reduceMotion ? false : { y: -80, opacity: 0 }}
               whileInView={{ y: 0, opacity: 1 }}
               viewport={{ once: true }}
-              transition={{ duration: 0.7, delay: 0.15, ease: [0.34, 1.56, 0.64, 1] }}
+              transition={{ duration: 0.85, delay: 0.18, ease: [0.34, 1.56, 0.64, 1] }}
               className="inline-block"
             >
               {dict.serviceDetail.otherTitle.split(" ").slice(1).join(" ")}
@@ -541,47 +627,17 @@ export default function ServiceDetail({
           <div className="mt-10 flex snap-x snap-mandatory gap-4 overflow-x-auto px-5 pb-4 [scrollbar-width:none] md:mt-14 md:gap-6 md:px-10 [&::-webkit-scrollbar]:hidden">
             {items
               .filter((o) => o.slug !== slug)
-              .map((o) => {
+              .map((o, fi) => {
                 const oi = items.indexOf(o);
                 return (
-                  <Link
+                  <OtherServiceCard
                     key={o.slug}
                     href={`/servicios/${o.slug}`}
-                    className="group w-[78vw] shrink-0 snap-start overflow-hidden rounded-[1.5rem] bg-[#faf6ee] md:w-[360px]"
-                  >
-                    <div className="relative aspect-[3/4] overflow-hidden">
-                      <div
-                        aria-hidden="true"
-                        className="absolute inset-0 motion-reduce:hidden [@media(hover:none)]:hidden"
-                      >
-                        <div
-                          className="absolute inset-y-0 left-0 w-1/2 -translate-x-[101%] transition-transform duration-700 ease-[cubic-bezier(0.65,0,0.35,1)] group-hover:translate-x-0"
-                          style={{ background: "repeating-linear-gradient(90deg, #131834 0px, #131834 22px, #1b2148 22px, #1b2148 44px)" }}
-                        >
-                          <div className="absolute inset-x-0 bottom-0 h-1.5 bg-[#eab308]" />
-                        </div>
-                        <div
-                          className="absolute inset-y-0 right-0 w-1/2 translate-x-[101%] transition-transform duration-700 ease-[cubic-bezier(0.65,0,0.35,1)] group-hover:translate-x-0"
-                          style={{ background: "repeating-linear-gradient(90deg, #131834 0px, #131834 22px, #1b2148 22px, #1b2148 44px)" }}
-                        >
-                          <div className="absolute inset-x-0 bottom-0 h-1.5 bg-[#eab308]" />
-                        </div>
-                      </div>
-                      <img
-                        src={o.img}
-                        alt=""
-                        loading="lazy"
-                        className="absolute inset-0 m-auto max-h-[78%] w-auto max-w-[86%] object-contain transition-transform duration-500 ease-out group-hover:rotate-2"
-                      />
-                      <span className="absolute left-1/2 top-4 z-20 -translate-x-1/2 -translate-y-2 whitespace-nowrap rounded-full bg-white px-4 py-2 text-xs font-bold uppercase tracking-wider text-[#131834] opacity-0 shadow-lg transition-all duration-500 group-hover:translate-y-0 group-hover:opacity-100 motion-reduce:hidden [@media(hover:none)]:hidden">
-                        <span aria-hidden="true" className="mr-2 text-[#e8b13a]">◆</span>
-                        {dict.serviceDetail.discover}
-                      </span>
-                    </div>
-                    <p className="px-4 pb-6 text-center text-sm font-bold uppercase tracking-wider text-[#131834] md:text-base">
-                      {dict.sectors.items[oi].title}
-                    </p>
-                  </Link>
+                    img={o.img}
+                    discover={dict.serviceDetail.discover}
+                    title={dict.sectors.items[oi].title}
+                    index={fi}
+                  />
                 );
               })}
           </div>
