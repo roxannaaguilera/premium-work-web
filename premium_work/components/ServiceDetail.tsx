@@ -605,20 +605,20 @@ export default function ServiceDetail({
         <section className="py-16 md:py-24">
           <h2 className="px-5 text-center font-serif text-[3.25rem] font-semibold uppercase leading-[0.95] tracking-[-0.01em] text-[#131834] md:text-[3.75rem] md:leading-[1.02]">
             <motion.span
-              initial={reduceMotion ? false : { y: -80, opacity: 0 }}
+              initial={reduceMotion ? false : { y: -160, opacity: 0 }}
               whileInView={{ y: 0, opacity: 1 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.85, ease: [0.34, 1.56, 0.64, 1] }}
+              viewport={{ margin: "-25% 0px -25% 0px" }}
+              transition={{ duration: 1, ease: [0.34, 1.56, 0.64, 1] }}
               className="inline-block"
             >
               {dict.serviceDetail.otherTitle.split(" ")[0]}
             </motion.span>
             <br className="md:hidden" />{" "}
             <motion.span
-              initial={reduceMotion ? false : { y: -80, opacity: 0 }}
+              initial={reduceMotion ? false : { y: -160, opacity: 0 }}
               whileInView={{ y: 0, opacity: 1 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.85, delay: 0.18, ease: [0.34, 1.56, 0.64, 1] }}
+              viewport={{ margin: "-25% 0px -25% 0px" }}
+              transition={{ duration: 1, delay: 0.2, ease: [0.34, 1.56, 0.64, 1] }}
               className="inline-block"
             >
               {dict.serviceDetail.otherTitle.split(" ").slice(1).join(" ")}
