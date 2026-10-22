@@ -142,12 +142,12 @@ export function ServiceFooter() {
 
       {/* Nombre gigante recortado por el borde inferior */}
       <Reveal index={5} className="relative mt-4 overflow-hidden md:mt-6">
-      <div aria-hidden="true">
+      <div aria-hidden="true" className="px-5 md:px-10">
         <p
-          className="font-logo translate-y-[24%] text-center font-black whitespace-nowrap text-[#f6ede1]/[0.05] select-none"
-          style={{ fontSize: "10vw", lineHeight: 0.85, letterSpacing: "-0.02em" }}
+          className="font-logo translate-y-[24%] text-center font-black whitespace-nowrap text-[#f6ede1]/[0.05] select-none text-[calc((100vw_-_40px)/8.566)] md:text-[calc((100vw_-_80px)/8.566)]"
+          style={{ lineHeight: 0.85, letterSpacing: "-0.02em" }}
         >
-          PREMIUM WORK<span className="text-[#e8b13a]/40">.</span>
+          PREMIUM WORK<span className="text-[#eab308]">.</span>
         </p>
       </div>
       </Reveal>
