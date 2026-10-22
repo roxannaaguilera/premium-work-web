@@ -182,9 +182,16 @@ export default function FixedHeader({
           <ul ref={linksRef} className="w-full">
             {LINKS.map((l, i) => {
               const active = isActive(l.href);
-              // Disposición escalonada estilo Agrumea: cada palabra más a la
-              // derecha que la anterior (izquierda, centro, derecha, borde).
-              const align = ["justify-start", "justify-center", "justify-end pr-6 md:pr-20", "justify-end"][i];
+              // Escalera: cada palabra empieza más a la derecha que la
+              // anterior. SERVICIOS arranca en la mitad de INICIO (18% del
+              // ancho) y NOSOTROS y CONTACTO siguen el escalón, sin
+              // compartir el borde derecho.
+              const align = [
+                "justify-start",
+                "justify-center md:justify-start md:pl-[18%]",
+                "justify-end pr-6 md:justify-start md:pl-[32%] md:pr-0",
+                "justify-end md:justify-start md:pl-[45%]",
+              ][i];
               return (
                 <li key={l.href} className="border-t border-[#faf6ee]/20 last:border-b">
                   <a
