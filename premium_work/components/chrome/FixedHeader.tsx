@@ -162,7 +162,7 @@ export default function FixedHeader({
       >
         <div className="grid grid-cols-[1fr_auto_1fr] items-center px-5 md:px-8 pt-7 md:pt-9 pb-3">
           <div aria-hidden="true" />
-          <span className="font-serif text-xl md:text-2xl tracking-[0.25em] font-semibold justify-self-center">
+          <span className="font-logo text-xl md:text-2xl tracking-[0.25em] font-semibold justify-self-center">
             PREMIUM WORK
           </span>
           <div className="flex items-center justify-self-end">
@@ -191,7 +191,7 @@ export default function FixedHeader({
                     className={`group flex py-4 md:py-6 ${align}`}
                   >
                     <span
-                      className={`font-serif text-5xl font-semibold leading-tight transition-colors md:text-7xl ${
+                      className={`font-logo text-5xl font-semibold uppercase leading-tight transition-colors md:text-7xl ${
                         active ? "text-[#faf6ee]" : "text-[#faf6ee]/40 group-hover:text-[#faf6ee]"
                       }`}
                     >

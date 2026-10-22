@@ -31,7 +31,7 @@ export function Footer() {
         <div className="grid min-h-0 flex-1 gap-8 py-10 md:gap-14 lg:grid-cols-[1.35fr_.65fr] lg:py-14">
           <div className="flex min-h-0 flex-col justify-center">
             <p className="hidden max-w-lg text-sm leading-6 text-white/60 md:block">{t("footer.tagline")}</p>
-            <h2 className="display footer-title mt-4 text-[clamp(2.8rem,5.2vw,5.8rem)] leading-[1.08] text-white md:mt-7">{t("footer.titleA")}<em className="box-decoration-clone bg-[#2451e6] px-2 leading-[1.2] text-white not-italic">{t("footer.titleB")}</em></h2>
+            <h2 className="font-logo footer-title mt-4 text-[clamp(2.8rem,5.2vw,5.8rem)] font-extrabold leading-[1.08] text-white md:mt-7">{t("footer.titleA")}<em className="box-decoration-clone bg-[#2451e6] px-2 leading-[1.2] text-white not-italic">{t("footer.titleB")}</em></h2>
             <div className="mt-10 flex flex-wrap gap-3 md:mt-12">
               <a href="/solicitar-servicio" className="btn btn-lime group">{t("footer.request")} <ArrowUpRight size={16} className="transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" /></a>
               <a href="mailto:hola@premiumwork.es" className="btn btn-outline-on-dark"><Mail size={16} /> hola@premiumwork.es</a>

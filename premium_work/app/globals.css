@@ -224,6 +224,10 @@ body {
 @font-face { font-family: "DM Sans"; src: url("/fonts/dm-sans.ttf") format("truetype"); font-style: normal; font-weight: 100 1000; font-display: swap; }
 @font-face { font-family: "Playfair Display"; src: url("/fonts/playfair-display.ttf") format("truetype"); font-style: normal; font-weight: 400 900; font-display: swap; }
 @font-face { font-family: "Playfair Display"; src: url("/fonts/playfair-display-italic.ttf") format("truetype"); font-style: italic; font-weight: 400 900; font-display: swap; }
+/* Tipografía del logotipo (Didone de alto contraste) para el menú y el footer */
+.font-logo {
+  font-family: "Playfair Display", ui-serif, Georgia, serif;
+}
 .legal-copy h2 { margin-top: 2.25rem; margin-bottom: .8rem; font-size: 1.35rem; font-weight: 700; letter-spacing: -.01em; }
 
 /* ——— Botones píldora estilo Contra ——— */

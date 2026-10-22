@@ -68,7 +68,7 @@ export function ServiceFooter() {
           <Reveal index={0} className="col-span-2 md:col-span-1">
             <a
               href={`mailto:${EMAIL}`}
-              className="text-[1.4rem] font-semibold tracking-tight break-all transition-colors hover:text-[#e8b13a] md:text-[1.7rem]"
+              className="font-logo text-[1.4rem] font-semibold tracking-tight break-all transition-colors hover:text-[#e8b13a] md:text-[1.7rem]"
             >
               {EMAIL}
             </a>
@@ -92,7 +92,7 @@ export function ServiceFooter() {
           {/* Servicios */}
           <Reveal index={1}>
           <nav aria-label={sf.servicesTitle}>
-            <p className="text-sm font-semibold">{sf.servicesTitle}</p>
+            <p className="font-logo text-sm font-semibold">{sf.servicesTitle}</p>
             <ul className="mt-5 space-y-3">
               {dict.serviceDetail.items.map((it, i) => (
                 <li key={it.slug}>
@@ -106,7 +106,7 @@ export function ServiceFooter() {
           {/* Enlaces */}
           <Reveal index={2}>
           <nav aria-label={sf.linksTitle}>
-            <p className="text-sm font-semibold">{sf.linksTitle}</p>
+            <p className="font-logo text-sm font-semibold">{sf.linksTitle}</p>
             <ul className="mt-5 space-y-3">
               {NAV_HREFS.map((href, i) => (
                 <li key={href}>
@@ -120,7 +120,7 @@ export function ServiceFooter() {
           {/* Legal */}
           <Reveal index={3}>
           <nav aria-label={sf.legalTitle}>
-            <p className="text-sm font-semibold">{sf.legalTitle}</p>
+            <p className="font-logo text-sm font-semibold">{sf.legalTitle}</p>
             <ul className="mt-5 space-y-3">
               {LEGAL_HREFS.map((href, i) => (
                 <li key={href}>
@@ -144,7 +144,7 @@ export function ServiceFooter() {
       <Reveal index={5} className="relative mt-4 overflow-hidden md:mt-6">
       <div aria-hidden="true">
         <p
-          className="translate-y-[24%] text-center font-black whitespace-nowrap text-[#f6ede1]/[0.05] select-none"
+          className="font-logo translate-y-[24%] text-center font-black whitespace-nowrap text-[#f6ede1]/[0.05] select-none"
           style={{ fontSize: "12.6vw", lineHeight: 0.85, letterSpacing: "-0.02em" }}
         >
           PREMIUM WORK<span className="text-[#e8b13a]/40">.</span>
