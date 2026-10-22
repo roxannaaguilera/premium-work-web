@@ -158,13 +158,15 @@ export default function FixedHeader({
         aria-modal="true"
         aria-label={t("header.menuLabel")}
         style={{ display: "none", opacity: 0 }}
-        className="fixed inset-0 z-[70] flex-col bg-[#131834] text-[#faf6ee]"
+        className="fixed inset-0 z-[70] flex-col overflow-y-auto bg-[#131834] text-[#faf6ee]"
       >
         <div className="grid grid-cols-[1fr_auto_1fr] items-center px-5 md:px-8 pt-7 md:pt-9 pb-3">
           <div aria-hidden="true" />
-          <span className="font-logo text-xl md:text-2xl tracking-[0.25em] font-semibold justify-self-center">
-            PREMIUM WORK
-          </span>
+          <img
+            src="/images/logo-premium-work.png"
+            alt="Premium Work"
+            className="h-16 md:h-20 w-auto justify-self-center [filter:brightness(0)_invert(1)]"
+          />
           <div className="flex items-center justify-self-end">
             <button
               type="button"
@@ -188,10 +190,10 @@ export default function FixedHeader({
                   <a
                     href={l.href}
                     onClick={close}
-                    className={`group flex py-4 md:py-6 ${align}`}
+                    className={`group flex py-3 md:py-4 ${align}`}
                   >
                     <span
-                      className={`font-logo text-5xl font-semibold uppercase leading-tight transition-colors md:text-7xl ${
+                      className={`font-logo text-[clamp(3.75rem,min(11vw,14dvh),11rem)] font-semibold uppercase leading-none transition-colors ${
                         active ? "text-[#faf6ee]" : "text-[#faf6ee]/40 group-hover:text-[#faf6ee]"
                       }`}
                     >
@@ -207,7 +209,7 @@ export default function FixedHeader({
                       ))}
                       <span className="sr-only">{l.label}</span>
                       {active && (
-                        <span aria-hidden="true" className="ml-4 inline-block h-4 w-4 rotate-45 bg-[#eab308] align-middle md:h-5 md:w-5" />
+                        <span aria-hidden="true" className="ml-[0.3em] inline-block h-[0.18em] w-[0.18em] rotate-45 bg-[#eab308] align-middle" />
                       )}
                     </span>
                   </a>
