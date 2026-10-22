@@ -6,7 +6,12 @@ import gsap from "gsap";
 import { getLenis } from "@/lib/lenis-instance";
 import { useLang } from "@/components/i18n/lang";
 
-const LINK_HREFS = ["/", "/servicios", "/nosotros", "/solicitar-servicio"];
+const MENU_LINKS: { href: string; action?: "footer" | "otros-servicios" }[] = [
+  { href: "/" },
+  { href: "/servicios", action: "otros-servicios" },
+  { href: "/nosotros" },
+  { href: "#contacto", action: "footer" },
+];
 
 function LangToggle() {
   const { lang, setLang } = useLang();
@@ -47,7 +52,7 @@ export default function FixedHeader({
   const overlayRef = useRef<HTMLDivElement>(null);
   const linksRef = useRef<HTMLUListElement>(null);
   const menuLogoRef = useRef<HTMLImageElement>(null);
-  const LINKS = LINK_HREFS.map((href, i) => ({ href, label: dict.header.nav[i] }));
+  const LINKS = MENU_LINKS.map((l, i) => ({ ...l, label: dict.header.nav[i] }));
   const isActive = (href: string) =>
     href === "/" ? pathname === "/" : pathname === href || pathname.startsWith(`${href}/`);
 
@@ -68,6 +73,45 @@ export default function FixedHeader({
   }, [hideUntilTop]);
 
   const close = useCallback(() => setOpen(false), []);
+
+  // Desplazar con Lenis cuando está activo; si no, scroll nativo suave.
+  const scrollToTarget = (target: HTMLElement | number) => {
+    const lenis = getLenis();
+    if (lenis) lenis.scrollTo(target);
+    else if (typeof target === "number") window.scrollTo({ top: target, behavior: "smooth" });
+    else target.scrollIntoView({ behavior: "smooth" });
+  };
+
+  // CONTACTO baja al footer de la página (o a la página de contacto si
+  // la página no tiene footer); SERVICIOS baja a «Otros servicios» (o
+  // al índice de servicios si la página no tiene esa sección). Se espera
+  // a que el menú se cierre para que el scroll no quede bloqueado.
+  const handleMenuLink = (e: { preventDefault(): void }, l: (typeof LINKS)[number]) => {
+    if (!l.action) {
+      close();
+      return;
+    }
+    e.preventDefault();
+    close();
+    window.setTimeout(() => {
+      if (l.action === "footer") {
+        const el = document.getElementById("contacto") ?? document.querySelector("footer");
+        if (el) scrollToTarget(el as HTMLElement);
+        else window.location.href = "/solicitar-servicio";
+      } else {
+        const el = document.getElementById("otros-servicios");
+        if (el) scrollToTarget(el as HTMLElement);
+        else if (window.location.pathname !== "/servicios") window.location.href = "/servicios";
+        else scrollToTarget(0);
+      }
+    }, 350);
+  };
+
+  // El logo del menú lleva arriba, al header de la página.
+  const goTop = () => {
+    close();
+    window.setTimeout(() => scrollToTarget(0), 350);
+  };
 
   // Bloqueo de scroll + animación de apertura/cierre del menú
   useEffect(() => {
@@ -171,12 +215,19 @@ export default function FixedHeader({
       >
         <div className="grid grid-cols-[1fr_auto_1fr] items-center px-5 md:px-8 pt-7 md:pt-9 pb-3">
           <div aria-hidden="true" />
-          <img
-            ref={menuLogoRef}
-            src="/images/logo-premium-work.png"
-            alt="Premium Work"
-            className="h-28 md:h-36 w-auto justify-self-center [filter:brightness(0)_invert(1)]"
-          />
+          <button
+            type="button"
+            onClick={goTop}
+            aria-label={t("header.logoLabel")}
+            className="justify-self-center cursor-pointer bg-transparent p-0"
+          >
+            <img
+              ref={menuLogoRef}
+              src="/images/logo-premium-work.png"
+              alt="Premium Work"
+              className="block h-28 md:h-36 w-auto [filter:brightness(0)_invert(1)]"
+            />
+          </button>
           <div className="flex items-center justify-self-end">
             <button
               type="button"
@@ -205,7 +256,7 @@ export default function FixedHeader({
                 <li key={l.href} className="border-t border-[#faf6ee]/20 last:border-b">
                   <a
                     href={l.href}
-                    onClick={close}
+                    onClick={(e) => handleMenuLink(e, l)}
                     className={`group flex py-3 md:py-4 ${align}`}
                   >
                     <span

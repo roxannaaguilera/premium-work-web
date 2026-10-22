@@ -602,7 +602,7 @@ export default function ServiceDetail({
             claras con el objeto visible. Al pasar el cursor, el mismo telón
             rayado del inicio se cierra POR DETRÁS del objeto (el objeto queda
             por delante). En táctil y con movimiento reducido no hay telón. */}
-        <section className="py-16 md:py-24">
+        <section id="otros-servicios" className="scroll-mt-28 py-16 md:py-24">
           <h2 className="px-5 text-center font-serif text-[3.25rem] font-semibold uppercase leading-[0.95] tracking-[-0.01em] text-[#131834] md:text-[3.75rem] md:leading-[1.02]">
             <motion.span
               initial={reduceMotion ? false : { y: -160, opacity: 0 }}
