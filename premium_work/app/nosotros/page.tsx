@@ -13,12 +13,13 @@ gsap.registerPlugin(ScrollTrigger);
 /**
  * Vista «Nosotros»: solo tres tarjetas apiladas estilo Agrumea para
  * vender la experiencia: tarjetas grandes y centradas en el
- * escenario, con el melocotón visible alrededor. En escritorio,
- * GSAP fija el escenario (pin, scrub) y cada tarjeta entra desde
- * abajo tapando a la anterior, que se encoge, se inclina y se
- * oscurece; al soltar el pin aparece el footer. En pantallas
- * estrechas, bajas o con movimiento reducido, las tarjetas van una
- * debajo de otra en flujo normal.
+ * escenario, con el melocotón visible alrededor. Encabezado: la
+ * palabra NOSOTROS en grande y una descripción pequeña centrada;
+ * luego, las tarjetas. En escritorio, GSAP fija el escenario (pin,
+ * scrub) y cada tarjeta entra desde abajo tapando a la anterior, que
+ * se encoge, se inclina y se oscurece; al soltar el pin aparece el
+ * footer. En pantallas estrechas, bajas o con movimiento reducido,
+ * las tarjetas van una debajo de otra en flujo normal.
  */
 export default function NosotrosPage() {
   const { dict } = useLang();
@@ -90,7 +91,6 @@ export default function NosotrosPage() {
     {
       num: "01",
       title: dict.about.title,
-      copy: dict.about.copy,
       items: dict.sectors.items.map((s) => s.title),
     },
     {
@@ -110,6 +110,15 @@ export default function NosotrosPage() {
     <>
       <FixedHeader hideUntilTop />
       <main className="bg-[#fbe5d4] text-[#131834]">
+        {/* Encabezado: palabra en grande + descripción centrada */}
+        <section className="px-5 pt-44 pb-12 text-center md:px-16 md:pt-52">
+          <h1 className="font-serif text-[clamp(3.5rem,10vw,9rem)] leading-[0.95] font-semibold tracking-[-0.01em] uppercase">
+            {dict.about.eyebrow}
+          </h1>
+          <p className="mx-auto mt-6 max-w-2xl text-lg leading-8 text-[#131834]/70">
+            {dict.about.copy}
+          </p>
+        </section>
         <div
           ref={outerRef}
           className="relative"
