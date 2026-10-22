@@ -94,7 +94,7 @@ function OtherServiceCard({
       whileInView={{ opacity: 1, x: 0 }}
       viewport={{ margin: "-10% 0px" }}
       transition={{ duration: 0.6, delay: 0.1 + index * 0.08, ease: "easeOut" }}
-      className="w-[78vw] max-w-[360px] mx-auto md:w-full md:max-w-none"
+      className="w-[78vw] shrink-0 snap-start md:w-[360px]"
     >
       <Link href={href} className="group block overflow-hidden rounded-[1.5rem] bg-[#faf6ee]">
         <div
@@ -656,7 +656,7 @@ export default function ServiceDetail({
               {dict.serviceDetail.otherTitle.split(" ").slice(1).join(" ")}
             </motion.span>
           </h2>
-          <div className="mx-auto mt-10 grid max-w-6xl grid-cols-1 gap-4 px-5 md:mt-14 md:grid-cols-3 md:gap-6 md:px-10">
+          <div className="mt-10 flex snap-x snap-mandatory gap-4 overflow-x-auto px-5 pb-4 [scrollbar-width:none] md:mt-14 md:gap-6 md:px-10 [&::-webkit-scrollbar]:hidden">
             {items
               .filter((o) => o.slug !== slug)
               .map((o, fi) => {
