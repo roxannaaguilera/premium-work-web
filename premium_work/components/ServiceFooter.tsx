@@ -1,6 +1,8 @@
 "use client";
 
+import type { ReactNode } from "react";
 import Link from "next/link";
+import { motion, useReducedMotion } from "framer-motion";
 import { useLang } from "@/components/i18n/lang";
 
 const WHATSAPP_NUMBER = "34604858113";
@@ -24,7 +26,27 @@ function FacebookIcon() {
  * Pie de las páginas de servicio, estilo Yellowball: fondo azul noche,
  * columnas de enlaces, párrafo de la marca y el nombre gigante recortado
  * por el borde inferior.
+ *
+ * Al hacer scroll, cada bloque aparece y desaparece en orden de izquierda
+ * a derecha (contacto, servicios, enlaces, legal, frase y, por último, el
+ * logo gigante); al subir y bajar se vuelve a animar. Con movimiento
+ * reducido no hay animación.
  */
+function Reveal({ index, className, children }: { index: number; className?: string; children: ReactNode }) {
+  const reduceMotion = useReducedMotion();
+  return (
+    <motion.div
+      initial={reduceMotion ? false : { opacity: 0, x: -32 }}
+      whileInView={{ opacity: 1, x: 0 }}
+      viewport={{ margin: "-10% 0px" }}
+      transition={{ duration: 0.6, delay: index * 0.12, ease: "easeOut" }}
+      className={className}
+    >
+      {children}
+    </motion.div>
+  );
+}
+
 export function ServiceFooter() {
   const { dict } = useLang();
   const year = new Date().getFullYear();
@@ -43,7 +65,7 @@ export function ServiceFooter() {
       <div className="relative mx-auto flex w-full max-w-[1600px] flex-1 flex-col px-5 pt-12 md:px-10 md:pt-20">
         <div className="grid grid-cols-2 gap-x-6 gap-y-10 md:grid-cols-[1.3fr_1fr_1fr_1fr] md:gap-10">
           {/* Contacto */}
-          <div className="col-span-2 md:col-span-1">
+          <Reveal index={0} className="col-span-2 md:col-span-1">
             <a
               href={`mailto:${EMAIL}`}
               className="text-[1.4rem] font-semibold tracking-tight break-all transition-colors hover:text-[#e8b13a] md:text-[1.7rem]"
@@ -65,9 +87,10 @@ export function ServiceFooter() {
               <a href="https://www.facebook.com/" target="_blank" rel="noopener noreferrer" aria-label="Facebook" className="flex size-10 items-center justify-center rounded-full border border-white/20 text-[#f6ede1]/80 transition hover:border-[#e8b13a] hover:text-[#e8b13a]"><FacebookIcon /></a>
             </div>
             <p className="mt-10 text-sm text-[#f6ede1]/40">© Premium Work {year}</p>
-          </div>
+          </Reveal>
 
           {/* Servicios */}
+          <Reveal index={1}>
           <nav aria-label={sf.servicesTitle}>
             <p className="text-sm font-semibold">{sf.servicesTitle}</p>
             <ul className="mt-5 space-y-3">
@@ -78,8 +101,10 @@ export function ServiceFooter() {
               ))}
             </ul>
           </nav>
+          </Reveal>
 
           {/* Enlaces */}
+          <Reveal index={2}>
           <nav aria-label={sf.linksTitle}>
             <p className="text-sm font-semibold">{sf.linksTitle}</p>
             <ul className="mt-5 space-y-3">
@@ -90,8 +115,10 @@ export function ServiceFooter() {
               ))}
             </ul>
           </nav>
+          </Reveal>
 
           {/* Legal */}
+          <Reveal index={3}>
           <nav aria-label={sf.legalTitle}>
             <p className="text-sm font-semibold">{sf.legalTitle}</p>
             <ul className="mt-5 space-y-3">
@@ -102,16 +129,20 @@ export function ServiceFooter() {
               ))}
             </ul>
           </nav>
+          </Reveal>
         </div>
 
         {/* Párrafo de la marca */}
-        <p className="mt-auto max-w-5xl pt-12 text-base leading-relaxed text-[#f6ede1]/50 md:pt-20 md:text-lg">
+        <Reveal index={4} className="mt-auto">
+        <p className="max-w-5xl pt-12 text-base leading-relaxed text-[#f6ede1]/50 md:pt-20 md:text-lg">
           {dict.footer.tagline}
         </p>
+        </Reveal>
       </div>
 
       {/* Nombre gigante recortado por el borde inferior */}
-      <div aria-hidden="true" className="relative mt-4 overflow-hidden md:mt-6">
+      <Reveal index={5} className="relative mt-4 overflow-hidden md:mt-6">
+      <div aria-hidden="true">
         <p
           className="translate-y-[24%] text-center font-black whitespace-nowrap text-[#f6ede1]/[0.05] select-none"
           style={{ fontSize: "12.6vw", lineHeight: 0.85, letterSpacing: "-0.02em" }}
@@ -119,6 +150,7 @@ export function ServiceFooter() {
           PREMIUM WORK<span className="text-[#e8b13a]/40">.</span>
         </p>
       </div>
+      </Reveal>
     </footer>
   );
 }
