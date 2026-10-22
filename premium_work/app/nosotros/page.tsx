@@ -1,113 +1,185 @@
 "use client";
 
-import Link from "next/link";
+import { useLayoutEffect, useRef, useState } from "react";
+import gsap from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
 import FixedHeader from "@/components/chrome/FixedHeader";
-import { WhyUs } from "@/components/WhyUs";
 import { DirectContact } from "@/components/DirectContact";
 import { ServiceFooter } from "@/components/ServiceFooter";
 import { useLang } from "@/components/i18n/lang";
 
+gsap.registerPlugin(ScrollTrigger);
+
 /**
- * Vista «Nosotros»: página que vende Premium Work — titular, por qué
- * nosotros, sectores con enlace a cada detalle, cómo trabajamos y, al
- * final, la visión en texto centrado con los botones de contacto,
- * cerrada con el footer de servicio. Al bajar, el header desaparece
- * hasta volver arriba, como en las páginas de servicio.
+ * Vista «Nosotros»: solo tres tarjetas apiladas estilo Agrumea para
+ * vender la experiencia. En escritorio, GSAP fija el escenario (pin,
+ * scrub) y cada tarjeta entra desde abajo tapando a la anterior, que
+ * se encoge, se inclina y se oscurece; al soltar el pin aparece el
+ * footer. En pantallas estrechas y con movimiento reducido, las
+ * tarjetas van una debajo de otra en flujo normal.
  */
 export default function NosotrosPage() {
   const { dict } = useLang();
-  const items = dict.serviceDetail.items;
+  const outerRef = useRef<HTMLDivElement>(null);
+  const stageRef = useRef<HTMLDivElement>(null);
+  const cardRefs = useRef<(HTMLElement | null)[]>([]);
+  const shadeRefs = useRef<(HTMLDivElement | null)[]>([]);
+  const [stacked, setStacked] = useState(false);
+
+  useLayoutEffect(() => {
+    const mq = window.matchMedia("(prefers-reduced-motion: reduce)");
+    const update = () => setStacked(!mq.matches && window.innerWidth >= 480);
+    update();
+    window.addEventListener("resize", update);
+    mq.addEventListener("change", update);
+    return () => {
+      window.removeEventListener("resize", update);
+      mq.removeEventListener("change", update);
+    };
+  }, []);
+
+  useLayoutEffect(() => {
+    if (!stacked) return;
+    const outer = outerRef.current;
+    const stage = stageRef.current;
+    if (!outer || !stage) return;
+    const ctx = gsap.context(() => {
+      const tl = gsap.timeline({
+        scrollTrigger: {
+          trigger: outer,
+          start: "top top",
+          // Ojo: ScrollTrigger no entiende "vh" en start/end (lo leería
+          // como px); el recorrido son 2 pantallas y se calcula aquí.
+          end: () => `+=${window.innerHeight * 2}`,
+          scrub: true,
+          pin: stage,
+          pinSpacing: false,
+          anticipatePin: 1,
+          invalidateOnRefresh: true,
+        },
+      });
+      const [c1, c2, c3] = cardRefs.current;
+      const [s1, s2] = shadeRefs.current;
+      if (c2) tl.fromTo(c2, { yPercent: 100 }, { yPercent: 0, ease: "none" }, 0);
+      if (c1) tl.to(c1, { scale: 0.85, rotationZ: -3.8, rotationX: 8, ease: "none" }, 0);
+      if (s1) tl.fromTo(s1, { opacity: 0 }, { opacity: 0.26, ease: "none" }, 0);
+      if (c3) tl.fromTo(c3, { yPercent: 100 }, { yPercent: 0, ease: "none" }, 0.5);
+      if (c2) tl.to(c2, { scale: 0.85, rotationZ: -3.8, rotationX: 8, ease: "none" }, 0.5);
+      if (s2) tl.fromTo(s2, { opacity: 0 }, { opacity: 0.26, ease: "none" }, 0.5);
+    }, outer);
+    document.fonts?.ready.then(() => ScrollTrigger.refresh()).catch(() => {});
+    return () => ctx.revert();
+  }, [stacked]);
+
+  const cards: {
+    num: string;
+    title: string;
+    copy?: string;
+    items?: string[];
+    steps?: { title: string; copy: string }[];
+    contact?: boolean;
+  }[] = [
+    {
+      num: "01",
+      title: dict.about.title,
+      copy: dict.about.copy,
+      items: dict.sectors.items.map((s) => s.title),
+    },
+    {
+      num: "02",
+      title: dict.about.processTitle,
+      steps: dict.about.steps,
+    },
+    {
+      num: "03",
+      title: dict.about.visionEyebrow,
+      copy: dict.about.vision,
+      contact: true,
+    },
+  ];
 
   return (
     <>
       <FixedHeader hideUntilTop />
-      <main className="bg-[#faf6ee] text-[#131834]">
-        {/* Hero: la promesa */}
-        <section className="px-5 pt-44 pb-16 md:px-16 md:pt-52 md:pb-24">
-          <p className="eyebrow flex items-center gap-2 text-[#131834]/60">
-            <span className="text-[#eab308]" aria-hidden="true">◆</span> {dict.about.eyebrow}
-          </p>
-          <h1 className="font-serif mt-6 max-w-5xl text-[clamp(2.75rem,6vw,6rem)] leading-[0.95] font-semibold tracking-[-0.01em]">
-            {dict.about.title}
-          </h1>
-          <p className="mt-6 max-w-2xl text-lg leading-8 text-[#131834]/70">
-            {dict.about.copy}
-          </p>
-        </section>
-
-        {/* Por qué nosotros */}
-        <WhyUs />
-
-        {/* Sectores: cada tarjeta lleva a su detalle */}
-        <section className="bg-[#fbe5d4] px-5 py-16 md:px-16 md:py-24">
-          <p className="eyebrow flex items-center gap-2 text-[#131834]/60">
-            <span className="text-[#eab308]" aria-hidden="true">◆</span> {dict.sectors.eyebrow}
-          </p>
-          <h2 className="font-serif mt-4 max-w-4xl text-[clamp(2.5rem,5vw,5rem)] leading-[0.95] font-semibold tracking-[-0.01em]">
-            {dict.sectors.titleA}{dict.sectors.titleB}
-          </h2>
-          <p className="mt-4 max-w-2xl text-lg leading-8 text-[#131834]/70">
-            {dict.sectors.copy}
-          </p>
-          <ul className="mt-10 grid gap-4 md:mt-14 md:grid-cols-2 lg:grid-cols-3">
-            {items.map((item, i) => (
-              <li key={item.slug}>
-                <Link
-                  href={`/servicios/${item.slug}`}
-                  className="group block h-full rounded-2xl bg-[#faf6ee] p-6 transition duration-300 hover:-translate-y-1 md:p-8"
-                >
-                  <span className="font-mono text-sm text-[#131834]/40">
-                    {String(i + 1).padStart(2, "0")}
-                  </span>
-                  <h3 className="font-serif mt-3 text-3xl leading-tight font-semibold">
-                    {dict.sectors.items[i].title}
-                  </h3>
-                  <p className="mt-2 leading-7 text-[#131834]/70">
-                    {dict.sectors.items[i].copy}
-                  </p>
-                  <span className="mt-4 inline-block font-semibold transition-colors group-hover:text-[#eab308]">
-                    {dict.serviceDetail.discover} →
-                  </span>
-                </Link>
-              </li>
+      <main className="bg-[#fbe5d4] text-[#131834]">
+        <div
+          ref={outerRef}
+          className="relative"
+          style={{ minHeight: stacked ? "300vh" : undefined }}
+        >
+          <div
+            ref={stageRef}
+            className={
+              stacked
+                ? "relative h-[100vh] overflow-hidden"
+                : "relative px-5 py-24 md:px-10"
+            }
+            style={{ perspective: stacked ? "1400px" : undefined }}
+          >
+            {cards.map((card, i) => (
+              <article
+                key={card.num}
+                ref={(el) => {
+                  cardRefs.current[i] = el;
+                }}
+                className={`rounded-[2rem] bg-[#faf6ee] ${
+                  stacked ? "absolute inset-0" : "relative mb-6 last:mb-0"
+                }`}
+                style={{ zIndex: 10 + i * 10 }}
+              >
+                <div className="flex h-full flex-col justify-center px-6 pt-36 pb-10 md:px-12 md:pt-44">
+                  <p className="font-mono text-sm text-[#131834]/40">{card.num}</p>
+                  <h2 className="font-serif mt-4 text-[clamp(2rem,4.5vw,4rem)] leading-[1.02] font-semibold tracking-[-0.01em]">
+                    {card.title}
+                  </h2>
+                  {card.copy && (
+                    <p className="mt-5 max-w-2xl text-lg leading-8 text-[#131834]/70">
+                      {card.copy}
+                    </p>
+                  )}
+                  {card.items && (
+                    <p className="mt-6 text-base leading-7 font-semibold">
+                      {card.items.join(" · ")}
+                    </p>
+                  )}
+                  {card.steps && (
+                    <ol className="mt-6 space-y-5">
+                      {card.steps.map((step, si) => (
+                        <li key={step.title} className="flex gap-4">
+                          <span className="font-mono text-sm text-[#eab308]">
+                            {String(si + 1).padStart(2, "0")}
+                          </span>
+                          <span>
+                            <span className="block text-lg font-semibold">
+                              {step.title}
+                            </span>
+                            <span className="mt-1 block leading-7 text-[#131834]/70">
+                              {step.copy}
+                            </span>
+                          </span>
+                        </li>
+                      ))}
+                    </ol>
+                  )}
+                  {card.contact && (
+                    <div className="mt-8">
+                      <DirectContact kind="client" />
+                    </div>
+                  )}
+                </div>
+                {i < 2 && (
+                  <div
+                    ref={(el) => {
+                      shadeRefs.current[i] = el;
+                    }}
+                    aria-hidden="true"
+                    className="pointer-events-none absolute inset-0 rounded-[2rem] bg-black opacity-0"
+                  />
+                )}
+              </article>
             ))}
-          </ul>
-        </section>
-
-        {/* Cómo trabajamos */}
-        <section className="px-5 py-16 md:px-16 md:py-24">
-          <p className="eyebrow flex items-center gap-2 text-[#131834]/60">
-            <span className="text-[#eab308]" aria-hidden="true">◆</span> {dict.about.processTitle}
-          </p>
-          <ol className="mt-10 grid gap-8 md:mt-14 md:grid-cols-3 md:gap-6">
-            {dict.about.steps.map((step, i) => (
-              <li key={step.title} className="border-t-2 border-[#131834]/15 pt-6">
-                <p className="font-serif text-6xl leading-none font-semibold text-[#eab308]">
-                  /{String(i + 1).padStart(2, "0")}
-                </p>
-                <h3 className="font-serif mt-4 text-2xl leading-snug font-semibold">
-                  {step.title}
-                </h3>
-                <p className="mt-2 leading-7 text-[#131834]/70">{step.copy}</p>
-              </li>
-            ))}
-          </ol>
-        </section>
-
-        {/* Cierre: la visión, centrada, y los botones de contacto */}
-        <section className="px-5 pb-16 md:px-16 md:pb-24">
-          <div className="mx-auto max-w-3xl text-center">
-            <p className="eyebrow flex items-center justify-center gap-2 text-[#131834]/60">
-              <span className="text-[#eab308]" aria-hidden="true">◆</span> {dict.about.visionEyebrow}
-            </p>
-            <p className="font-serif mt-6 text-[clamp(1.75rem,3.5vw,3rem)] leading-[1.15] font-semibold tracking-[-0.01em]">
-              {dict.about.vision}
-            </p>
-            <div className="mt-10">
-              <DirectContact kind="client" center />
-            </div>
           </div>
-        </section>
+        </div>
       </main>
       <ServiceFooter />
     </>
