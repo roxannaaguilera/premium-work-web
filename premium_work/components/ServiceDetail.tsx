@@ -315,10 +315,6 @@ export default function ServiceDetail({
   const meshSlotRef = useRef<HTMLDivElement>(null);
   const splitHeadRef = useRef<HTMLParagraphElement>(null);
   const splitCtaRef = useRef<HTMLDivElement>(null);
-  // Píldora que sigue al cursor por la sección dividida (como la de las
-  // tarjetas): etiqueta, sin clic propio; el clic sigue siendo el botón.
-  const splitAreaRef = useRef<HTMLDivElement>(null);
-  const [splitPos, setSplitPos] = useState<{ x: number; y: number } | null>(null);
   useLayoutEffect(() => {
     if (!liveMesh) return;
     const slot = meshSlotRef.current;
@@ -531,21 +527,7 @@ export default function ServiceDetail({
           <section className="px-3 pt-2 pb-6 md:px-5 md:pb-8">
             {/* La sección va encerrada en un rectángulo de puntas redondeadas,
                 como en Yellowball, sobre el fondo melocotón de la página */}
-            <div
-              ref={splitAreaRef}
-              onMouseMove={(e) => {
-                const r = splitAreaRef.current?.getBoundingClientRect();
-                if (!r) return;
-                const rawX = e.clientX - r.left;
-                const rawY = e.clientY - r.top;
-                setSplitPos({
-                  x: Math.min(Math.max(rawX, 104), Math.max(104, r.width - 104)),
-                  y: Math.min(Math.max(rawY, 56), r.height - 8),
-                });
-              }}
-              onMouseLeave={() => setSplitPos(null)}
-              className="relative rounded-[2rem] bg-[#faf6ee] md:rounded-[2.5rem]"
-            >
+            <div className="relative rounded-[2rem] bg-[#faf6ee] md:rounded-[2.5rem]">
               {/* Guías verticales tenues dentro del panel */}
               <div aria-hidden="true" className="pointer-events-none absolute inset-0">
                 <span className="absolute top-0 bottom-0 left-1/4 w-px bg-[#131834]/[0.06]" />
@@ -596,17 +578,17 @@ export default function ServiceDetail({
                   ))}
                 </ul>
               </div>
-              <motion.div
+              {/* Etiqueta decorativa flotante, como las de Yellowball: no
+                  sigue al cursor ni se pulsa; flota en su sitio. */}
+              <div
                 aria-hidden="true"
-                animate={{ x: splitPos ? splitPos.x : 0, y: splitPos ? splitPos.y : 0, opacity: splitPos ? 1 : 0 }}
-                transition={{ type: "spring", stiffness: 350, damping: 30 }}
-                className="pointer-events-none absolute left-0 top-0 z-30 motion-reduce:hidden [@media(hover:none)]:hidden"
+                className="pw-float pointer-events-none absolute right-6 top-8 z-30 md:top-16"
               >
-                <span className="block -translate-x-1/2 -translate-y-[135%] whitespace-nowrap rounded-full bg-[#e8b13a] px-4 py-2 text-xs font-bold uppercase tracking-wider text-[#131834] shadow-lg">
+                <span className="block whitespace-nowrap rounded-full bg-[#e8b13a] px-4 py-2 text-xs font-bold uppercase tracking-wider text-[#131834] shadow-lg">
                   <span aria-hidden="true" className="mr-2">◆</span>
                   {dict.serviceDetail.requestTooltip}
                 </span>
-              </motion.div>
+              </div>
             </div>
           </section>
         ) : (
