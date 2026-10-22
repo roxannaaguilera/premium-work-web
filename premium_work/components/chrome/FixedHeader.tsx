@@ -1,6 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useRef, useState } from "react";
+import { usePathname } from "next/navigation";
 import gsap from "gsap";
 import { getLenis } from "@/lib/lenis-instance";
 import { useLang } from "@/components/i18n/lang";
@@ -39,12 +40,15 @@ export default function FixedHeader({
   scrolledAway?: boolean;
 }) {
   const { t, dict } = useLang();
+  const pathname = usePathname();
   const [hidden, setHidden] = useState(false);
   const [open, setOpen] = useState(false);
   const lastY = useRef(0);
   const overlayRef = useRef<HTMLDivElement>(null);
   const linksRef = useRef<HTMLUListElement>(null);
   const LINKS = LINK_HREFS.map((href, i) => ({ href, label: dict.header.nav[i] }));
+  const isActive = (href: string) =>
+    href === "/" ? pathname === "/" : pathname === href || pathname.startsWith(`${href}/`);
 
   useEffect(() => {
     const onScroll = () => {
@@ -173,23 +177,40 @@ export default function FixedHeader({
           </div>
         </div>
         <nav className="flex flex-1 items-center px-5 md:px-16">
-          <ul ref={linksRef} className="space-y-2 md:space-y-4">
-            {LINKS.map((l, i) => (
-              <li key={l.href}>
-                <a
-                  href={l.href}
-                  onClick={close}
-                  className="group flex items-baseline gap-4 md:gap-6"
-                >
-                  <span className="text-sm text-[#faf6ee]/50 font-mono">
-                    0{i + 1}
-                  </span>
-                  <span className="font-serif text-5xl md:text-7xl font-semibold leading-tight text-[#faf6ee] group-hover:text-[#eab308] transition-colors">
-                    {l.label}
-                  </span>
-                </a>
-              </li>
-            ))}
+          <ul ref={linksRef} className="w-full">
+            {LINKS.map((l) => {
+              const active = isActive(l.href);
+              return (
+                <li key={l.href} className="border-t border-[#faf6ee]/20 last:border-b">
+                  <a
+                    href={l.href}
+                    onClick={close}
+                    className="group block py-4 md:py-6"
+                  >
+                    <span
+                      className={`font-serif text-5xl font-semibold leading-tight transition-colors md:text-7xl ${
+                        active ? "text-[#faf6ee]" : "text-[#faf6ee]/40 group-hover:text-[#faf6ee]"
+                      }`}
+                    >
+                      {l.label.split("").map((ch, li) => (
+                        <span
+                          key={li}
+                          aria-hidden="true"
+                          className="pw-letter inline-block"
+                          style={{ animationDelay: `${li * 45}ms` }}
+                        >
+                          {ch === " " ? "\u00A0" : ch}
+                        </span>
+                      ))}
+                      <span className="sr-only">{l.label}</span>
+                      {active && (
+                        <span aria-hidden="true" className="ml-4 inline-block h-4 w-4 rotate-45 bg-[#eab308] align-middle md:h-5 md:w-5" />
+                      )}
+                    </span>
+                  </a>
+                </li>
+              );
+            })}
           </ul>
         </nav>
         <div className="flex flex-col md:flex-row gap-2 md:items-center md:justify-between px-5 md:px-16 pb-8 text-sm text-[#faf6ee]/70">

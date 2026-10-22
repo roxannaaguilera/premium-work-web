@@ -380,3 +380,16 @@ body {
 @media (prefers-reduced-motion: reduce) {
   .pw-float { animation: none; }
 }
+
+/* Ola del menú estilo Agrumea: al pasar el cursor, cada letra sube y baja
+   en secuencia de izquierda a derecha. El retardo por letra va en línea. */
+@keyframes pw-menu-wave {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-0.14em); }
+}
+.group:hover .pw-letter {
+  animation: pw-menu-wave 0.6s ease-in-out;
+}
+@media (prefers-reduced-motion: reduce) {
+  .pw-letter { animation: none !important; }
+}
