@@ -84,8 +84,9 @@ export default function FixedHeader({
 
   // CONTACTO baja al footer de la página (o a la página de contacto si
   // la página no tiene footer); SERVICIOS baja a «Otros servicios» (o
-  // al índice de servicios si la página no tiene esa sección). Se espera
-  // a que el menú se cierre para que el scroll no quede bloqueado.
+  // al detalle de Hoteles, anclado a esa sección, si la página no la
+  // tiene). Se espera a que el menú se cierre para que el scroll no
+  // quede bloqueado.
   const handleMenuLink = (e: { preventDefault(): void }, l: (typeof LINKS)[number]) => {
     if (!l.action) {
       close();
@@ -101,8 +102,7 @@ export default function FixedHeader({
       } else {
         const el = document.getElementById("otros-servicios");
         if (el) scrollToTarget(el as HTMLElement);
-        else if (window.location.pathname !== "/servicios") window.location.href = "/servicios";
-        else scrollToTarget(0);
+        else window.location.href = "/servicios/hoteles#otros-servicios";
       }
     }, 350);
   };

@@ -291,6 +291,17 @@ export default function ServiceDetail({
       /* sin vuelo: entrada directa */
     }
   }, [slug]);
+  // Si se entra con #otros-servicios (por ejemplo, desde SERVICIOS del
+  // menú), bajar a esa sección cuando la página ya está montada y el
+  // usuario aún no ha empezado a desplazarse.
+  useEffect(() => {
+    if (window.location.hash !== "#otros-servicios") return;
+    const t = window.setTimeout(() => {
+      if (window.scrollY > 100) return;
+      document.getElementById("otros-servicios")?.scrollIntoView({ behavior: "auto" });
+    }, 400);
+    return () => window.clearTimeout(t);
+  }, []);
   const [landed, setLanded] = useState(false);
   // El header se oculta en cuanto el detalle deja el reposo. Se deriva del
   // mismo progreso de scroll que sube el objeto (framer, con el contenedor
