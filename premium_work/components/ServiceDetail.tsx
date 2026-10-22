@@ -516,8 +516,10 @@ export default function ServiceDetail({
             rayado del inicio se cierra POR DETRÁS del objeto (el objeto queda
             por delante). En táctil y con movimiento reducido no hay telón. */}
         <section className="py-16 md:py-24">
-          <h2 className="px-5 text-center font-serif text-[2.5rem] font-semibold uppercase leading-[1.02] tracking-[-0.01em] text-[#131834] md:text-[3.75rem]">
-            {dict.serviceDetail.otherTitle}
+          <h2 className="px-5 text-center font-serif text-[3.25rem] font-semibold uppercase leading-[0.95] tracking-[-0.01em] text-[#131834] md:text-[3.75rem] md:leading-[1.02]">
+            {dict.serviceDetail.otherTitle.split(" ")[0]}
+            <br className="md:hidden" />{" "}
+            {dict.serviceDetail.otherTitle.split(" ").slice(1).join(" ")}
           </h2>
           <div className="mt-10 flex snap-x snap-mandatory gap-4 overflow-x-auto px-5 pb-4 [scrollbar-width:none] md:mt-14 md:gap-6 md:px-10 [&::-webkit-scrollbar]:hidden">
             {items
@@ -528,7 +530,7 @@ export default function ServiceDetail({
                   <Link
                     key={o.slug}
                     href={`/servicios/${o.slug}`}
-                    className="group w-[280px] shrink-0 snap-start overflow-hidden rounded-[1.5rem] bg-[#faf6ee] md:w-[360px]"
+                    className="group w-[78vw] shrink-0 snap-start overflow-hidden rounded-[1.5rem] bg-[#faf6ee] md:w-[360px]"
                   >
                     <div className="relative aspect-[3/4] overflow-hidden">
                       <div
