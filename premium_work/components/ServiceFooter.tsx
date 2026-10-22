@@ -24,7 +24,7 @@ function FacebookIcon() {
 
 /**
  * Pie de las páginas de servicio, estilo Yellowball: fondo azul noche,
- * columnas de enlaces y el nombre gigante recortado por el borde inferior.
+ * columnas de enlaces y el nombre gigante en dos líneas a ancho completo.
  *
  * Al hacer scroll, cada bloque aparece y desaparece en orden de izquierda
  * a derecha (contacto, servicios, enlaces, legal y, por último, el
@@ -132,14 +132,20 @@ export function ServiceFooter() {
         </div>
       </div>
 
-      {/* Nombre gigante recortado por el borde inferior */}
+      {/* Nombre gigante en dos líneas, a ancho completo */}
       <Reveal index={5} className="relative mt-4 overflow-hidden md:mt-6">
       <div aria-hidden="true" className="px-5 md:px-10">
         <p
-          className="font-logo translate-y-[24%] text-center font-black whitespace-nowrap text-[#f6ede1]/[0.05] select-none transition-[-webkit-text-stroke-color] duration-300 [-webkit-text-stroke:1.5px_transparent] hover:[-webkit-text-stroke-color:#eab308] text-[calc((100vw_-_40px)/8.566)] md:text-[calc((100vw_-_80px)/8.566)]"
+          className="font-logo text-center font-black whitespace-nowrap text-[#f6ede1]/[0.05] select-none text-[calc((100vw_-_40px)/4.92)] md:text-[calc((100vw_-_80px)/4.92)]"
           style={{ lineHeight: 0.85, letterSpacing: "-0.02em" }}
         >
-          PREMIUM WORK<span className="text-[#eab308]">.</span>
+          PREMIUM
+        </p>
+        <p
+          className="font-logo text-center font-black whitespace-nowrap text-[#f6ede1]/[0.05] select-none text-[calc((100vw_-_40px)/4.92)] md:text-[calc((100vw_-_80px)/4.92)]"
+          style={{ lineHeight: 0.85, letterSpacing: "-0.02em" }}
+        >
+          WORK<span className="text-[#eab308]">.</span>
         </p>
       </div>
       </Reveal>
