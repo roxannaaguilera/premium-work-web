@@ -13,14 +13,12 @@ gsap.registerPlugin(ScrollTrigger);
 /**
  * Vista «Nosotros»: solo tres tarjetas apiladas estilo Agrumea para
  * vender la experiencia: tarjetas centradas en el escenario (con el
- * melocotón visible alrededor, no a sangre completa) que al final
- * quedan como una colección: cada tarjeta nueva aterriza un poco
- * más abajo que la anterior, así las de debajo asoman por arriba,
- * más pequeñas y más oscuras cuanto más abajo quedan en la pila.
- * En escritorio, GSAP fija el escenario (pin, scrub); al soltar el
- * pin aparece el footer. En pantallas estrechas, bajas o con
- * movimiento reducido, las tarjetas van una debajo de otra en flujo
- * normal.
+ * melocotón visible alrededor, no a sangre completa). Cada tarjeta
+ * nueva sube desde abajo y tapa del todo a la anterior, que se va
+ * atrás: se encoge, se inclina y se oscurece. En escritorio, GSAP
+ * fija el escenario (pin, scrub); al soltar el pin aparece el
+ * footer. En pantallas estrechas, bajas o con movimiento reducido,
+ * las tarjetas van una debajo de otra en flujo normal.
  */
 export default function NosotrosPage() {
   const { dict } = useLang();
@@ -67,18 +65,17 @@ export default function NosotrosPage() {
       });
       const [c1, c2, c3] = cardRefs.current;
       const [s1, s2] = shadeRefs.current;
-      // La pila: la 2 aterriza 56 px más abajo que la 1 y la 3 112 px
-      // más abajo; las de debajo asoman por arriba. Cada tarjeta que
-      // queda debajo se encoge un poco y se oscurece, más cuanto más
-      // abajo queda en la pila.
-      if (c2) tl.fromTo(c2, { yPercent: 140, y: 0 }, { yPercent: 0, y: 56, ease: "none" }, 0);
-      if (c1) tl.to(c1, { scale: 0.96, ease: "none" }, 0);
+      // Como Agrumea: cada tarjeta nueva sube desde abajo y tapa del
+      // todo a la anterior, que se va atrás: se encoge, se inclina y
+      // se oscurece. Las tarjetas van centradas y miden menos que el
+      // escenario, así que con yPercent 100 asomarían por abajo en
+      // reposo; 140 las esconde del todo.
+      if (c2) tl.fromTo(c2, { yPercent: 140 }, { yPercent: 0, ease: "none" }, 0);
+      if (c1) tl.to(c1, { scale: 0.85, rotationZ: -3.8, rotationX: 8, ease: "none" }, 0);
       if (s1) tl.fromTo(s1, { opacity: 0 }, { opacity: 0.26, ease: "none" }, 0);
-      if (c3) tl.fromTo(c3, { yPercent: 140, y: 0 }, { yPercent: 0, y: 112, ease: "none" }, 0.5);
-      if (c2) tl.to(c2, { scale: 0.96, ease: "none" }, 0.5);
+      if (c3) tl.fromTo(c3, { yPercent: 140 }, { yPercent: 0, ease: "none" }, 0.5);
+      if (c2) tl.to(c2, { scale: 0.85, rotationZ: -3.8, rotationX: 8, ease: "none" }, 0.5);
       if (s2) tl.fromTo(s2, { opacity: 0 }, { opacity: 0.26, ease: "none" }, 0.5);
-      if (c1) tl.to(c1, { scale: 0.94, ease: "none" }, 0.5);
-      if (s1) tl.to(s1, { opacity: 0.4, ease: "none" }, 0.5);
     }, outer);
     document.fonts?.ready.then(() => ScrollTrigger.refresh()).catch(() => {});
     return () => ctx.revert();
