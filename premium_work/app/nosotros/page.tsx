@@ -12,11 +12,13 @@ gsap.registerPlugin(ScrollTrigger);
 
 /**
  * Vista «Nosotros»: solo tres tarjetas apiladas estilo Agrumea para
- * vender la experiencia. En escritorio, GSAP fija el escenario (pin,
- * scrub) y cada tarjeta entra desde abajo tapando a la anterior, que
- * se encoge, se inclina y se oscurece; al soltar el pin aparece el
- * footer. En pantallas estrechas y con movimiento reducido, las
- * tarjetas van una debajo de otra en flujo normal.
+ * vender la experiencia: tarjetas grandes y centradas en el
+ * escenario, con el melocotón visible alrededor. En escritorio,
+ * GSAP fija el escenario (pin, scrub) y cada tarjeta entra desde
+ * abajo tapando a la anterior, que se encoge, se inclina y se
+ * oscurece; al soltar el pin aparece el footer. En pantallas
+ * estrechas, bajas o con movimiento reducido, las tarjetas van una
+ * debajo de otra en flujo normal.
  */
 export default function NosotrosPage() {
   const { dict } = useLang();
@@ -28,7 +30,10 @@ export default function NosotrosPage() {
 
   useLayoutEffect(() => {
     const mq = window.matchMedia("(prefers-reduced-motion: reduce)");
-    const update = () => setStacked(!mq.matches && window.innerWidth >= 480);
+    const update = () =>
+      setStacked(
+        !mq.matches && window.innerWidth >= 480 && window.innerHeight >= 600,
+      );
     update();
     window.addEventListener("resize", update);
     mq.addEventListener("change", update);
@@ -60,10 +65,13 @@ export default function NosotrosPage() {
       });
       const [c1, c2, c3] = cardRefs.current;
       const [s1, s2] = shadeRefs.current;
-      if (c2) tl.fromTo(c2, { yPercent: 100 }, { yPercent: 0, ease: "none" }, 0);
+      // Las tarjetas van centradas y miden menos que el escenario, así
+      // que con yPercent 100 asomarían por abajo en reposo; 140 las
+      // esconde del todo.
+      if (c2) tl.fromTo(c2, { yPercent: 140 }, { yPercent: 0, ease: "none" }, 0);
       if (c1) tl.to(c1, { scale: 0.85, rotationZ: -3.8, rotationX: 8, ease: "none" }, 0);
       if (s1) tl.fromTo(s1, { opacity: 0 }, { opacity: 0.26, ease: "none" }, 0);
-      if (c3) tl.fromTo(c3, { yPercent: 100 }, { yPercent: 0, ease: "none" }, 0.5);
+      if (c3) tl.fromTo(c3, { yPercent: 140 }, { yPercent: 0, ease: "none" }, 0.5);
       if (c2) tl.to(c2, { scale: 0.85, rotationZ: -3.8, rotationX: 8, ease: "none" }, 0.5);
       if (s2) tl.fromTo(s2, { opacity: 0 }, { opacity: 0.26, ease: "none" }, 0.5);
     }, outer);
@@ -117,13 +125,20 @@ export default function NosotrosPage() {
             style={{ perspective: stacked ? "1400px" : undefined }}
           >
             {cards.map((card, i) => (
-              <article
+              <div
                 key={card.num}
+                className={
+                  stacked
+                    ? "pointer-events-none absolute inset-0 flex items-center justify-center"
+                    : "pointer-events-none relative mb-6 last:mb-0"
+                }
+              >
+              <article
                 ref={(el) => {
                   cardRefs.current[i] = el;
                 }}
-                className={`rounded-[2rem] bg-[#faf6ee] ${
-                  stacked ? "absolute inset-0" : "relative mb-6 last:mb-0"
+                className={`pointer-events-auto relative rounded-[2rem] bg-[#faf6ee] ${
+                  stacked ? "w-[min(92vw,80rem)] h-[92vh]" : "w-full"
                 }`}
                 style={{ zIndex: 10 + i * 10 }}
               >
@@ -177,6 +192,7 @@ export default function NosotrosPage() {
                   />
                 )}
               </article>
+              </div>
             ))}
           </div>
         </div>
