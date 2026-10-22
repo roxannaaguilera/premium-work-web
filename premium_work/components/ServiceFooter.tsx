@@ -24,11 +24,10 @@ function FacebookIcon() {
 
 /**
  * Pie de las páginas de servicio, estilo Yellowball: fondo azul noche,
- * columnas de enlaces, párrafo de la marca y el nombre gigante recortado
- * por el borde inferior.
+ * columnas de enlaces y el nombre gigante recortado por el borde inferior.
  *
  * Al hacer scroll, cada bloque aparece y desaparece en orden de izquierda
- * a derecha (contacto, servicios, enlaces, legal, frase y, por último, el
+ * a derecha (contacto, servicios, enlaces, legal y, por último, el
  * logo gigante); al subir y bajar se vuelve a animar. Con movimiento
  * reducido no hay animación.
  */
@@ -131,13 +130,6 @@ export function ServiceFooter() {
           </nav>
           </Reveal>
         </div>
-
-        {/* Párrafo de la marca */}
-        <Reveal index={4} className="mt-auto">
-        <p className="max-w-5xl pt-12 text-base leading-relaxed text-[#f6ede1]/50 md:pt-20 md:text-lg">
-          {dict.footer.tagline}
-        </p>
-        </Reveal>
       </div>
 
       {/* Nombre gigante recortado por el borde inferior */}
