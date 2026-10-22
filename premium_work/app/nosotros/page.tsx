@@ -8,9 +8,11 @@ import { ServiceFooter } from "@/components/ServiceFooter";
 import { useLang } from "@/components/i18n/lang";
 
 /**
- * Vista «Nosotros»: página que vende Premium Work — titular, contacto
- * directo, por qué nosotros, sectores con enlace a cada detalle y cómo
- * trabajamos, cerrada con el footer de servicio.
+ * Vista «Nosotros»: página que vende Premium Work — titular, por qué
+ * nosotros, sectores con enlace a cada detalle, cómo trabajamos y, al
+ * final, la visión en texto centrado con los botones de contacto,
+ * cerrada con el footer de servicio. Al bajar, el header desaparece
+ * hasta volver arriba, como en las páginas de servicio.
  */
 export default function NosotrosPage() {
   const { dict } = useLang();
@@ -18,9 +20,9 @@ export default function NosotrosPage() {
 
   return (
     <>
-      <FixedHeader />
+      <FixedHeader hideUntilTop />
       <main className="bg-[#faf6ee] text-[#131834]">
-        {/* Hero: la promesa + contacto directo */}
+        {/* Hero: la promesa */}
         <section className="px-5 pt-44 pb-16 md:px-16 md:pt-52 md:pb-24">
           <p className="eyebrow flex items-center gap-2 text-[#131834]/60">
             <span className="text-[#eab308]" aria-hidden="true">◆</span> {dict.about.eyebrow}
@@ -31,9 +33,6 @@ export default function NosotrosPage() {
           <p className="mt-6 max-w-2xl text-lg leading-8 text-[#131834]/70">
             {dict.about.copy}
           </p>
-          <div className="mt-10 max-w-2xl">
-            <DirectContact kind="client" />
-          </div>
         </section>
 
         {/* Por qué nosotros */}
@@ -93,6 +92,21 @@ export default function NosotrosPage() {
               </li>
             ))}
           </ol>
+        </section>
+
+        {/* Cierre: la visión, centrada, y los botones de contacto */}
+        <section className="px-5 pb-16 md:px-16 md:pb-24">
+          <div className="mx-auto max-w-3xl text-center">
+            <p className="eyebrow flex items-center justify-center gap-2 text-[#131834]/60">
+              <span className="text-[#eab308]" aria-hidden="true">◆</span> {dict.about.visionEyebrow}
+            </p>
+            <p className="font-serif mt-6 text-[clamp(1.75rem,3.5vw,3rem)] leading-[1.15] font-semibold tracking-[-0.01em]">
+              {dict.about.vision}
+            </p>
+            <div className="mt-10">
+              <DirectContact kind="client" center />
+            </div>
+          </div>
         </section>
       </main>
       <ServiceFooter />

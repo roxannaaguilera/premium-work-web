@@ -59,6 +59,8 @@ const es = {
       { title: "Te proponemos el equipo", copy: "Perfiles seleccionados para tu evento, con un solo interlocutor de principio a fin." },
       { title: "El día del evento, nosotros nos encargamos", copy: "Equipo puntual, coordinado y supervisado. Si surge un imprevisto, lo resolvemos sin que lo notes." },
     ],
+    visionEyebrow: "Nuestra visión",
+    vision: "Creemos que un servicio está a la altura cuando el personal cumple el protocolo de tu empresa y cuida cada detalle. Por eso nuestra visión es ofrecer siempre lo mejor: actitud, uniformidad y protocolo para convertir cada evento en una experiencia memorable.",
   },
   sectors: {
     aria: "Sectores en los que trabajamos",
@@ -327,6 +329,8 @@ const en: Dict = {
       { title: "We propose the team", copy: "Profiles selected for your event, with a single point of contact from start to finish." },
       { title: "On the day, we take care of it", copy: "Punctual, coordinated, supervised team. If something unexpected comes up, we solve it before you notice." },
     ],
+    visionEyebrow: "Our vision",
+    vision: "We believe a service lives up to your brand when the staff follows your company's protocol and cares for every detail. That is why our vision is to always offer the best: attitude, a uniform image and protocol to turn every event into a memorable experience.",
   },
   sectors: {
     aria: "Sectors we work in",

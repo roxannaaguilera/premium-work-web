@@ -11,10 +11,12 @@ export function DirectContact({
   kind,
   service,
   sector,
+  center,
 }: {
   kind: "client" | "candidate";
   service?: string;
   sector?: string;
+  center?: boolean;
 }) {
   const { t } = useLang();
   const detail = [service, sector].filter(Boolean).join(" — ");
@@ -51,11 +53,11 @@ export function DirectContact({
     </a>
   );
   return (
-    <div>
+    <div className={center ? "text-center" : undefined}>
       <p className="text-base leading-7 text-[#4a5264]">
         {kind === "client" ? t("directContact.introClient") : t("directContact.introCandidate")}
       </p>
-      <div className="mt-6 flex flex-col gap-3 sm:flex-row sm:flex-wrap">
+      <div className={`mt-6 flex flex-col gap-3 sm:flex-row sm:flex-wrap ${center ? "items-center sm:justify-center" : ""}`}>
         {kind === "candidate" ? (
           <>
             {mailButton}
