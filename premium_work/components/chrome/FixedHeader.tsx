@@ -46,6 +46,7 @@ export default function FixedHeader({
   const lastY = useRef(0);
   const overlayRef = useRef<HTMLDivElement>(null);
   const linksRef = useRef<HTMLUListElement>(null);
+  const menuLogoRef = useRef<HTMLImageElement>(null);
   const LINKS = LINK_HREFS.map((href, i) => ({ href, label: dict.header.nav[i] }));
   const isActive = (href: string) =>
     href === "/" ? pathname === "/" : pathname === href || pathname.startsWith(`${href}/`);
@@ -82,6 +83,14 @@ export default function FixedHeader({
         { opacity: 0, yPercent: -4 },
         { opacity: 1, yPercent: 0, duration: 0.45, ease: "power3.out" }
       );
+      // El logo entra con un movimiento de ola (salvo movimiento reducido).
+      const logo = menuLogoRef.current;
+      if (logo && !window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+        const tl = gsap.timeline({ delay: 0.05, defaults: { ease: "sine.inOut" } });
+        tl.fromTo(logo, { y: -36, opacity: 0 }, { y: 16, opacity: 1, duration: 0.35 })
+          .to(logo, { y: -8, duration: 0.3 })
+          .to(logo, { y: 0, duration: 0.25 });
+      }
       const items = linksRef.current?.querySelectorAll("li");
       if (items?.length) {
         gsap.fromTo(
@@ -163,9 +172,10 @@ export default function FixedHeader({
         <div className="grid grid-cols-[1fr_auto_1fr] items-center px-5 md:px-8 pt-7 md:pt-9 pb-3">
           <div aria-hidden="true" />
           <img
+            ref={menuLogoRef}
             src="/images/logo-premium-work.png"
             alt="Premium Work"
-            className="h-16 md:h-20 w-auto justify-self-center [filter:brightness(0)_invert(1)]"
+            className="h-28 md:h-36 w-auto justify-self-center [filter:brightness(0)_invert(1)]"
           />
           <div className="flex items-center justify-self-end">
             <button
@@ -182,15 +192,14 @@ export default function FixedHeader({
           <ul ref={linksRef} className="w-full">
             {LINKS.map((l, i) => {
               const active = isActive(l.href);
-              // Escalera: cada palabra empieza más a la derecha que la
-              // anterior. SERVICIOS arranca en la mitad de INICIO (18% del
-              // ancho) y NOSOTROS y CONTACTO siguen el escalón, sin
-              // compartir el borde derecho.
+              // Simetría: INICIO pegado a la izquierda y CONTACTO pegado a
+              // la derecha (mismo resguardo); SERVICIOS arranca en la mitad
+              // de INICIO (18%) y NOSOTROS deja el mismo 18% a la derecha.
               const align = [
                 "justify-start",
                 "justify-center md:justify-start md:pl-[18%]",
-                "justify-end pr-6 md:justify-start md:pl-[32%] md:pr-0",
-                "justify-end md:justify-start md:pl-[45%]",
+                "justify-end pr-6 md:pr-[18%]",
+                "justify-end",
               ][i];
               return (
                 <li key={l.href} className="border-t border-[#faf6ee]/20 last:border-b">
