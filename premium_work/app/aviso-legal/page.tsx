@@ -11,7 +11,7 @@ export default function LegalNotice() {
     {es ? <>
       <h2>1. Titular del sitio</h2>
       <p>Este sitio presenta los servicios de Premium Work. El contacto se realiza por correo electrónico o WhatsApp.</p>
-      <dl><dt>Nombre comercial</dt><dd>Premium Work</dd><dt>Contacto</dt><dd><a href={`mailto:${legal.email}`}>{legal.email}</a></dd></dl>
+      <dl><dt>Nombre comercial</dt><dd>Premium Work</dd><dt>Contacto</dt><dd><a href={`mailto:${legal.email}`}>{legal.email}</a></dd><dt>Alojamiento</dt><dd>{legal.hosting}</dd></dl>
       <p>Premium Work todavía no es una empresa registrada en España, por lo que no se exhiben datos registrales ni de responsable del tratamiento. Esta información se completará conforme al artículo 10 de la <a href="https://www.boe.es/buscar/act.php?id=BOE-A-2002-13758#a10">Ley 34/2002 de servicios de la sociedad de la información y de comercio electrónico</a> cuando se complete el registro.</p>
       <h2>2. Uso del sitio</h2>
       <p>La consulta de la web es gratuita, sin perjuicio del coste de conexión contratado por el usuario. El contacto se realiza por correo electrónico o WhatsApp. No se permite introducir contenido ilícito, suplantar identidades, intentar acceder a datos ajenos ni comprometer la seguridad del servicio.</p>
@@ -28,7 +28,7 @@ export default function LegalNotice() {
     </> : <>
       <h2>1. Website owner</h2>
       <p>This website presents Premium Work's services. Contact is made by email or WhatsApp.</p>
-      <dl><dt>Trade name</dt><dd>Premium Work</dd><dt>Contact</dt><dd><a href={`mailto:${legal.email}`}>{legal.email}</a></dd></dl>
+      <dl><dt>Trade name</dt><dd>Premium Work</dd><dt>Contact</dt><dd><a href={`mailto:${legal.email}`}>{legal.email}</a></dd><dt>Hosting</dt><dd>{legal.hosting}</dd></dl>
       <p>Premium Work is not yet a company registered in Spain, so no registry details or controller data are displayed. This information will be completed in accordance with Article 10 of <a href="https://www.boe.es/buscar/act.php?id=BOE-A-2002-13758#a10">Law 34/2002 on information society services and electronic commerce</a> once registration is complete.</p>
       <h2>2. Use of the website</h2>
       <p>Browsing the website is free, without prejudice to the connection costs contracted by the user. Contact is made by email or WhatsApp. Introducing unlawful content, impersonating others, attempting to access third-party data or compromising the security of the service is not allowed.</p>

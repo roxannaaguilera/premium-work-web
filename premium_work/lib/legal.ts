@@ -25,7 +25,7 @@ export const legal = {
   reviewed: true,
 };
 
-export const PRIVACY_VERSION = "2026-10-22.1";
+export const PRIVACY_VERSION = "2026-10-22.2";
 
 export function legalReady() {
   return (
