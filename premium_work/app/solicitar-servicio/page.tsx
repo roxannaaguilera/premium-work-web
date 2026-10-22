@@ -1,7 +1,7 @@
 "use client";
 
 import { Navbar } from '@/components/Navbar';
-import { ClientForm } from '@/components/ClientForm';
+import { DirectContact } from '@/components/DirectContact';
 import { sectorLabels, serviceLabels } from '@/lib/service-options';
 import { useLang } from '@/components/i18n/lang';
 import { useSearchParams } from 'next/navigation';
@@ -15,6 +15,8 @@ function RequestServiceContent() {
   const labels = sectorLabels(lang);
   const services = serviceLabels(lang);
   const selectedSector = sector && labels[sector] ? sector : "";
+  const sectorLabel = selectedSector ? labels[selectedSector] : "";
+  const serviceLabel = servicio && Object.hasOwn(services, servicio) ? services[servicio] : "";
 
   return (
     <main className="service-request-surface relative min-h-screen px-5 pb-10 pt-28 text-[#131313] md:px-8 md:pt-32"><Navbar /><div className="form-separator" aria-hidden="true" />
@@ -25,7 +27,7 @@ function RequestServiceContent() {
           <p className="mt-4 max-w-md text-base leading-7 text-[#4a5264]">{t("requestPage.copy")}</p>
         </div>
         <div className="rounded-[24px] bg-white p-6 shadow-[0_30px_70px_rgba(0,0,0,0.12)] md:p-8">
-          <ClientForm sector={selectedSector} service={servicio && Object.hasOwn(services, servicio) ? servicio : ""} />
+          <DirectContact kind="client" service={serviceLabel} sector={sectorLabel} />
         </div>
       </div>
     </main>

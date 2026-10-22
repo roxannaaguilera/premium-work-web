@@ -8,6 +8,12 @@ export const runtime = "nodejs";
 const LIMIT = 4 * 1024 * 1024 + 64 * 1024;
 
 export async function POST(request: Request) {
+  // Desactivado temporalmente: sin empresa registrada en España no se puede
+  // almacenar datos. El código queda conservado y se reactiva poniendo
+  // FORMS_ENABLED=1 en el entorno cuando la empresa esté registrada.
+  if (process.env.FORMS_ENABLED !== "1") {
+    return Response.json({ error: "Formulario desactivado temporalmente." }, { status: 410 });
+  }
   if (request.headers.get("origin") && request.headers.get("origin") !== new URL(request.url).origin) return Response.json({ error: "Origen no permitido." }, { status: 403 });
   try {
     const reader = request.body?.getReader();

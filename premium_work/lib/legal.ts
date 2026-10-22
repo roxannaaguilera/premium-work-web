@@ -1,35 +1,31 @@
-// DATOS FICTICIOS EXCLUSIVAMENTE PARA PRUEBAS.
-// Sustituir por información legal real antes de publicar.
+// Sin empresa registrada todavía en España: no se exhiben datos de responsable.
+// Completar con la información legal real cuando la empresa esté registrada.
 
 export const legal = {
   brand: "Premium Work",
 
-  owner: "Premium Work Servicios Profesionales, S.L.",
-  taxId: "B12345678",
-  address: "Calle Ejemplo 123, 28000 Madrid, España",
+  owner: "",
+  taxId: "",
+  address: "",
 
-  registry:
-    "Sociedad ficticia. Datos registrales utilizados exclusivamente para pruebas.",
+  registry: "",
 
   email: "hola@premiumwork.es",
 
-  candidateRetention:
-    "Los datos de candidatos se conservarán durante 12 meses desde la recepción de la candidatura.",
+  candidateRetention: "",
 
-  clientRetention:
-    "Los datos de clientes se conservarán durante la relación comercial y durante los plazos legalmente aplicables.",
+  clientRetention: "",
 
   hosting: "Vercel",
 
-  supabaseRegion: "Europa",
+  supabaseRegion: "",
 
-  internationalTransfers:
-    "Configuración ficticia utilizada exclusivamente para pruebas. Pendiente de verificar los proveedores, regiones y mecanismos aplicables.",
+  internationalTransfers: "",
 
   reviewed: true,
 };
 
-export const PRIVACY_VERSION = "2026-09-10.1";
+export const PRIVACY_VERSION = "2026-10-22.1";
 
 export function legalReady() {
   return (

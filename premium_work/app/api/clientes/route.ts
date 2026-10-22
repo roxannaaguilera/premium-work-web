@@ -9,6 +9,12 @@ export const runtime = "nodejs";
 const error = (message: string, status = 400) => Response.json({ error: message }, { status, headers: privateHeaders });
 
 export async function POST(request: Request) {
+  // Desactivado temporalmente: sin empresa registrada en España no se puede
+  // almacenar datos. El código queda conservado y se reactiva poniendo
+  // FORMS_ENABLED=1 en el entorno cuando la empresa esté registrada.
+  if (process.env.FORMS_ENABLED !== "1") {
+    return error("Formulario desactivado temporalmente.", 410);
+  }
   if (request.headers.get("origin") && request.headers.get("origin") !== new URL(request.url).origin) return error("Origen no permitido.", 403);
   if (!request.headers.get("content-type")?.startsWith("application/json")) return error("Formato de solicitud no válido.", 415);
   let data: Record<string, unknown>;
