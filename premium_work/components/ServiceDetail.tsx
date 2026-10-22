@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useEffect, useLayoutEffect, useRef, useState, type RefObject } from "react";
-import { motion, useMotionValue, useMotionValueEvent, useScroll, useTransform } from "framer-motion";
+import { motion, useMotionValue, useMotionValueEvent, useReducedMotion, useScroll, useTransform } from "framer-motion";
 import FixedHeader from "@/components/chrome/FixedHeader";
 import { ServiceFooter } from "@/components/ServiceFooter";
 import { useLang } from "@/components/i18n/lang";
@@ -81,6 +81,7 @@ export default function ServiceDetail({
   scrollContainer?: RefObject<HTMLDivElement | null>;
 }) {
   const { dict } = useLang();
+  const reduceMotion = useReducedMotion();
   const items = dict.serviceDetail.items;
   const idx = items.findIndex((i) => i.slug === slug);
   const item = items[idx];
@@ -517,9 +518,25 @@ export default function ServiceDetail({
             por delante). En táctil y con movimiento reducido no hay telón. */}
         <section className="py-16 md:py-24">
           <h2 className="px-5 text-center font-serif text-[3.25rem] font-semibold uppercase leading-[0.95] tracking-[-0.01em] text-[#131834] md:text-[3.75rem] md:leading-[1.02]">
-            {dict.serviceDetail.otherTitle.split(" ")[0]}
+            <motion.span
+              initial={reduceMotion ? false : { y: -48, opacity: 0 }}
+              whileInView={{ y: 0, opacity: 1 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.7, ease: [0.34, 1.56, 0.64, 1] }}
+              className="inline-block"
+            >
+              {dict.serviceDetail.otherTitle.split(" ")[0]}
+            </motion.span>
             <br className="md:hidden" />{" "}
-            {dict.serviceDetail.otherTitle.split(" ").slice(1).join(" ")}
+            <motion.span
+              initial={reduceMotion ? false : { y: -48, opacity: 0 }}
+              whileInView={{ y: 0, opacity: 1 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.7, delay: 0.15, ease: [0.34, 1.56, 0.64, 1] }}
+              className="inline-block"
+            >
+              {dict.serviceDetail.otherTitle.split(" ").slice(1).join(" ")}
+            </motion.span>
           </h2>
           <div className="mt-10 flex snap-x snap-mandatory gap-4 overflow-x-auto px-5 pb-4 [scrollbar-width:none] md:mt-14 md:gap-6 md:px-10 [&::-webkit-scrollbar]:hidden">
             {items
