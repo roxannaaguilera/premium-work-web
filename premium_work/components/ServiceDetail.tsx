@@ -90,9 +90,9 @@ function OtherServiceCard({
   const [pos, setPos] = useState<{ x: number; y: number } | null>(null);
   return (
     <motion.div
-      initial={reduceMotion ? false : { opacity: 0, y: 28 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true }}
+      initial={reduceMotion ? false : { opacity: 0, x: -48 }}
+      whileInView={{ opacity: 1, x: 0 }}
+      viewport={{ margin: "-10% 0px" }}
       transition={{ duration: 0.6, delay: 0.1 + index * 0.08, ease: "easeOut" }}
       className="w-[78vw] shrink-0 snap-start md:w-[360px]"
     >
@@ -612,15 +612,7 @@ export default function ServiceDetail({
               className="inline-block"
             >
               {dict.serviceDetail.otherTitle.split(" ")[0]}
-            </motion.span>
-            <br className="md:hidden" />{" "}
-            <motion.span
-              initial={reduceMotion ? false : { y: -160, opacity: 0 }}
-              whileInView={{ y: 0, opacity: 1 }}
-              viewport={{ margin: "-25% 0px -25% 0px" }}
-              transition={{ duration: 1, delay: 0.2, ease: [0.34, 1.56, 0.64, 1] }}
-              className="inline-block"
-            >
+              <br className="md:hidden" />{" "}
               {dict.serviceDetail.otherTitle.split(" ").slice(1).join(" ")}
             </motion.span>
           </h2>
