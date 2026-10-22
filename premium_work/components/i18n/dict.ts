@@ -49,6 +49,17 @@ const es = {
       { title: "Respuesta sin demoras", copy: "Sustitución ágil ante imprevistos." },
     ],
   },
+  about: {
+    eyebrow: "Nosotros",
+    title: "Tu evento, con un equipo a la altura de tu marca.",
+    copy: "Premium Work pone personal de hospitality profesional en hoteles, restaurantes, catering y eventos en Madrid. Tú te ocupas de tus invitados; nosotros, de que el servicio funcione.",
+    processTitle: "Así trabajamos",
+    steps: [
+      { title: "Cuéntanos tu evento", copy: "Fecha, lugar y qué perfiles necesitas. Sin formularios eternos: por WhatsApp o correo." },
+      { title: "Te proponemos el equipo", copy: "Perfiles seleccionados para tu evento, con un solo interlocutor de principio a fin." },
+      { title: "El día del evento, nosotros nos encargamos", copy: "Equipo puntual, coordinado y supervisado. Si surge un imprevisto, lo resolvemos sin que lo notes." },
+    ],
+  },
   sectors: {
     aria: "Sectores en los que trabajamos",
     eyebrow: "Sectores",
@@ -304,6 +315,17 @@ const en: Dict = {
       { title: "Responsive supervision", copy: "Control when it matters most." },
       { title: "Frictionless management", copy: "One contact. One clear direction." },
       { title: "No-delay response", copy: "Swift replacements for the unexpected." },
+    ],
+  },
+  about: {
+    eyebrow: "About us",
+    title: "Your event, with a team worthy of your brand.",
+    copy: "Premium Work provides professional hospitality staff for hotels, restaurants, catering and events in Madrid. You take care of your guests; we make sure the service works.",
+    processTitle: "How we work",
+    steps: [
+      { title: "Tell us about your event", copy: "Date, venue and the profiles you need. No endless forms: WhatsApp or email." },
+      { title: "We propose the team", copy: "Profiles selected for your event, with a single point of contact from start to finish." },
+      { title: "On the day, we take care of it", copy: "Punctual, coordinated, supervised team. If something unexpected comes up, we solve it before you notice." },
     ],
   },
   sectors: {
