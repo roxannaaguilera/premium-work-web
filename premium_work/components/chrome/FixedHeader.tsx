@@ -178,14 +178,17 @@ export default function FixedHeader({
         </div>
         <nav className="flex flex-1 items-center px-5 md:px-16">
           <ul ref={linksRef} className="w-full">
-            {LINKS.map((l) => {
+            {LINKS.map((l, i) => {
               const active = isActive(l.href);
+              // Disposición escalonada estilo Agrumea: cada palabra más a la
+              // derecha que la anterior (izquierda, centro, derecha, borde).
+              const align = ["justify-start", "justify-center", "justify-end pr-6 md:pr-20", "justify-end"][i];
               return (
                 <li key={l.href} className="border-t border-[#faf6ee]/20 last:border-b">
                   <a
                     href={l.href}
                     onClick={close}
-                    className="group block py-4 md:py-6"
+                    className={`group flex py-4 md:py-6 ${align}`}
                   >
                     <span
                       className={`font-serif text-5xl font-semibold leading-tight transition-colors md:text-7xl ${
