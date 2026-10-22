@@ -53,7 +53,7 @@ export function ServiceFooter() {
   const linkCls = "text-[#f6ede1]/55 transition-colors hover:text-[#f6ede1]";
 
   return (
-    <footer className="relative flex min-h-dvh flex-col overflow-hidden bg-[#131834] text-[#f6ede1]">
+    <footer id="contacto" className="relative flex flex-col overflow-hidden bg-[#131834] text-[#f6ede1]">
       {/* Guías verticales tenues, como en Yellowball */}
       <div aria-hidden="true" className="pointer-events-none absolute inset-0">
         <span className="absolute top-0 bottom-0 left-1/4 w-px bg-white/[0.05]" />
@@ -61,7 +61,7 @@ export function ServiceFooter() {
         <span className="absolute top-0 bottom-0 left-3/4 w-px bg-white/[0.05]" />
       </div>
 
-      <div className="relative mx-auto flex w-full max-w-[1600px] flex-1 flex-col px-5 pt-12 md:px-10 md:pt-20">
+      <div className="relative mx-auto flex w-full max-w-[1600px] flex-col px-5 pt-12 md:px-10 md:pt-20">
         <div className="grid grid-cols-2 gap-x-6 gap-y-10 md:grid-cols-[1.3fr_1fr_1fr_1fr] md:gap-10">
           {/* Contacto */}
           <Reveal index={0} className="col-span-2 md:col-span-1">
@@ -136,7 +136,7 @@ export function ServiceFooter() {
       <Reveal index={5} className="relative mt-4 overflow-hidden md:mt-6">
       <div aria-hidden="true" className="px-5 md:px-10">
         <p
-          className="font-logo translate-y-[24%] text-center font-black whitespace-nowrap text-[#f6ede1]/[0.05] select-none text-[calc((100vw_-_40px)/8.566)] md:text-[calc((100vw_-_80px)/8.566)]"
+          className="font-logo translate-y-[24%] text-center font-black whitespace-nowrap text-[#f6ede1]/[0.05] select-none transition-colors duration-300 hover:text-[#eab308] text-[calc((100vw_-_40px)/8.566)] md:text-[calc((100vw_-_80px)/8.566)]"
           style={{ lineHeight: 0.85, letterSpacing: "-0.02em" }}
         >
           PREMIUM WORK<span className="text-[#eab308]">.</span>
