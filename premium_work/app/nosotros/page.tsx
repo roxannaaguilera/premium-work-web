@@ -18,8 +18,8 @@ gsap.registerPlugin(ScrollTrigger);
  * luego, las tarjetas. En escritorio, GSAP fija el escenario (pin,
  * scrub) y cada tarjeta entra desde abajo tapando a la anterior, que
  * se encoge, se inclina y se oscurece; al soltar el pin aparece el
- * footer. En pantallas estrechas, bajas o con movimiento reducido,
- * las tarjetas van una debajo de otra en flujo normal.
+ * footer. En pantallas bajas o con movimiento reducido, las tarjetas
+ * van una debajo de otra en flujo normal.
  */
 export default function NosotrosPage() {
   const { dict } = useLang();
@@ -32,9 +32,7 @@ export default function NosotrosPage() {
   useLayoutEffect(() => {
     const mq = window.matchMedia("(prefers-reduced-motion: reduce)");
     const update = () =>
-      setStacked(
-        !mq.matches && window.innerWidth >= 480 && window.innerHeight >= 600,
-      );
+      setStacked(!mq.matches && window.innerHeight >= 600);
     update();
     window.addEventListener("resize", update);
     mq.addEventListener("change", update);
