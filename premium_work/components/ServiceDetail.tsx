@@ -174,6 +174,17 @@ export default function ServiceDetail({
   const items = dict.serviceDetail.items;
   const idx = items.findIndex((i) => i.slug === slug);
   const item = items[idx];
+  // En modo overlay no hay <img> en el hueco: precargar el natural del objeto
+  // para el tope de ancho (la URL es la textura del carrusel y suele estar
+  // en caché, así que no añade descarga).
+  const [meshAspect, setMeshAspect] = useState(0);
+  useEffect(() => {
+    setMeshAspect(0);
+    const im = new Image();
+    im.src = item.img;
+    if (im.complete && im.naturalWidth > 0) setMeshAspect(im.naturalWidth / im.naturalHeight);
+    else im.onload = () => setMeshAspect(im.naturalWidth / im.naturalHeight);
+  }, [item.img]);
   const sector = dict.sectors.items[idx];
   const lines = splitTitle(sector.title.toUpperCase());
   const titleRef = useRef<HTMLHeadingElement>(null);
@@ -228,7 +239,16 @@ export default function ServiceDetail({
       const img = wrap?.querySelector("img");
       const gap = 32;
       const viewH = sticky.clientHeight || window.innerHeight;
-      const h = viewH * 0.5;
+      // Tope de ancho: en pantallas estrechas un objeto ancho (el ticket de
+      // Festivales, la carta de Privados) a 50vh de alto desborda el ancho;
+      // se encoge hasta caber en el 86% del ancho, sin deformar.
+      let h = viewH * 0.5;
+      const nw = img?.naturalWidth ?? 0;
+      const nh = img?.naturalHeight ?? 0;
+      const aspect = nw > 0 && nh > 0 ? nw / nh : meshAspect;
+      if (aspect > 0) {
+        h = Math.min(h, (window.innerWidth * 0.86) / aspect);
+      }
       const top = viewH - h / 2;
       sticky.style.paddingBottom = `${h / 2 + gap}px`;
       sticky.style.justifyContent = "flex-end";
@@ -248,11 +268,12 @@ export default function ServiceDetail({
       riseScale.set(s);
       const half = viewH / 2;
       const endMid = titleMid - shift;
+      const endH = aspect > 0 ? Math.min(titleH / frac, (window.innerWidth * 0.86) / aspect) : titleH / frac;
       (window as Window & { __pwDetailPose?: { drop: number; end: number; fill: number; fillEnd: number } }).__pwDetailPose = {
         drop: (objectMid - half) / half,
         end: (endMid - half) / half,
         fill: h / viewH,
-        fillEnd: titleH / (viewH * frac),
+        fillEnd: endH / viewH,
       };
     };
     place();
@@ -268,7 +289,7 @@ export default function ServiceDetail({
       window.removeEventListener("resize", place);
       delete (window as Window & { __pwDetailPose?: { drop: number; end: number; fill: number; fillEnd: number } }).__pwDetailPose;
     };
-  }, [titleSize, riseTarget, riseScale, slug]);
+  }, [titleSize, riseTarget, riseScale, slug, meshAspect]);
 
   // Vuelo del clon (técnica Agrumea, sin panel): si hay datos de vuelo en
   // sessionStorage, un clon fixed vuela desde el rect del héroe hasta el reposo,
