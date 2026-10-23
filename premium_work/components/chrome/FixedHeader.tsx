@@ -281,7 +281,7 @@ export default function FixedHeader({
                     className={`group flex py-3 md:py-4 ${align}`}
                   >
                     <span
-                      className={`font-logo text-[clamp(3.75rem,min(11vw,14dvh),11rem)] max-[480px]:text-[2.75rem] font-semibold uppercase leading-none transition-colors ${
+                      className={`font-logo text-[clamp(3.75rem,min(11vw,14dvh),11rem)] max-[480px]:text-[2rem] font-semibold uppercase leading-none transition-colors ${
                         active ? "text-[#faf6ee]" : "text-[#faf6ee]/40 group-hover:text-[#faf6ee]"
                       }`}
                     >
