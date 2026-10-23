@@ -285,12 +285,6 @@ export default function FixedHeader({
             })}
           </ul>
         </nav>
-        <div className="flex flex-col md:flex-row gap-2 md:items-center md:justify-between px-5 md:px-16 pb-8 text-sm text-[#faf6ee]/70">
-          <span>{t("header.tagline")}</span>
-          <a href="/solicitar-servicio" onClick={close} className="underline underline-offset-4 hover:text-[#eab308]">
-            {t("header.requestService")} →
-          </a>
-        </div>
       </div>
     </>
   );

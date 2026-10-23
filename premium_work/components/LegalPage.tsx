@@ -3,7 +3,6 @@
 import type { ReactNode } from "react";
 import FixedHeader from "@/components/chrome/FixedHeader";
 import { ServiceFooter } from "@/components/ServiceFooter";
-import { legalReady } from "@/lib/legal";
 import { useLang } from "@/components/i18n/lang";
 
 export function LegalPage({ title, children }: { title: string; children: ReactNode }) {
@@ -17,7 +16,6 @@ export function LegalPage({ title, children }: { title: string; children: ReactN
         </p>
         <h1 className="font-serif mt-5 text-[clamp(2.5rem,5vw,5rem)] leading-[0.95] font-semibold tracking-[-0.01em]">{title}</h1>
         <p className="mt-5 text-sm text-[#131834]/60">{t("legal.version")}</p>
-        {!legalReady() && <p className="my-6 rounded-2xl bg-[#131834] p-5 text-sm leading-7 text-[#faf6ee]"><strong className="text-[#eab308]">{t("legal.pendingTitle")}</strong> {t("legal.pending")}</p>}
         {children}
         <nav aria-label={t("legal.navAria")} className="mt-12 flex flex-wrap gap-5 border-t border-[#131834]/15 pt-6 text-sm font-semibold">
           <a className="underline underline-offset-4 transition-colors hover:text-[#eab308]" href="/aviso-legal">{t("legal.notice")}</a>
