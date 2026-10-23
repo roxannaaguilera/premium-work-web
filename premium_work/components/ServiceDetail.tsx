@@ -92,7 +92,7 @@ function OtherServiceCard({
     <motion.div
       initial={reduceMotion ? false : { opacity: 0, x: -48 }}
       whileInView={{ opacity: 1, x: 0 }}
-      viewport={{ margin: "-10% 0px" }}
+      viewport={{ margin: "-10% 0px", once: true }}
       transition={{ duration: 0.6, delay: 0.1 + index * 0.08, ease: "easeOut" }}
       className="w-[78vw] shrink-0 snap-start md:w-[360px]"
     >
@@ -656,7 +656,7 @@ export default function ServiceDetail({
               {dict.serviceDetail.otherTitle.split(" ").slice(1).join(" ")}
             </motion.span>
           </h2>
-          <div className="mt-10 flex snap-x snap-mandatory gap-4 overflow-x-auto px-5 pb-4 [scrollbar-width:none] md:mt-14 md:gap-6 md:px-10 [&::-webkit-scrollbar]:hidden">
+          <div className="mt-10 flex snap-x snap-mandatory gap-4 overflow-x-auto px-5 pb-4 [scrollbar-width:none] scroll-pl-5 md:mt-14 md:gap-6 md:px-10 md:scroll-pl-10 [&::-webkit-scrollbar]:hidden">
             {items
               .filter((o) => o.slug !== slug)
               .map((o, fi) => {
