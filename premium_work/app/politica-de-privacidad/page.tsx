@@ -10,7 +10,7 @@ export default function PrivacyPolicy() {
   return <LegalPage title={es ? "Política de privacidad" : "Privacy policy"}>
     {es ? <>
       <h2>1. Contacto</h2>
-      <p>Premium Work todavía no es una empresa registrada en España, por lo que no se exhiben datos registrales. Los datos que nos envíes al contactarnos se tratarán únicamente para responderte (ver apartado 3). Contacto: <a href={`mailto:${legal.email}`}>{legal.email}</a>. Versión informativa: {PRIVACY_VERSION}.</p>
+      <p>Los datos que nos envíes al contactarnos se tratarán únicamente para responderte (ver apartado 3). Contacto: <a href={`mailto:${legal.email}`}>{legal.email}</a>. Versión informativa: {PRIVACY_VERSION}.</p>
       <h2>2. Qué recoge esta web</h2>
       <p>Nada. Esta web no tiene formularios ni almacena datos personales de visitantes, clientes o candidatos. No hay base de datos de clientes ni bolsa de candidatos en el sitio. La única preferencia guardada en tu navegador es el idioma (español o inglés), en el almacenamiento local, sin seguimiento ni analítica. Durante la visita, el sitio también guarda datos técnicos de sesión (ver política de cookies).</p>
       <h2>3. Contacto por correo y WhatsApp</h2>
@@ -23,7 +23,7 @@ export default function PrivacyPolicy() {
       <p><a href="https://eur-lex.europa.eu/eli/reg/2016/679/oj?locale=es">Reglamento General de Protección de Datos</a>, <a href="https://www.boe.es/buscar/act.php?id=BOE-A-2018-16673">Ley Orgánica 3/2018</a> y <a href="https://www.aepd.es/documento/guia-modelo-clausula-informativa.pdf">guía de la AEPD sobre el deber de informar</a>.</p>
     </> : <>
       <h2>1. Contact</h2>
-      <p>Premium Work is not yet a company registered in Spain, so no registry details are displayed. Any data you send us when contacting us will be processed only to reply to you (see section 3). Contact: <a href={`mailto:${legal.email}`}>{legal.email}</a>. Informative version: {PRIVACY_VERSION}.</p>
+      <p>Any data you send us when contacting us will be processed only to reply to you (see section 3). Contact: <a href={`mailto:${legal.email}`}>{legal.email}</a>. Informative version: {PRIVACY_VERSION}.</p>
       <h2>2. What this website collects</h2>
       <p>Nothing. This website has no forms and does not store personal data of visitors, clients or candidates. There is no client database or candidate pool on the site. The only preference saved in your browser is the language (Spanish or English), in local storage, with no tracking or analytics. During your visit, the site also stores technical session data (see cookie policy).</p>
       <h2>3. Contact by email and WhatsApp</h2>
