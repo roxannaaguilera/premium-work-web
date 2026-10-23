@@ -149,7 +149,8 @@ export default function NosotrosPage() {
                 }`}
                 style={{ zIndex: 10 + i * 10 }}
               >
-                <div className="flex h-full flex-col justify-center px-6 pt-36 pb-10 md:px-12 md:pt-44">
+                <div data-lenis-prevent className="h-full overflow-y-auto rounded-[2rem]">
+                <div className="flex min-h-full flex-col justify-center px-6 pt-36 pb-10 md:px-12 md:pt-44">
                   <p className="font-mono text-sm text-[#131834]/40">{card.num}</p>
                   <h2 className="font-serif mt-4 text-[clamp(2rem,4.5vw,4rem)] leading-[1.02] font-semibold tracking-[-0.01em]">
                     {card.title}
@@ -188,6 +189,7 @@ export default function NosotrosPage() {
                       <DirectContact kind="client" />
                     </div>
                   )}
+                </div>
                 </div>
                 {i < 2 && (
                   <div
