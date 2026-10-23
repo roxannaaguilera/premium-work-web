@@ -538,9 +538,9 @@ export default function ElementsCarousel() {
         wrap.rotation.z = isFront ? 0 : -reach * 0.08;
         // El principal entra entero en pantalla; los laterales más pequeños.
         // En vertical manda el ancho visible: el objeto nunca se sale por
-        // los lados (como mucho ocupa el 85 % del ancho).
+        // los lados y deja asomar a los vecinos, como en escritorio.
         const fit =
-          Math.min(halfH0 * 1.15, halfH0 * camera.aspect * 1.7) / ITEM_SIZE;
+          Math.min(halfH0 * 1.15, halfH0 * camera.aspect * 1.45) / ITEM_SIZE;
         const boost = isFront ? 1 + 0.14 * hoverT : 1;
         wrap.scale.setScalar(!inView ? 0.001 : isFront ? fit * boost : fit * 0.66);
         wrap.visible = inView && i !== hiddenIdxRef.current;

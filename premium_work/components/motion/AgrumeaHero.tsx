@@ -14,22 +14,23 @@ export default function AgrumeaHero() {
     <section
       id="inicio"
       aria-label={t("hero.aria")}
-      className="relative h-screen overflow-hidden bg-[#fdf3eb]"
+      className="relative h-screen overflow-hidden bg-[#fdf3eb] supports-[height:100dvh]:h-dvh"
     >
       {/* Carrusel: cada objeto cae, rebota una vez y se queda */}
       <div className="relative h-full">
         <ElementsCarousel />
 
-        {/* Desliza para descubrir, como Agrumea */}
-        <p className="pointer-events-none absolute inset-x-0 bottom-16 z-[2] text-center text-[11px] font-semibold uppercase tracking-[0.4em] text-[#131834]/70 md:bottom-8">
+        {/* Desliza para descubrir, como Agrumea: tamaño fluido y pasos
+            a 1024 px y 480 px, como el título de Agrumea. */}
+        <p className="pointer-events-none absolute inset-x-0 bottom-16 z-[2] text-center text-[clamp(10px,2.5vw,11px)] font-semibold uppercase tracking-[0.4em] text-[#131834]/70 lg:bottom-8">
           {t("hero.hint")}
         </p>
       </div>
 
-      {/* Privacidad y cookies */}
+      {/* Privacidad y cookies: margen lateral 20 px en móvil, como Agrumea */}
       <a
         href="/politica-de-privacidad"
-        className="absolute bottom-6 left-6 z-[2] text-xs text-[#131834]/70 underline underline-offset-4 hover:text-[#131834]"
+        className="absolute bottom-6 left-6 z-[2] text-xs text-[#131834]/70 underline underline-offset-4 hover:text-[#131834] max-[480px]:bottom-5 max-[480px]:left-5"
       >
         {t("hero.privacy")}
       </a>
