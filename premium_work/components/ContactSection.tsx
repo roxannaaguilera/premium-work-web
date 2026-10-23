@@ -1,6 +1,6 @@
 "use client";
 
-import { ClientForm } from "@/components/ClientForm";
+import { DirectContact } from "@/components/DirectContact";
 import { useLang } from "@/components/i18n/lang";
 
 export function ContactSection() {
@@ -18,7 +18,7 @@ export function ContactSection() {
           {t("contact.copy")}
         </p>
         <div className="mt-8">
-          <ClientForm />
+          <DirectContact kind="client" />
         </div>
       </div>
     </section>

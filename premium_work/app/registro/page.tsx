@@ -1,7 +1,7 @@
 "use client";
 
 import { Navbar } from "@/components/Navbar";
-import { CandidateForm } from "@/components/CandidateForm";
+import { DirectContact } from "@/components/DirectContact";
 import { useLang } from "@/components/i18n/lang";
 
 export default function RegistrationPage() {
@@ -14,7 +14,7 @@ export default function RegistrationPage() {
         <h1 className="display mt-6 text-5xl leading-[.92] md:text-7xl">{t("registerPage.title")}</h1>
         <p className="mt-7 max-w-md leading-7 text-[#4a5264]">{t("registerPage.copy")}</p>
       </div>
-      <CandidateForm />
+      <DirectContact kind="candidate" />
     </div>
   </main>;
 }

@@ -1,11 +1,17 @@
 "use client";
 
 import { useCallback, useEffect, useRef, useState } from "react";
+import { usePathname } from "next/navigation";
 import gsap from "gsap";
 import { getLenis } from "@/lib/lenis-instance";
 import { useLang } from "@/components/i18n/lang";
 
-const LINK_HREFS = ["/", "/servicios", "/nosotros", "/solicitar-servicio"];
+const MENU_LINKS: { href: string; action?: "footer" | "otros-servicios" }[] = [
+  { href: "/" },
+  { href: "/servicios", action: "otros-servicios" },
+  { href: "/nosotros" },
+  { href: "#contacto", action: "footer" },
+];
 
 function LangToggle() {
   const { lang, setLang } = useLang();
@@ -39,12 +45,16 @@ export default function FixedHeader({
   scrolledAway?: boolean;
 }) {
   const { t, dict } = useLang();
+  const pathname = usePathname();
   const [hidden, setHidden] = useState(false);
   const [open, setOpen] = useState(false);
   const lastY = useRef(0);
   const overlayRef = useRef<HTMLDivElement>(null);
   const linksRef = useRef<HTMLUListElement>(null);
-  const LINKS = LINK_HREFS.map((href, i) => ({ href, label: dict.header.nav[i] }));
+  const menuLogoRef = useRef<HTMLImageElement>(null);
+  const LINKS = MENU_LINKS.map((l, i) => ({ ...l, label: dict.header.nav[i] }));
+  const isActive = (href: string) =>
+    href === "/" ? pathname === "/" : pathname === href || pathname.startsWith(`${href}/`);
 
   useEffect(() => {
     const onScroll = () => {
@@ -64,6 +74,45 @@ export default function FixedHeader({
 
   const close = useCallback(() => setOpen(false), []);
 
+  // Desplazar con Lenis cuando está activo; si no, scroll nativo suave.
+  const scrollToTarget = (target: HTMLElement | number) => {
+    const lenis = getLenis();
+    if (lenis) lenis.scrollTo(target);
+    else if (typeof target === "number") window.scrollTo({ top: target, behavior: "smooth" });
+    else target.scrollIntoView({ behavior: "smooth" });
+  };
+
+  // CONTACTO baja al footer de la página (o a la página de contacto si
+  // la página no tiene footer); SERVICIOS baja a «Otros servicios» (o
+  // al detalle de Hoteles, anclado a esa sección, si la página no la
+  // tiene). Se espera a que el menú se cierre para que el scroll no
+  // quede bloqueado.
+  const handleMenuLink = (e: { preventDefault(): void }, l: (typeof LINKS)[number]) => {
+    if (!l.action) {
+      close();
+      return;
+    }
+    e.preventDefault();
+    close();
+    window.setTimeout(() => {
+      if (l.action === "footer") {
+        const el = document.getElementById("contacto") ?? document.querySelector("footer");
+        if (el) scrollToTarget(el as HTMLElement);
+        else window.location.href = "/solicitar-servicio";
+      } else {
+        const el = document.getElementById("otros-servicios");
+        if (el) scrollToTarget(el as HTMLElement);
+        else window.location.href = "/servicios/hoteles#otros-servicios";
+      }
+    }, 350);
+  };
+
+  // El logo del menú lleva arriba, al header de la página.
+  const goTop = () => {
+    close();
+    window.setTimeout(() => scrollToTarget(0), 350);
+  };
+
   // Bloqueo de scroll + animación de apertura/cierre del menú
   useEffect(() => {
     const overlay = overlayRef.current;
@@ -78,6 +127,14 @@ export default function FixedHeader({
         { opacity: 0, yPercent: -4 },
         { opacity: 1, yPercent: 0, duration: 0.45, ease: "power3.out" }
       );
+      // El logo entra con un movimiento de ola (salvo movimiento reducido).
+      const logo = menuLogoRef.current;
+      if (logo && !window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+        const tl = gsap.timeline({ delay: 0.05, defaults: { ease: "sine.inOut" } });
+        tl.fromTo(logo, { y: -36, opacity: 0 }, { y: 16, opacity: 1, duration: 0.35 })
+          .to(logo, { y: -8, duration: 0.3 })
+          .to(logo, { y: 0, duration: 0.25 });
+      }
       const items = linksRef.current?.querySelectorAll("li");
       if (items?.length) {
         gsap.fromTo(
@@ -154,13 +211,23 @@ export default function FixedHeader({
         aria-modal="true"
         aria-label={t("header.menuLabel")}
         style={{ display: "none", opacity: 0 }}
-        className="fixed inset-0 z-[70] flex-col bg-[#131834] text-[#faf6ee]"
+        className="fixed inset-0 z-[70] flex-col overflow-y-auto bg-[#131834] text-[#faf6ee]"
       >
         <div className="grid grid-cols-[1fr_auto_1fr] items-center px-5 md:px-8 pt-7 md:pt-9 pb-3">
           <div aria-hidden="true" />
-          <span className="font-serif text-xl md:text-2xl tracking-[0.25em] font-semibold justify-self-center">
-            PREMIUM WORK
-          </span>
+          <button
+            type="button"
+            onClick={goTop}
+            aria-label={t("header.logoLabel")}
+            className="justify-self-center cursor-pointer bg-transparent p-0"
+          >
+            <img
+              ref={menuLogoRef}
+              src="/images/logo-premium-work.png"
+              alt="Premium Work"
+              className="block h-28 md:h-36 w-auto [filter:brightness(0)_invert(1)]"
+            />
+          </button>
           <div className="flex items-center justify-self-end">
             <button
               type="button"
@@ -173,23 +240,49 @@ export default function FixedHeader({
           </div>
         </div>
         <nav className="flex flex-1 items-center px-5 md:px-16">
-          <ul ref={linksRef} className="space-y-2 md:space-y-4">
-            {LINKS.map((l, i) => (
-              <li key={l.href}>
-                <a
-                  href={l.href}
-                  onClick={close}
-                  className="group flex items-baseline gap-4 md:gap-6"
-                >
-                  <span className="text-sm text-[#faf6ee]/50 font-mono">
-                    0{i + 1}
-                  </span>
-                  <span className="font-serif text-5xl md:text-7xl font-semibold leading-tight text-[#faf6ee] group-hover:text-[#eab308] transition-colors">
-                    {l.label}
-                  </span>
-                </a>
-              </li>
-            ))}
+          <ul ref={linksRef} className="w-full">
+            {LINKS.map((l, i) => {
+              const active = isActive(l.href);
+              // Simetría: INICIO pegado a la izquierda y CONTACTO pegado a
+              // la derecha (mismo resguardo); SERVICIOS arranca en la mitad
+              // de INICIO (18%) y NOSOTROS deja el mismo 18% a la derecha.
+              const align = [
+                "justify-start",
+                "justify-center md:justify-start md:pl-[18%]",
+                "justify-end pr-6 md:pr-[18%]",
+                "justify-end",
+              ][i];
+              return (
+                <li key={l.href} className="border-t border-[#faf6ee]/20 last:border-b">
+                  <a
+                    href={l.href}
+                    onClick={(e) => handleMenuLink(e, l)}
+                    className={`group flex py-3 md:py-4 ${align}`}
+                  >
+                    <span
+                      className={`font-logo text-[clamp(3.75rem,min(11vw,14dvh),11rem)] font-semibold uppercase leading-none transition-colors ${
+                        active ? "text-[#faf6ee]" : "text-[#faf6ee]/40 group-hover:text-[#faf6ee]"
+                      }`}
+                    >
+                      {l.label.split("").map((ch, li) => (
+                        <span
+                          key={li}
+                          aria-hidden="true"
+                          className="pw-letter inline-block"
+                          style={{ animationDelay: `${li * 45}ms` }}
+                        >
+                          {ch === " " ? "\u00A0" : ch}
+                        </span>
+                      ))}
+                      <span className="sr-only">{l.label}</span>
+                      {active && (
+                        <span aria-hidden="true" className="ml-[0.3em] inline-block h-[0.18em] w-[0.18em] rotate-45 bg-[#eab308] align-middle" />
+                      )}
+                    </span>
+                  </a>
+                </li>
+              );
+            })}
           </ul>
         </nav>
         <div className="flex flex-col md:flex-row gap-2 md:items-center md:justify-between px-5 md:px-16 pb-8 text-sm text-[#faf6ee]/70">

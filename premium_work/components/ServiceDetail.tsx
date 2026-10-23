@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useEffect, useLayoutEffect, useRef, useState, type RefObject } from "react";
-import { motion, useMotionValue, useMotionValueEvent, useScroll, useTransform } from "framer-motion";
+import { motion, useMotionValue, useMotionValueEvent, useReducedMotion, useScroll, useTransform } from "framer-motion";
 import FixedHeader from "@/components/chrome/FixedHeader";
 import { ServiceFooter } from "@/components/ServiceFooter";
 import { useLang } from "@/components/i18n/lang";
@@ -69,6 +69,92 @@ function splitTitle(title: string): string[] {
 
 export type Flight = { src: string; slug: string; fromY: number; fromH: number; rotate: number };
 
+/** Tarjeta de «Otros servicios»: entra con un leve ascenso escalonado y su
+    píldora «Descubrir el servicio» sigue al cursor por encima de la tarjeta
+    (solo con puntero fino; en táctil y con movimiento reducido no hay píldora). */
+function OtherServiceCard({
+  href,
+  img,
+  discover,
+  title,
+  index,
+}: {
+  href: string;
+  img: string;
+  discover: string;
+  title: string;
+  index: number;
+}) {
+  const reduceMotion = useReducedMotion();
+  const areaRef = useRef<HTMLDivElement>(null);
+  const [pos, setPos] = useState<{ x: number; y: number } | null>(null);
+  return (
+    <motion.div
+      initial={reduceMotion ? false : { opacity: 0, x: -48 }}
+      whileInView={{ opacity: 1, x: 0 }}
+      viewport={{ margin: "-10% 0px" }}
+      transition={{ duration: 0.6, delay: 0.1 + index * 0.08, ease: "easeOut" }}
+      className="w-[78vw] shrink-0 snap-start md:w-[360px]"
+    >
+      <Link href={href} className="group block overflow-hidden rounded-[1.5rem] bg-[#faf6ee]">
+        <div
+          ref={areaRef}
+          onMouseMove={(e) => {
+            const r = areaRef.current?.getBoundingClientRect();
+            if (!r) return;
+            const rawX = e.clientX - r.left;
+            const rawY = e.clientY - r.top;
+            setPos({
+              x: Math.min(Math.max(rawX, 104), Math.max(104, r.width - 104)),
+              y: Math.min(Math.max(rawY, 56), r.height - 8),
+            });
+          }}
+          onMouseLeave={() => setPos(null)}
+          className="relative aspect-[3/4] overflow-hidden"
+        >
+          <div
+            aria-hidden="true"
+            className="absolute inset-0 motion-reduce:hidden [@media(hover:none)]:hidden"
+          >
+            <div
+              className="absolute inset-y-0 left-0 w-1/2 -translate-x-[101%] transition-transform duration-700 ease-[cubic-bezier(0.65,0,0.35,1)] group-hover:translate-x-0"
+              style={{ background: "repeating-linear-gradient(90deg, #131834 0px, #131834 22px, #1b2148 22px, #1b2148 44px)" }}
+            >
+              <div className="absolute inset-x-0 bottom-0 h-1.5 bg-[#eab308]" />
+            </div>
+            <div
+              className="absolute inset-y-0 right-0 w-1/2 translate-x-[101%] transition-transform duration-700 ease-[cubic-bezier(0.65,0,0.35,1)] group-hover:translate-x-0"
+              style={{ background: "repeating-linear-gradient(90deg, #131834 0px, #131834 22px, #1b2148 22px, #1b2148 44px)" }}
+            >
+              <div className="absolute inset-x-0 bottom-0 h-1.5 bg-[#eab308]" />
+            </div>
+          </div>
+          <img
+            src={img}
+            alt=""
+            loading="lazy"
+            className="absolute inset-0 m-auto max-h-[78%] w-auto max-w-[86%] object-contain transition-transform duration-500 ease-out group-hover:rotate-2"
+          />
+          <motion.div
+            aria-hidden="true"
+            animate={{ x: pos ? pos.x : 0, y: pos ? pos.y : 0, opacity: pos ? 1 : 0 }}
+            transition={{ type: "spring", stiffness: 350, damping: 30 }}
+            className="pointer-events-none absolute left-0 top-0 z-30 motion-reduce:hidden [@media(hover:none)]:hidden"
+          >
+            <span className="block -translate-x-1/2 -translate-y-[135%] whitespace-nowrap rounded-full bg-white px-4 py-2 text-xs font-bold uppercase tracking-wider text-[#131834] shadow-lg">
+              <span aria-hidden="true" className="mr-2 text-[#e8b13a]">◆</span>
+              {discover}
+            </span>
+          </motion.div>
+        </div>
+        <p className="px-4 pb-6 text-center text-sm font-bold uppercase tracking-wider text-[#131834] md:text-base">
+          {title}
+        </p>
+      </Link>
+    </motion.div>
+  );
+}
+
 export default function ServiceDetail({
   slug,
   initialFlight,
@@ -81,6 +167,7 @@ export default function ServiceDetail({
   scrollContainer?: RefObject<HTMLDivElement | null>;
 }) {
   const { dict } = useLang();
+  const reduceMotion = useReducedMotion();
   const items = dict.serviceDetail.items;
   const idx = items.findIndex((i) => i.slug === slug);
   const item = items[idx];
@@ -138,7 +225,7 @@ export default function ServiceDetail({
       const img = wrap?.querySelector("img");
       const gap = 32;
       const viewH = sticky.clientHeight || window.innerHeight;
-      const h = viewH * 0.64;
+      const h = viewH * 0.5;
       const top = viewH - h / 2;
       sticky.style.paddingBottom = `${h / 2 + gap}px`;
       sticky.style.justifyContent = "flex-end";
@@ -204,6 +291,17 @@ export default function ServiceDetail({
       /* sin vuelo: entrada directa */
     }
   }, [slug]);
+  // Si se entra con #otros-servicios (por ejemplo, desde SERVICIOS del
+  // menú), bajar a esa sección cuando la página ya está montada y el
+  // usuario aún no ha empezado a desplazarse.
+  useEffect(() => {
+    if (window.location.hash !== "#otros-servicios") return;
+    const t = window.setTimeout(() => {
+      if (window.scrollY > 100) return;
+      document.getElementById("otros-servicios")?.scrollIntoView({ behavior: "auto" });
+    }, 400);
+    return () => window.clearTimeout(t);
+  }, []);
   const [landed, setLanded] = useState(false);
   // El header se oculta en cuanto el detalle deja el reposo. Se deriva del
   // mismo progreso de scroll que sube el objeto (framer, con el contenedor
@@ -217,6 +315,10 @@ export default function ServiceDetail({
   const meshSlotRef = useRef<HTMLDivElement>(null);
   const splitHeadRef = useRef<HTMLParagraphElement>(null);
   const splitCtaRef = useRef<HTMLDivElement>(null);
+  // Píldora que sigue al cursor por la sección dividida (como la de las
+  // tarjetas): etiqueta, sin clic propio; el clic sigue siendo el botón.
+  const splitAreaRef = useRef<HTMLDivElement>(null);
+  const [splitPos, setSplitPos] = useState<{ x: number; y: number } | null>(null);
   useLayoutEffect(() => {
     if (!liveMesh) return;
     const slot = meshSlotRef.current;
@@ -429,7 +531,21 @@ export default function ServiceDetail({
           <section className="px-3 pt-2 pb-6 md:px-5 md:pb-8">
             {/* La sección va encerrada en un rectángulo de puntas redondeadas,
                 como en Yellowball, sobre el fondo melocotón de la página */}
-            <div className="relative rounded-[2rem] bg-[#faf6ee] md:rounded-[2.5rem]">
+            <div
+              ref={splitAreaRef}
+              onMouseMove={(e) => {
+                const r = splitAreaRef.current?.getBoundingClientRect();
+                if (!r) return;
+                const rawX = e.clientX - r.left;
+                const rawY = e.clientY - r.top;
+                setSplitPos({
+                  x: Math.min(Math.max(rawX, 104), Math.max(104, r.width - 104)),
+                  y: Math.min(Math.max(rawY, 56), r.height - 8),
+                });
+              }}
+              onMouseLeave={() => setSplitPos(null)}
+              className="relative rounded-[2rem] bg-[#faf6ee] md:rounded-[2.5rem]"
+            >
               {/* Guías verticales tenues dentro del panel */}
               <div aria-hidden="true" className="pointer-events-none absolute inset-0">
                 <span className="absolute top-0 bottom-0 left-1/4 w-px bg-[#131834]/[0.06]" />
@@ -480,6 +596,17 @@ export default function ServiceDetail({
                   ))}
                 </ul>
               </div>
+              <motion.div
+                aria-hidden="true"
+                animate={{ x: splitPos ? splitPos.x : 0, y: splitPos ? splitPos.y : 0, opacity: splitPos ? 1 : 0 }}
+                transition={{ type: "spring", stiffness: 350, damping: 30 }}
+                className="pointer-events-none absolute left-0 top-0 z-30 motion-reduce:hidden [@media(hover:none)]:hidden"
+              >
+                <span className="block -translate-x-1/2 -translate-y-[135%] whitespace-nowrap rounded-full bg-[#e8b13a] px-4 py-2 text-xs font-bold uppercase tracking-wider text-[#131834] shadow-lg">
+                  <span aria-hidden="true" className="mr-2">◆</span>
+                  {dict.serviceDetail.requestTooltip}
+                </span>
+              </motion.div>
             </div>
           </section>
         ) : (
@@ -511,27 +638,38 @@ export default function ServiceDetail({
           </section>
         )}
 
-        {/* Los otros servicios */}
-        <section className="border-t border-[#131834]/10 px-5 md:px-10 py-14 md:py-20">
-          <h2 className="text-xs font-bold uppercase tracking-[0.35em] text-[#131834]/60">
-            {dict.serviceDetail.otherTitle}
+        {/* Los otros servicios, estilo Agrumea: fila horizontal de tarjetas
+            claras con el objeto visible. Al pasar el cursor, el mismo telón
+            rayado del inicio se cierra POR DETRÁS del objeto (el objeto queda
+            por delante). En táctil y con movimiento reducido no hay telón. */}
+        <section id="otros-servicios" className="scroll-mt-28 py-16 md:py-24">
+          <h2 className="px-5 text-center font-serif text-[3.25rem] font-semibold uppercase leading-[0.95] tracking-[-0.01em] text-[#131834] md:text-[3.75rem] md:leading-[1.02]">
+            <motion.span
+              initial={reduceMotion ? false : { y: -160, opacity: 0 }}
+              whileInView={{ y: 0, opacity: 1 }}
+              viewport={{ margin: "-25% 0px -25% 0px" }}
+              transition={{ duration: 1, ease: [0.34, 1.56, 0.64, 1] }}
+              className="inline-block"
+            >
+              {dict.serviceDetail.otherTitle.split(" ")[0]}
+              <br className="md:hidden" />{" "}
+              {dict.serviceDetail.otherTitle.split(" ").slice(1).join(" ")}
+            </motion.span>
           </h2>
-          <div className="mt-8 grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4">
+          <div className="mt-10 flex snap-x snap-mandatory gap-4 overflow-x-auto px-5 pb-4 [scrollbar-width:none] md:mt-14 md:gap-6 md:px-10 [&::-webkit-scrollbar]:hidden">
             {items
               .filter((o) => o.slug !== slug)
-              .map((o) => {
+              .map((o, fi) => {
                 const oi = items.indexOf(o);
                 return (
-                  <Link
+                  <OtherServiceCard
                     key={o.slug}
                     href={`/servicios/${o.slug}`}
-                    className="group rounded-2xl bg-[#faf6ee] p-5 transition-transform hover:-translate-y-1"
-                  >
-                    <img src={o.img} alt="" className="mx-auto h-28 w-auto object-contain transition-transform group-hover:scale-105" />
-                    <p className="mt-4 text-center text-sm font-bold uppercase tracking-wider text-[#131834]">
-                      {dict.sectors.items[oi].title}
-                    </p>
-                  </Link>
+                    img={o.img}
+                    discover={dict.serviceDetail.cardTooltip}
+                    title={dict.sectors.items[oi].title}
+                    index={fi}
+                  />
                 );
               })}
           </div>
