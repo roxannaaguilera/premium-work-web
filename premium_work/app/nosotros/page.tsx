@@ -111,7 +111,7 @@ export default function NosotrosPage() {
       <FixedHeader hideUntilTop />
       <main className="bg-[#fbe5d4] text-[#131834]">
         {/* Encabezado: palabra en grande + descripción centrada */}
-        <section className="px-5 pt-44 pb-12 text-center md:px-16 md:pt-52">
+        <section className="px-5 pt-56 pb-12 text-center md:px-16 md:pt-72">
           <h1 className="font-serif text-[clamp(3.5rem,10vw,9rem)] leading-[0.95] font-semibold tracking-[-0.01em] uppercase">
             {dict.about.eyebrow}
           </h1>
