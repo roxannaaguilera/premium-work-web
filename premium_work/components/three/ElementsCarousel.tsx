@@ -685,28 +685,13 @@ export default function ElementsCarousel() {
         aria-label={t("hero.discoverTag")}
         tabIndex={0}
       />
-      {/* Táctil: nombre del servicio delante + botón Descubrir (sin cursor
-          no hay etiqueta al hover; el botón abre el detalle como el clic). */}
-      <div className="absolute inset-x-0 bottom-24 z-[4] hidden flex-col items-center gap-2 px-5 [@media(hover:none)]:flex">
+      {/* Táctil: solo el nombre del servicio delante, sobre el aviso de
+          deslizar (sin cursor no hay etiqueta al hover; el objeto se abre
+          al tocarlo, como el clic). */}
+      <div className="absolute inset-x-0 bottom-24 z-[4] hidden px-5 [@media(hover:none)]:block">
         <p className="text-center font-logo text-2xl font-semibold text-[#131834]">
           {dict.sectors.items[SECTORS[frontIdx].di]?.title ?? SECTORS[frontIdx].name}
         </p>
-        <button
-          type="button"
-          onClick={() => {
-            const slug = SLUGS[SECTORS[frontIdx].di];
-            openDetailRef.current(frontIdx);
-            window.dispatchEvent(
-              new CustomEvent("pw-open-service", {
-                detail: { src: SECTORS[frontIdx].src, slug, fromY: 0, fromH: 0, rotate: 0, mesh: true },
-              })
-            );
-          }}
-          className="inline-flex items-center gap-2 rounded-full bg-[#131834] px-5 py-2.5 text-xs font-bold uppercase tracking-[0.2em] text-[#f3ead6] shadow-lg"
-        >
-          <span aria-hidden="true" className="inline-block h-2 w-2 rotate-45 bg-[#d9a83f]" />
-          {t("hero.discoverTag")}
-        </button>
       </div>
       {/* Etiqueta que aparece al posar el cursor sobre el objeto principal */}
       <div
