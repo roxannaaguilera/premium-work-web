@@ -52,7 +52,7 @@ const es = {
   about: {
     eyebrow: "Nosotros",
     title: "Tu evento, con un equipo a la altura de tu marca.",
-    copy: "Premium Work pone personal de hospitality profesional en hoteles, restaurantes, catering y eventos en Madrid. Tú te ocupas de tus invitados; nosotros, de que el servicio funcione.",
+    copy: "Premium Work ofrece el servicio de hospitality profesional en hoteles, restaurantes, catering y eventos en Madrid. Tú te ocupas de tus invitados; nosotros, de que el servicio funcione.",
     processTitle: "Así trabajamos",
     steps: [
       { title: "Cuéntanos tu evento", copy: "Fecha, lugar y qué perfiles necesitas. Sin formularios eternos: por WhatsApp o correo." },
@@ -324,7 +324,7 @@ const en: Dict = {
   about: {
     eyebrow: "About us",
     title: "Your event, with a team worthy of your brand.",
-    copy: "Premium Work provides professional hospitality staff for hotels, restaurants, catering and events in Madrid. You take care of your guests; we make sure the service works.",
+    copy: "Premium Work offers professional hospitality service for hotels, restaurants, catering and events in Madrid. You take care of your guests; we make sure the service works.",
     processTitle: "How we work",
     steps: [
       { title: "Tell us about your event", copy: "Date, venue and the profiles you need. No endless forms: WhatsApp or email." },
