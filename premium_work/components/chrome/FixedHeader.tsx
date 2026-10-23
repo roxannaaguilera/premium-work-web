@@ -269,7 +269,7 @@ export default function FixedHeader({
               // de INICIO (18%) y NOSOTROS deja el mismo 18% a la derecha.
               const align = [
                 "justify-start",
-                "justify-start pl-[18%]",
+                "justify-start pl-[12%]",
                 "justify-end pr-[18%]",
                 "justify-end",
               ][i];
