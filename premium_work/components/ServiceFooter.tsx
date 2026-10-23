@@ -31,13 +31,13 @@ function FacebookIcon() {
  * logo gigante); al subir y bajar se vuelve a animar. Con movimiento
  * reducido no hay animación.
  */
-function Reveal({ index, className, children }: { index: number; className?: string; children: ReactNode }) {
+function Reveal({ index, className, children, once, margin }: { index: number; className?: string; children: ReactNode; once?: boolean; margin?: string }) {
   const reduceMotion = useReducedMotion();
   return (
     <motion.div
       initial={reduceMotion ? false : { opacity: 0, x: -32 }}
       whileInView={{ opacity: 1, x: 0 }}
-      viewport={{ margin: "-10% 0px" }}
+      viewport={{ margin: margin ?? "-10% 0px", once }}
       transition={{ duration: 0.6, delay: index * 0.12, ease: "easeOut" }}
       className={className}
     >
@@ -88,8 +88,8 @@ export function ServiceFooter() {
             <p className="mt-12 text-base text-[#f6ede1]/40">© Premium Work {year}</p>
           </Reveal>
 
-          {/* Servicios */}
-          <Reveal index={1}>
+          {/* Servicios: en móvil ocupa dos filas; Enlaces y Legal, a su lado */}
+          <Reveal index={1} className="max-md:row-span-2">
           <nav aria-label={sf.servicesTitle}>
             <p className="font-logo text-lg font-semibold">{sf.servicesTitle}</p>
             <ul className="mt-6 space-y-4">
@@ -132,11 +132,14 @@ export function ServiceFooter() {
         </div>
       </div>
 
-      {/* Nombre gigante recortado por el borde inferior */}
-      <Reveal index={5} className="relative mt-4 overflow-hidden md:mt-6">
+      {/* Nombre gigante recortado por el borde inferior: sin margen en la
+          banda y una sola vez (en móvil nunca llega a entrar en la banda
+          de -10%: en el máximo scroll queda en y 810-844 y se quedaría
+          en opacity 0 para siempre). */}
+      <Reveal index={5} once margin="0px" className="relative mt-4 overflow-hidden md:mt-6">
       <div aria-hidden="true" className="px-5 md:px-10">
         <p
-          className="font-logo translate-y-[24%] text-center font-black whitespace-nowrap text-[#f6ede1]/[0.05] select-none text-[calc((100vw_-_40px)/8.566)] md:text-[calc((100vw_-_80px)/8.566)]"
+          className="font-logo translate-y-[24%] text-center font-black whitespace-nowrap text-[#f6ede1] select-none text-[calc((100vw_-_40px)/8.566)] md:text-[#f6ede1]/[0.05] md:text-[calc((100vw_-_80px)/8.566)]"
           style={{ lineHeight: 0.85, letterSpacing: "-0.02em" }}
         >
           PREMIUM WORK<span className="text-[#eab308]">.</span>
