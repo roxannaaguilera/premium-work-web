@@ -14,7 +14,7 @@ const es = {
   hero: {
     hint: "Desliza para descubrir",
     privacy: "Privacidad y Cookies",
-    discoverTag: "Descubre el servicio",
+    discoverTag: "Descubrir",
     aria: "Premium Work — inicio",
     title: "Premium Work — Profesionales de hospitality para eventos en Madrid",
   },
@@ -292,7 +292,7 @@ const en: Dict = {
   hero: {
     hint: "Scroll to discover",
     privacy: "Privacy & Cookies",
-    discoverTag: "Discover the service",
+    discoverTag: "Discover",
     aria: "Premium Work — home",
     title: "Premium Work — Hospitality professionals for events in Madrid",
   },

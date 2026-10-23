@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import * as THREE from "three";
 import { EffectComposer } from "three/addons/postprocessing/EffectComposer.js";
 import { RenderPass } from "three/addons/postprocessing/RenderPass.js";
@@ -88,7 +88,7 @@ function serviceFallLift(age: number): number {
  * Arrastra o desplaza para girar 360° entre sectores.
  */
 export default function ElementsCarousel() {
-  const { t } = useLang();
+  const { t, dict } = useLang();
   const mountRef = useRef<HTMLDivElement>(null);
   const tagRef = useRef<HTMLDivElement>(null);
   // Navegación cliente con un <Link> REAL que envuelve el canvas: el clic del
@@ -104,6 +104,7 @@ export default function ElementsCarousel() {
     el: HTMLCanvasElement;
   } | null>(null);
   const frontRef = useRef({ idx: 0, hoverT: 0 });
+  const [frontIdx, setFrontIdx] = useState(0);
   const hiddenIdxRef = useRef(-1);
   const shellRef = useRef<HTMLDivElement>(null);
   const elapsedRef = useRef(0);
@@ -571,6 +572,7 @@ export default function ElementsCarousel() {
         }
       });
       const index = ((Math.round(rotation / STEP) % COUNT) + COUNT) % COUNT;
+      if (index !== frontRef.current.idx) setFrontIdx(index);
       frontRef.current.idx = index;
       frontRef.current.hoverT = hoverT;
       const s = SLUGS[SECTORS[index].di];
@@ -678,11 +680,34 @@ export default function ElementsCarousel() {
     <div ref={shellRef} className="relative h-full min-h-full bg-[#fdf3eb] text-[#131834]">
       <div
         ref={mountRef}
-        className="h-full w-full cursor-pointer [&_canvas]:block [&_canvas]:h-full [&_canvas]:w-full"
+        className="h-full w-full cursor-pointer [&_canvas]:block [&_canvas]:h-full [&_canvas]:w-full [&_canvas]:touch-none"
         role="link"
         aria-label={t("hero.discoverTag")}
         tabIndex={0}
       />
+      {/* Táctil: nombre del servicio delante + botón Descubrir (sin cursor
+          no hay etiqueta al hover; el botón abre el detalle como el clic). */}
+      <div className="absolute inset-x-0 bottom-24 z-[4] hidden flex-col items-center gap-2 px-5 [@media(hover:none)]:flex">
+        <p className="text-center font-logo text-2xl font-semibold text-[#131834]">
+          {dict.sectors.items[SECTORS[frontIdx].di]?.title ?? SECTORS[frontIdx].name}
+        </p>
+        <button
+          type="button"
+          onClick={() => {
+            const slug = SLUGS[SECTORS[frontIdx].di];
+            openDetailRef.current(frontIdx);
+            window.dispatchEvent(
+              new CustomEvent("pw-open-service", {
+                detail: { src: SECTORS[frontIdx].src, slug, fromY: 0, fromH: 0, rotate: 0, mesh: true },
+              })
+            );
+          }}
+          className="inline-flex items-center gap-2 rounded-full bg-[#131834] px-5 py-2.5 text-xs font-bold uppercase tracking-[0.2em] text-[#f3ead6] shadow-lg"
+        >
+          <span aria-hidden="true" className="inline-block h-2 w-2 rotate-45 bg-[#d9a83f]" />
+          {t("hero.discoverTag")}
+        </button>
+      </div>
       {/* Etiqueta que aparece al posar el cursor sobre el objeto principal */}
       <div
         ref={tagRef}
