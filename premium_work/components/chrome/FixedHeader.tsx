@@ -6,17 +6,28 @@ import gsap from "gsap";
 import { getLenis } from "@/lib/lenis-instance";
 import { useLang } from "@/components/i18n/lang";
 
-const MENU_LINKS: { href: string; action?: "footer" | "otros-servicios" }[] = [
+const MENU_LINKS: { href: string; action?: "footer" }[] = [
   { href: "/" },
-  { href: "/servicios", action: "otros-servicios" },
+  { href: "/servicios" },
   { href: "/nosotros" },
   { href: "#contacto", action: "footer" },
 ];
 
 function LangToggle() {
   const { lang, setLang } = useLang();
+  const other = lang === "es" ? "en" : "es";
   return (
-    <div role="group" aria-label="Language / Idioma" className="flex items-center gap-2">
+    <>
+      {/* Móvil: un solo botón que cambia al otro idioma (así el logo queda centrado). */}
+      <button
+        type="button"
+        onClick={() => setLang(other)}
+        aria-label={other === "es" ? "Español" : "English"}
+        className="flex h-9 w-9 items-center justify-center rounded-full border border-[#131834]/25 text-xs font-bold uppercase tracking-wider text-[#131834]/60 hover:border-[#131834]/60 hover:text-[#131834] md:hidden"
+      >
+        {other}
+      </button>
+      <div role="group" aria-label="Language / Idioma" className="hidden items-center gap-2 md:flex">
       {(["es", "en"] as const).map((l) => (
         <button
           key={l}
@@ -33,7 +44,8 @@ function LangToggle() {
           {l}
         </button>
       ))}
-    </div>
+      </div>
+    </>
   );
 }
 
@@ -83,10 +95,9 @@ export default function FixedHeader({
   };
 
   // CONTACTO baja al footer de la página (o a la página de contacto si
-  // la página no tiene footer); SERVICIOS baja a «Otros servicios» (o
-  // al detalle de Hoteles, anclado a esa sección, si la página no la
-  // tiene). Se espera a que el menú se cierre para que el scroll no
-  // quede bloqueado.
+  // la página no tiene footer). SERVICIOS navega a la página de
+  // servicios como cualquier otro enlace. Se espera a que el menú se
+  // cierre para que el scroll no quede bloqueado.
   const handleMenuLink = (e: { preventDefault(): void }, l: (typeof LINKS)[number]) => {
     if (!l.action) {
       close();
@@ -95,15 +106,9 @@ export default function FixedHeader({
     e.preventDefault();
     close();
     window.setTimeout(() => {
-      if (l.action === "footer") {
-        const el = document.getElementById("contacto") ?? document.querySelector("footer");
-        if (el) scrollToTarget(el as HTMLElement);
-        else window.location.href = "/solicitar-servicio";
-      } else {
-        const el = document.getElementById("otros-servicios");
-        if (el) scrollToTarget(el as HTMLElement);
-        else window.location.href = "/servicios/hoteles#otros-servicios";
-      }
+      const el = document.getElementById("contacto") ?? document.querySelector("footer");
+      if (el) scrollToTarget(el as HTMLElement);
+      else window.location.href = "/solicitar-servicio";
     }, 350);
   };
 
@@ -181,12 +186,27 @@ export default function FixedHeader({
             />
           </a>
           <div className="flex items-center gap-2 justify-self-end">
+            {/* Móvil: hamburguesa en vez de la palabra MENÚ. */}
             <button
               type="button"
               onClick={() => setOpen(true)}
               aria-haspopup="dialog"
               aria-expanded={open}
-              className="inline-flex items-center rounded-full bg-[#131834] px-5 py-2 text-sm font-semibold tracking-wide text-[#faf6ee] hover:bg-[#1e2450] transition-colors"
+              aria-label={t("header.openMenu")}
+              className="flex h-9 w-9 items-center justify-center rounded-full bg-[#131834] hover:bg-[#1e2450] transition-colors md:hidden"
+            >
+              <span aria-hidden="true" className="flex flex-col items-center gap-[5px]">
+                <span className="block h-[2px] w-4 bg-[#faf6ee]" />
+                <span className="block h-[2px] w-4 bg-[#faf6ee]" />
+                <span className="block h-[2px] w-4 bg-[#faf6ee]" />
+              </span>
+            </button>
+            <button
+              type="button"
+              onClick={() => setOpen(true)}
+              aria-haspopup="dialog"
+              aria-expanded={open}
+              className="hidden items-center rounded-full bg-[#131834] px-5 py-2 text-sm font-semibold tracking-wide text-[#faf6ee] hover:bg-[#1e2450] transition-colors md:inline-flex"
             >
               {t("header.menu")}
             </button>
@@ -196,7 +216,7 @@ export default function FixedHeader({
               aria-haspopup="dialog"
               aria-expanded={open}
               aria-label={t("header.openMenu")}
-              className="flex h-9 w-9 items-center justify-center rounded-full bg-[#131834] hover:bg-[#1e2450] transition-colors"
+              className="hidden h-9 w-9 items-center justify-center rounded-full bg-[#131834] hover:bg-[#1e2450] transition-colors md:flex"
             >
               <span aria-hidden="true" className="inline-block h-2.5 w-2.5 rotate-45 bg-[#eab308]" />
             </button>
@@ -207,6 +227,7 @@ export default function FixedHeader({
       {/* Menú a pantalla completa */}
       <div
         ref={overlayRef}
+        data-lenis-prevent
         role="dialog"
         aria-modal="true"
         aria-label={t("header.menuLabel")}
@@ -248,8 +269,8 @@ export default function FixedHeader({
               // de INICIO (18%) y NOSOTROS deja el mismo 18% a la derecha.
               const align = [
                 "justify-start",
-                "justify-center md:justify-start md:pl-[18%]",
-                "justify-end pr-6 md:pr-[18%]",
+                "justify-start pl-[12%]",
+                "justify-end pr-[18%]",
                 "justify-end",
               ][i];
               return (
@@ -260,7 +281,7 @@ export default function FixedHeader({
                     className={`group flex py-3 md:py-4 ${align}`}
                   >
                     <span
-                      className={`font-logo text-[clamp(3.75rem,min(11vw,14dvh),11rem)] font-semibold uppercase leading-none transition-colors ${
+                      className={`font-logo text-[clamp(3.75rem,min(11vw,14dvh),11rem)] max-[480px]:text-[2rem] font-semibold uppercase leading-none transition-colors ${
                         active ? "text-[#faf6ee]" : "text-[#faf6ee]/40 group-hover:text-[#faf6ee]"
                       }`}
                     >

@@ -16,8 +16,8 @@ gsap.registerPlugin(ScrollTrigger);
  * tarjeta grande por servicio, apiladas con pin de GSAP y scrub en
  * escritorio (cada tarjeta entra desde abajo tapando a la anterior,
  * que se encoge, se inclina y se oscurece); al soltar el pin aparece
- * el footer. En pantallas estrechas, bajas o con movimiento reducido,
- * las tarjetas van una debajo de otra en flujo normal.
+ * el footer. En pantallas bajas o con movimiento reducido, las tarjetas
+ * van una debajo de otra en flujo normal.
  */
 export default function ServiciosPage() {
   const { dict } = useLang();
@@ -38,9 +38,7 @@ export default function ServiciosPage() {
   useLayoutEffect(() => {
     const mq = window.matchMedia("(prefers-reduced-motion: reduce)");
     const update = () =>
-      setStacked(
-        !mq.matches && window.innerWidth >= 480 && window.innerHeight >= 600,
-      );
+      setStacked(!mq.matches && window.innerHeight >= 600);
     update();
     window.addEventListener("resize", update);
     mq.addEventListener("change", update);

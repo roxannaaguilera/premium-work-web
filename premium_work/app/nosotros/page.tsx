@@ -18,8 +18,8 @@ gsap.registerPlugin(ScrollTrigger);
  * luego, las tarjetas. En escritorio, GSAP fija el escenario (pin,
  * scrub) y cada tarjeta entra desde abajo tapando a la anterior, que
  * se encoge, se inclina y se oscurece; al soltar el pin aparece el
- * footer. En pantallas estrechas, bajas o con movimiento reducido,
- * las tarjetas van una debajo de otra en flujo normal.
+ * footer. En pantallas bajas o con movimiento reducido, las tarjetas
+ * van una debajo de otra en flujo normal.
  */
 export default function NosotrosPage() {
   const { dict } = useLang();
@@ -32,9 +32,7 @@ export default function NosotrosPage() {
   useLayoutEffect(() => {
     const mq = window.matchMedia("(prefers-reduced-motion: reduce)");
     const update = () =>
-      setStacked(
-        !mq.matches && window.innerWidth >= 480 && window.innerHeight >= 600,
-      );
+      setStacked(!mq.matches && window.innerHeight >= 600);
     update();
     window.addEventListener("resize", update);
     mq.addEventListener("change", update);
@@ -151,7 +149,8 @@ export default function NosotrosPage() {
                 }`}
                 style={{ zIndex: 10 + i * 10 }}
               >
-                <div className="flex h-full flex-col justify-center px-6 pt-36 pb-10 md:px-12 md:pt-44">
+                <div data-lenis-prevent className="h-full overflow-y-auto rounded-[2rem]">
+                <div className="flex min-h-full flex-col justify-center px-6 pt-36 pb-10 md:px-12 md:pt-44">
                   <p className="font-mono text-sm text-[#131834]/40">{card.num}</p>
                   <h2 className="font-serif mt-4 text-[clamp(2rem,4.5vw,4rem)] leading-[1.02] font-semibold tracking-[-0.01em]">
                     {card.title}
@@ -190,6 +189,7 @@ export default function NosotrosPage() {
                       <DirectContact kind="client" />
                     </div>
                   )}
+                </div>
                 </div>
                 {i < 2 && (
                   <div

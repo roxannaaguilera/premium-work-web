@@ -78,12 +78,14 @@ function OtherServiceCard({
   discover,
   title,
   index,
+  clone,
 }: {
   href: string;
   img: string;
   discover: string;
   title: string;
   index: number;
+  clone?: boolean;
 }) {
   const reduceMotion = useReducedMotion();
   const areaRef = useRef<HTMLDivElement>(null);
@@ -92,11 +94,12 @@ function OtherServiceCard({
     <motion.div
       initial={reduceMotion ? false : { opacity: 0, x: -48 }}
       whileInView={{ opacity: 1, x: 0 }}
-      viewport={{ margin: "-10% 0px" }}
+      viewport={{ margin: "-10% 0px", once: true }}
       transition={{ duration: 0.6, delay: 0.1 + index * 0.08, ease: "easeOut" }}
       className="w-[78vw] shrink-0 snap-start md:w-[360px]"
+      aria-hidden={clone || undefined}
     >
-      <Link href={href} className="group block overflow-hidden rounded-[1.5rem] bg-[#faf6ee]">
+      <Link href={href} tabIndex={clone ? -1 : undefined} className="group block overflow-hidden rounded-[1.5rem] bg-[#faf6ee]">
         <div
           ref={areaRef}
           onMouseMove={(e) => {
@@ -171,6 +174,17 @@ export default function ServiceDetail({
   const items = dict.serviceDetail.items;
   const idx = items.findIndex((i) => i.slug === slug);
   const item = items[idx];
+  // En modo overlay no hay <img> en el hueco: precargar el natural del objeto
+  // para el tope de ancho (la URL es la textura del carrusel y suele estar
+  // en caché, así que no añade descarga).
+  const [meshAspect, setMeshAspect] = useState(0);
+  useEffect(() => {
+    setMeshAspect(0);
+    const im = new Image();
+    im.src = item.img;
+    if (im.complete && im.naturalWidth > 0) setMeshAspect(im.naturalWidth / im.naturalHeight);
+    else im.onload = () => setMeshAspect(im.naturalWidth / im.naturalHeight);
+  }, [item.img]);
   const sector = dict.sectors.items[idx];
   const lines = splitTitle(sector.title.toUpperCase());
   const titleRef = useRef<HTMLHeadingElement>(null);
@@ -225,7 +239,16 @@ export default function ServiceDetail({
       const img = wrap?.querySelector("img");
       const gap = 32;
       const viewH = sticky.clientHeight || window.innerHeight;
-      const h = viewH * 0.5;
+      // Tope de ancho: en pantallas estrechas un objeto ancho (el ticket de
+      // Festivales, la carta de Privados) a 50vh de alto desborda el ancho;
+      // se encoge hasta caber en el 86% del ancho, sin deformar.
+      let h = viewH * 0.5;
+      const nw = img?.naturalWidth ?? 0;
+      const nh = img?.naturalHeight ?? 0;
+      const aspect = nw > 0 && nh > 0 ? nw / nh : meshAspect;
+      if (aspect > 0) {
+        h = Math.min(h, (window.innerWidth * 0.86) / aspect);
+      }
       const top = viewH - h / 2;
       sticky.style.paddingBottom = `${h / 2 + gap}px`;
       sticky.style.justifyContent = "flex-end";
@@ -245,11 +268,12 @@ export default function ServiceDetail({
       riseScale.set(s);
       const half = viewH / 2;
       const endMid = titleMid - shift;
+      const endH = aspect > 0 ? Math.min(titleH / frac, (window.innerWidth * 0.86) / aspect) : titleH / frac;
       (window as Window & { __pwDetailPose?: { drop: number; end: number; fill: number; fillEnd: number } }).__pwDetailPose = {
         drop: (objectMid - half) / half,
         end: (endMid - half) / half,
         fill: h / viewH,
-        fillEnd: titleH / (viewH * frac),
+        fillEnd: endH / viewH,
       };
     };
     place();
@@ -265,7 +289,7 @@ export default function ServiceDetail({
       window.removeEventListener("resize", place);
       delete (window as Window & { __pwDetailPose?: { drop: number; end: number; fill: number; fillEnd: number } }).__pwDetailPose;
     };
-  }, [titleSize, riseTarget, riseScale, slug]);
+  }, [titleSize, riseTarget, riseScale, slug, meshAspect]);
 
   // Vuelo del clon (técnica Agrumea, sin panel): si hay datos de vuelo en
   // sessionStorage, un clon fixed vuela desde el rect del héroe hasta el reposo,
@@ -302,6 +326,42 @@ export default function ServiceDetail({
     }, 400);
     return () => window.clearTimeout(t);
   }, []);
+  // Bucle infinito de la fila: tres juegos iguales; al llegar al final del
+  // tercero (o al principio del primero) se salta un juego entero, que es
+  // idéntico en contenido y cae en el mismo punto de ajuste, así que el
+  // salto no se ve. Se empieza en el juego central (el real).
+  useEffect(() => {
+    const row = rowRef.current;
+    if (!row) return;
+    const count = row.children.length;
+    if (count < 3) return;
+    const per = count / 3;
+    const step = () => {
+      const kids = row.children;
+      if (kids.length < 2) return 0;
+      return (kids[1] as HTMLElement).offsetLeft - (kids[0] as HTMLElement).offsetLeft;
+    };
+    let s = step();
+    const place = () => {
+      s = step();
+      if (s > 0) {
+        const idx = Math.round(row.scrollLeft / s) % per;
+        row.scrollLeft = per * s + idx * s;
+      }
+    };
+    place();
+    const onScroll = () => {
+      if (s <= 0) return;
+      if (row.scrollLeft >= 2 * per * s) row.scrollLeft -= per * s;
+      else if (row.scrollLeft <= 0) row.scrollLeft += per * s;
+    };
+    row.addEventListener("scroll", onScroll, { passive: true });
+    window.addEventListener("resize", place);
+    return () => {
+      row.removeEventListener("scroll", onScroll);
+      window.removeEventListener("resize", place);
+    };
+  }, [slug]);
   const [landed, setLanded] = useState(false);
   // El header se oculta en cuanto el detalle deja el reposo. Se deriva del
   // mismo progreso de scroll que sube el objeto (framer, con el contenedor
@@ -312,6 +372,7 @@ export default function ServiceDetail({
   // El scroll sube el elemento y lo encoge hasta centrarlo en las letras,
   // a un tamaño proporcionado con la tipografía.
   const secRef = useRef<HTMLElement>(null);
+  const rowRef = useRef<HTMLDivElement>(null);
   const meshSlotRef = useRef<HTMLDivElement>(null);
   const splitHeadRef = useRef<HTMLParagraphElement>(null);
   const splitCtaRef = useRef<HTMLDivElement>(null);
@@ -656,22 +717,25 @@ export default function ServiceDetail({
               {dict.serviceDetail.otherTitle.split(" ").slice(1).join(" ")}
             </motion.span>
           </h2>
-          <div className="mt-10 flex snap-x snap-mandatory gap-4 overflow-x-auto px-5 pb-4 [scrollbar-width:none] md:mt-14 md:gap-6 md:px-10 [&::-webkit-scrollbar]:hidden">
-            {items
-              .filter((o) => o.slug !== slug)
-              .map((o, fi) => {
+          <div ref={rowRef} className="mt-10 flex snap-x snap-mandatory gap-4 overflow-x-auto px-5 pb-4 [scrollbar-width:none] scroll-pl-5 md:mt-14 md:gap-6 md:px-10 md:scroll-pl-10 [&::-webkit-scrollbar]:hidden">
+            {[0, 1, 2].flatMap((set) =>
+              items
+                .filter((o) => o.slug !== slug)
+                .map((o, fi) => {
                 const oi = items.indexOf(o);
                 return (
                   <OtherServiceCard
-                    key={o.slug}
+                    key={`${o.slug}-${set}`}
                     href={`/servicios/${o.slug}`}
                     img={o.img}
                     discover={dict.serviceDetail.cardTooltip}
                     title={dict.sectors.items[oi].title}
                     index={fi}
+                    clone={set !== 1}
                   />
                 );
-              })}
+              })
+            )}
           </div>
         </section>
       </main>

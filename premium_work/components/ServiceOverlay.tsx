@@ -107,6 +107,7 @@ export default function ServiceOverlay() {
   return (
     <div
       ref={scrollerRef}
+      data-lenis-prevent
       className="fixed inset-0 z-[200] overflow-y-auto bg-[#fbe5d4]"
       role="dialog"
       aria-modal="true"

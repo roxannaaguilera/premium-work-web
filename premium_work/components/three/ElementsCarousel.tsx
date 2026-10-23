@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import * as THREE from "three";
 import { EffectComposer } from "three/addons/postprocessing/EffectComposer.js";
 import { RenderPass } from "three/addons/postprocessing/RenderPass.js";
@@ -88,7 +88,7 @@ function serviceFallLift(age: number): number {
  * Arrastra o desplaza para girar 360° entre sectores.
  */
 export default function ElementsCarousel() {
-  const { t } = useLang();
+  const { t, dict } = useLang();
   const mountRef = useRef<HTMLDivElement>(null);
   const tagRef = useRef<HTMLDivElement>(null);
   // Navegación cliente con un <Link> REAL que envuelve el canvas: el clic del
@@ -104,6 +104,7 @@ export default function ElementsCarousel() {
     el: HTMLCanvasElement;
   } | null>(null);
   const frontRef = useRef({ idx: 0, hoverT: 0 });
+  const [frontIdx, setFrontIdx] = useState(0);
   const hiddenIdxRef = useRef(-1);
   const shellRef = useRef<HTMLDivElement>(null);
   const elapsedRef = useRef(0);
@@ -222,6 +223,7 @@ export default function ElementsCarousel() {
     let rotation = 0;
     let dragging = false;
     let lastX = 0;
+    let lastY = 0;
     let wheelAcc = 0;
     const el = renderer.domElement;
 
@@ -242,6 +244,7 @@ export default function ElementsCarousel() {
       downY = e.clientY;
       dragging = true;
       lastX = e.clientX;
+      lastY = e.clientY;
       el.setPointerCapture(e.pointerId);
       el.style.cursor = "grabbing";
     };
@@ -255,8 +258,15 @@ export default function ElementsCarousel() {
       tagTY = e.clientY - rect.top;
       if (!dragging) return;
       const dx = e.clientX - lastX;
+      const dy = e.clientY - lastY;
       lastX = e.clientX;
-      target -= dx * 0.013;
+      lastY = e.clientY;
+      // El arrastre mueve el carrusel en el eje dominante del gesto, así que
+      // tanto el arrastre horizontal como el vertical lo hacen girar.
+      const totalDx = e.clientX - downX;
+      const totalDy = e.clientY - downY;
+      const d = Math.abs(totalDx) >= Math.abs(totalDy) ? dx : dy;
+      target -= d * 0.013;
     };
     const onUp = (e: PointerEvent) => {
       if (!dragging) return;
@@ -268,7 +278,10 @@ export default function ElementsCarousel() {
     };
     const onWheel = (e: WheelEvent) => {
       e.preventDefault();
-      wheelAcc += e.deltaY;
+      // La rueda mueve el carrusel en vertical y en horizontal: se usa el
+      // eje dominante del gesto (rueda vertical o desplazamiento lateral).
+      const d = Math.abs(e.deltaX) > Math.abs(e.deltaY) ? e.deltaX : e.deltaY;
+      wheelAcc += d;
       if (Math.abs(wheelAcc) < 36) return;
       target += Math.sign(wheelAcc) * STEP;
       target = Math.round(target / STEP) * STEP;
@@ -538,9 +551,9 @@ export default function ElementsCarousel() {
         wrap.rotation.z = isFront ? 0 : -reach * 0.08;
         // El principal entra entero en pantalla; los laterales más pequeños.
         // En vertical manda el ancho visible: el objeto nunca se sale por
-        // los lados (como mucho ocupa el 85 % del ancho).
+        // los lados y deja asomar a los vecinos, como en escritorio.
         const fit =
-          Math.min(halfH0 * 1.15, halfH0 * camera.aspect * 1.7) / ITEM_SIZE;
+          Math.min(halfH0 * 1.15, halfH0 * camera.aspect * 1.45) / ITEM_SIZE;
         const boost = isFront ? 1 + 0.14 * hoverT : 1;
         wrap.scale.setScalar(!inView ? 0.001 : isFront ? fit * boost : fit * 0.66);
         wrap.visible = inView && i !== hiddenIdxRef.current;
@@ -571,6 +584,7 @@ export default function ElementsCarousel() {
         }
       });
       const index = ((Math.round(rotation / STEP) % COUNT) + COUNT) % COUNT;
+      if (index !== frontRef.current.idx) setFrontIdx(index);
       frontRef.current.idx = index;
       frontRef.current.hoverT = hoverT;
       const s = SLUGS[SECTORS[index].di];
@@ -678,11 +692,19 @@ export default function ElementsCarousel() {
     <div ref={shellRef} className="relative h-full min-h-full bg-[#fdf3eb] text-[#131834]">
       <div
         ref={mountRef}
-        className="h-full w-full cursor-pointer [&_canvas]:block [&_canvas]:h-full [&_canvas]:w-full"
+        className="h-full w-full cursor-pointer [&_canvas]:block [&_canvas]:h-full [&_canvas]:w-full [&_canvas]:touch-none"
         role="link"
         aria-label={t("hero.discoverTag")}
         tabIndex={0}
       />
+      {/* Táctil: solo el nombre del servicio delante, sobre el aviso de
+          deslizar (sin cursor no hay etiqueta al hover; el objeto se abre
+          al tocarlo, como el clic). */}
+      <div className="absolute inset-x-0 bottom-24 z-[4] hidden px-5 [@media(hover:none)]:block">
+        <p className="text-center font-logo text-2xl font-semibold text-[#131834]">
+          {dict.sectors.items[SECTORS[frontIdx].di]?.title ?? SECTORS[frontIdx].name}
+        </p>
+      </div>
       {/* Etiqueta que aparece al posar el cursor sobre el objeto principal */}
       <div
         ref={tagRef}
