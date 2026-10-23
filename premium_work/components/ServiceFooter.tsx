@@ -139,7 +139,7 @@ export function ServiceFooter() {
       <Reveal index={5} once margin="0px" className="relative mt-4 overflow-hidden md:mt-6">
       <div aria-hidden="true" className="px-5 md:px-10">
         <p
-          className="font-logo translate-y-[24%] text-center font-black whitespace-nowrap text-[#f6ede1]/[0.05] select-none text-[calc((100vw_-_40px)/8.566)] md:text-[calc((100vw_-_80px)/8.566)]"
+          className="font-logo translate-y-[24%] max-md:translate-y-0 text-center font-black whitespace-nowrap text-[#f6ede1]/[0.05] select-none text-[calc((100vw_-_40px)/8.566)] md:text-[calc((100vw_-_80px)/8.566)]"
           style={{ lineHeight: 0.85, letterSpacing: "-0.02em" }}
         >
           PREMIUM WORK<span className="text-[#eab308]">.</span>
