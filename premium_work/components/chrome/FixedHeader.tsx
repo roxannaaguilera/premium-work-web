@@ -186,12 +186,27 @@ export default function FixedHeader({
             />
           </a>
           <div className="flex items-center gap-2 justify-self-end">
+            {/* Móvil: hamburguesa en vez de la palabra MENÚ. */}
             <button
               type="button"
               onClick={() => setOpen(true)}
               aria-haspopup="dialog"
               aria-expanded={open}
-              className="inline-flex items-center rounded-full bg-[#131834] px-5 py-2 text-sm font-semibold tracking-wide text-[#faf6ee] hover:bg-[#1e2450] transition-colors"
+              aria-label={t("header.openMenu")}
+              className="flex h-9 w-9 items-center justify-center rounded-full bg-[#131834] hover:bg-[#1e2450] transition-colors md:hidden"
+            >
+              <span aria-hidden="true" className="flex flex-col items-center gap-[5px]">
+                <span className="block h-[2px] w-4 bg-[#faf6ee]" />
+                <span className="block h-[2px] w-4 bg-[#faf6ee]" />
+                <span className="block h-[2px] w-4 bg-[#faf6ee]" />
+              </span>
+            </button>
+            <button
+              type="button"
+              onClick={() => setOpen(true)}
+              aria-haspopup="dialog"
+              aria-expanded={open}
+              className="hidden items-center rounded-full bg-[#131834] px-5 py-2 text-sm font-semibold tracking-wide text-[#faf6ee] hover:bg-[#1e2450] transition-colors md:inline-flex"
             >
               {t("header.menu")}
             </button>
@@ -254,8 +269,8 @@ export default function FixedHeader({
               // de INICIO (18%) y NOSOTROS deja el mismo 18% a la derecha.
               const align = [
                 "justify-start",
-                "justify-center md:justify-start md:pl-[18%]",
-                "justify-end pr-6 md:pr-[18%]",
+                "justify-start pl-[18%]",
+                "justify-end pr-[18%]",
                 "justify-end",
               ][i];
               return (
