@@ -6,9 +6,9 @@ import gsap from "gsap";
 import { getLenis } from "@/lib/lenis-instance";
 import { useLang } from "@/components/i18n/lang";
 
-const MENU_LINKS: { href: string; action?: "footer" | "otros-servicios" }[] = [
+const MENU_LINKS: { href: string; action?: "footer" }[] = [
   { href: "/" },
-  { href: "/servicios", action: "otros-servicios" },
+  { href: "/servicios" },
   { href: "/nosotros" },
   { href: "#contacto", action: "footer" },
 ];
@@ -83,10 +83,9 @@ export default function FixedHeader({
   };
 
   // CONTACTO baja al footer de la página (o a la página de contacto si
-  // la página no tiene footer); SERVICIOS baja a «Otros servicios» (o
-  // al detalle de Hoteles, anclado a esa sección, si la página no la
-  // tiene). Se espera a que el menú se cierre para que el scroll no
-  // quede bloqueado.
+  // la página no tiene footer). SERVICIOS navega a la página de
+  // servicios como cualquier otro enlace. Se espera a que el menú se
+  // cierre para que el scroll no quede bloqueado.
   const handleMenuLink = (e: { preventDefault(): void }, l: (typeof LINKS)[number]) => {
     if (!l.action) {
       close();
@@ -95,15 +94,9 @@ export default function FixedHeader({
     e.preventDefault();
     close();
     window.setTimeout(() => {
-      if (l.action === "footer") {
-        const el = document.getElementById("contacto") ?? document.querySelector("footer");
-        if (el) scrollToTarget(el as HTMLElement);
-        else window.location.href = "/solicitar-servicio";
-      } else {
-        const el = document.getElementById("otros-servicios");
-        if (el) scrollToTarget(el as HTMLElement);
-        else window.location.href = "/servicios/hoteles#otros-servicios";
-      }
+      const el = document.getElementById("contacto") ?? document.querySelector("footer");
+      if (el) scrollToTarget(el as HTMLElement);
+      else window.location.href = "/solicitar-servicio";
     }, 350);
   };
 
