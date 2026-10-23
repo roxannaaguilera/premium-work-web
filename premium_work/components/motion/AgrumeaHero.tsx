@@ -30,7 +30,7 @@ export default function AgrumeaHero() {
       {/* Privacidad y cookies: margen lateral 20 px en móvil, como Agrumea */}
       <a
         href="/politica-de-privacidad"
-        className="absolute bottom-6 left-6 z-[2] text-xs text-[#131834]/70 underline underline-offset-4 hover:text-[#131834] max-[480px]:bottom-5 max-[480px]:left-5"
+        className="absolute bottom-6 left-6 z-[2] hidden text-xs text-[#131834]/70 underline underline-offset-4 hover:text-[#131834] md:block"
       >
         {t("hero.privacy")}
       </a>
