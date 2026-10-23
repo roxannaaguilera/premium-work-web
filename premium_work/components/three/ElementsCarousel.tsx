@@ -223,6 +223,7 @@ export default function ElementsCarousel() {
     let rotation = 0;
     let dragging = false;
     let lastX = 0;
+    let lastY = 0;
     let wheelAcc = 0;
     const el = renderer.domElement;
 
@@ -243,6 +244,7 @@ export default function ElementsCarousel() {
       downY = e.clientY;
       dragging = true;
       lastX = e.clientX;
+      lastY = e.clientY;
       el.setPointerCapture(e.pointerId);
       el.style.cursor = "grabbing";
     };
@@ -256,8 +258,15 @@ export default function ElementsCarousel() {
       tagTY = e.clientY - rect.top;
       if (!dragging) return;
       const dx = e.clientX - lastX;
+      const dy = e.clientY - lastY;
       lastX = e.clientX;
-      target -= dx * 0.013;
+      lastY = e.clientY;
+      // El arrastre mueve el carrusel en el eje dominante del gesto, así que
+      // tanto el arrastre horizontal como el vertical lo hacen girar.
+      const totalDx = e.clientX - downX;
+      const totalDy = e.clientY - downY;
+      const d = Math.abs(totalDx) >= Math.abs(totalDy) ? dx : dy;
+      target -= d * 0.013;
     };
     const onUp = (e: PointerEvent) => {
       if (!dragging) return;
@@ -269,7 +278,10 @@ export default function ElementsCarousel() {
     };
     const onWheel = (e: WheelEvent) => {
       e.preventDefault();
-      wheelAcc += e.deltaY;
+      // La rueda mueve el carrusel en vertical y en horizontal: se usa el
+      // eje dominante del gesto (rueda vertical o desplazamiento lateral).
+      const d = Math.abs(e.deltaX) > Math.abs(e.deltaY) ? e.deltaX : e.deltaY;
+      wheelAcc += d;
       if (Math.abs(wheelAcc) < 36) return;
       target += Math.sign(wheelAcc) * STEP;
       target = Math.round(target / STEP) * STEP;
