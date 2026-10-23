@@ -68,6 +68,7 @@ const es = {
     titleA: "¿Dónde",
     titleB: "trabajamos?",
     copy: "Llevamos profesionales seleccionados, formados y supervisados a cada tipo de espacio y evento.",
+    indexCopy: "Ofrecemos el servicio de hospitality profesional para hoteles, restaurantes, catering y eventos en Madrid.",
     cta: "Solicitar servicio",
     requestFor: "Solicitar servicio para",
     items: [
@@ -340,6 +341,7 @@ const en: Dict = {
     titleA: "Where do",
     titleB: "we work?",
     copy: "We bring selected, trained and supervised professionals to every kind of venue and event.",
+    indexCopy: "We offer professional hospitality service for hotels, restaurants, catering and events in Madrid.",
     cta: "Request a service",
     requestFor: "Request a service for",
     items: [
