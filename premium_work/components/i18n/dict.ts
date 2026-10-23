@@ -246,6 +246,11 @@ const es = {
     privacy: "Privacidad",
     cookies: "Cookies",
   },
+  cookies: {
+    notice: "Usamos cookies para que la web funcione y mejorar tu visita. Puedes ver cómo las usamos en nuestra política de cookies.",
+    accept: "Aceptar",
+    policy: "Política de cookies",
+  },
   serviceLabels: {
     camareros: "Camareros/as",
     maitres: "Maîtres",
@@ -518,6 +523,11 @@ const en: Dict = {
     notice: "Legal notice",
     privacy: "Privacy",
     cookies: "Cookies",
+  },
+  cookies: {
+    notice: "We use cookies so the site works and to improve your visit. See how we use them in our cookie policy.",
+    accept: "Accept",
+    policy: "Cookie policy",
   },
   serviceLabels: {
     camareros: "Waiters",
