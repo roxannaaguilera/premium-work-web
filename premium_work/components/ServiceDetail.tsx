@@ -92,13 +92,22 @@ function OtherServiceCard({
   const [pos, setPos] = useState<{ x: number; y: number } | null>(null);
   return (
     <motion.div
-      initial={reduceMotion ? false : { opacity: 0, x: -48 }}
-      whileInView={{ opacity: 1, x: 0 }}
+      initial={reduceMotion ? false : { opacity: 0 }}
+      whileInView={{ opacity: 1 }}
       viewport={{ margin: "-10% 0px", once: true }}
       transition={{ duration: 0.6, delay: 0.1 + index * 0.08, ease: "easeOut" }}
-      className="w-[78vw] shrink-0 snap-start md:w-[360px]"
+      className="w-[78vw] shrink-0 snap-start [scroll-snap-stop:always] md:w-[360px]"
       aria-hidden={clone || undefined}
     >
+      {/* La entrada desde la izquierda va en un envoltorio interior: si el
+          x viviera en esta tarjeta, su área de snap se movería con la
+          animación y el gesto de deslizar aterrizaría donde no toca. */}
+      <motion.div
+        initial={reduceMotion ? false : { x: -48 }}
+        whileInView={{ x: 0 }}
+        viewport={{ margin: "-10% 0px", once: true }}
+        transition={{ duration: 0.6, delay: 0.1 + index * 0.08, ease: "easeOut" }}
+      >
       <Link href={href} tabIndex={clone ? -1 : undefined} className="group block overflow-hidden rounded-[1.5rem] bg-[#faf6ee]">
         <div
           ref={areaRef}
@@ -154,6 +163,7 @@ function OtherServiceCard({
           {title}
         </p>
       </Link>
+      </motion.div>
     </motion.div>
   );
 }
@@ -350,15 +360,27 @@ export default function ServiceDetail({
       }
     };
     place();
-    const onScroll = () => {
+    // El salto entre juegos solo se hace al asentarse el gesto: hacerlo a
+    // mitad de un deslizamiento cancela la animación y el snap tira la fila
+    // hacia atrás varias tarjetas.
+    const wrap = () => {
       if (s <= 0) return;
       if (row.scrollLeft >= 2 * per * s) row.scrollLeft -= per * s;
       else if (row.scrollLeft <= 0) row.scrollLeft += per * s;
     };
+    row.addEventListener("scrollend", wrap);
+    // Respaldo para navegadores sin scrollend: al dejar de desplazarse.
+    let settle: number | undefined;
+    const onScroll = () => {
+      window.clearTimeout(settle);
+      settle = window.setTimeout(wrap, 140);
+    };
     row.addEventListener("scroll", onScroll, { passive: true });
     window.addEventListener("resize", place);
     return () => {
+      row.removeEventListener("scrollend", wrap);
       row.removeEventListener("scroll", onScroll);
+      window.clearTimeout(settle);
       window.removeEventListener("resize", place);
     };
   }, [slug]);
