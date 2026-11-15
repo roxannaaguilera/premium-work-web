@@ -144,7 +144,10 @@ function OtherServiceCard({
           <img
             src={img}
             alt=""
-            loading="lazy"
+            // Las tarjetas reales (juego central) cargan ya: al pasarlas con
+            // el dedo la imagen tiene que estar ahí. Los clones siguen lazy
+            // (usan la misma URL, así que tiran de la caché de las reales).
+            loading={clone ? "lazy" : "eager"}
             className="absolute inset-0 m-auto max-h-[78%] w-auto max-w-[86%] object-contain transition-transform duration-500 ease-out group-hover:rotate-2"
           />
           <motion.div
