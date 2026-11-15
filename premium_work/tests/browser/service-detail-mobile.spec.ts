@@ -63,6 +63,18 @@ test("otros servicios avanza una tarjeta por gesto y el objeto queda en el medio
   });
   expect(Math.abs(stickyH - 844)).toBeLessThan(4);
 
+  // En móvil el titular sale centrado en el medio de la pantalla al abrir
+  // la página, no abajo del todo.
+  const titleAtRest = await page.evaluate(() => {
+    const title = document.querySelector("section[aria-label] h1") as HTMLElement | null;
+    if (!title) return null;
+    const t = title.getBoundingClientRect();
+    return { cx: t.left + t.width / 2, cy: t.top + t.height / 2 };
+  });
+  expect(titleAtRest).not.toBeNull();
+  expect(Math.abs(titleAtRest!.cx - 195)).toBeLessThan(4);
+  expect(Math.abs(titleAtRest!.cy - 422)).toBeLessThan(30);
+
   await page.evaluate(() => window.scrollTo({ top: window.innerHeight * 1.4, behavior: "instant" as ScrollBehavior }));
   await page.waitForTimeout(900);
   const centers = await page.evaluate(() => {
