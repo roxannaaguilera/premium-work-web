@@ -289,6 +289,10 @@ export default function ServiceDetail({
     place();
     const ro = new ResizeObserver(place);
     if (titleRef.current) ro.observe(titleRef.current);
+    // El alto del sticky sigue al viewport visible (dvh): al aparecer o
+    // esconderse la barra del navegador móvil cambia y el objeto debe
+    // recentrarse en el medio de las letras.
+    if (titleRef.current?.parentElement) ro.observe(titleRef.current.parentElement);
     const imgEl = objectRef.current?.querySelector("img");
     imgEl?.addEventListener("load", place);
     window.addEventListener("resize", place);
@@ -506,7 +510,7 @@ export default function ServiceDetail({
       <main className="overflow-x-clip bg-[#fbe5d4] text-[#131834]">
         {/* Nombre centrado + elemento que sube con el scroll */}
         <section ref={secRef} aria-label={sector.title} className="relative h-[240vh]">
-          <div className="sticky top-0 flex h-screen flex-col items-center justify-end overflow-visible pb-[calc(32vh+32px)]">
+          <div className="sticky top-0 flex h-dvh flex-col items-center justify-end overflow-visible pb-[calc(32vh+32px)]">
             {liveMesh && (
               <div
                 ref={meshSlotRef}
