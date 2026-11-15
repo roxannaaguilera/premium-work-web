@@ -90,3 +90,54 @@ test("otros servicios avanza una tarjeta por gesto y el objeto queda en el medio
   // caer en el medio de las letras (margen de 12 px por el recorte de tinta).
   expect(Math.abs(centers!.imgMid - centers!.titleMid)).toBeLessThan(12);
 });
+
+// Regresión de los arreglos del 15/11 por la noche:
+// 3) las filas de características respiran en móvil (icono y letra más
+//    pequeños, columna de texto más ancha, el texto no toca el borde)
+// 4) Otros servicios aparece al llegar a la sección, sin quedarse pegado
+//    invisible (la entrada se dispara al entrar en el viewport).
+test("las características respiran y otros servicios aparece al llegar", async ({ page }) => {
+  await page.setViewportSize({ width: 390, height: 844 });
+  await page.goto("/servicios/eventos-corporativos");
+  await page.waitForTimeout(2500);
+
+  const feat = await page.evaluate(() => {
+    const rows = [...document.querySelectorAll("ul li.flex")].map((li) => {
+      const h3 = li.querySelector("h3") as HTMLElement;
+      const img = li.querySelector("img") as HTMLImageElement;
+      const range = document.createRange();
+      range.selectNodeContents(h3);
+      const maxLineRight = Math.max(...[...range.getClientRects()].map((r) => r.right));
+      return {
+        imgW: img.getBoundingClientRect().width,
+        fontPx: parseFloat(getComputedStyle(h3).fontSize),
+        maxLineRight: Math.round(maxLineRight),
+      };
+    });
+    return rows;
+  });
+  expect(feat.length).toBeGreaterThanOrEqual(4);
+  for (const r of feat) {
+    expect(r.imgW).toBeLessThanOrEqual(97);
+    expect(r.fontPx).toBeLessThanOrEqual(22);
+    // El texto queda dentro del panel con su margen: nunca llega al borde
+    // del panel (378) ni al borde de la pantalla (390).
+    expect(r.maxLineRight).toBeLessThanOrEqual(360);
+  }
+
+  // Otros servicios: al llegar, el encabezado y la primera tarjeta visible
+  // ya están a la vista (opacidad 1) sin quedarse pegados en 0.
+  await page.evaluate(() => document.getElementById("otros-servicios")?.scrollIntoView({ behavior: "instant" as ScrollBehavior }));
+  await page.waitForTimeout(1800);
+  const otros = await page.evaluate(() => {
+    const row = document.querySelector("#otros-servicios [class*='snap-x']") as HTMLElement;
+    const vis = row.children[6] as HTMLElement;
+    const h2 = document.querySelector("#otros-servicios h2 span") as HTMLElement;
+    return {
+      cardOpacity: getComputedStyle(vis).opacity,
+      h2Opacity: getComputedStyle(h2).opacity,
+    };
+  });
+  expect(otros.cardOpacity).toBe("1");
+  expect(otros.h2Opacity).toBe("1");
+});
