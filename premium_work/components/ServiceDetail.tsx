@@ -671,16 +671,16 @@ export default function ServiceDetail({
                   {(item.features ?? []).map((f, i) => (
                     <li
                       key={f.icon}
-                      className="flex items-center gap-6 py-12 md:min-h-[430px] md:gap-9 md:py-0"
+                      className="flex items-center gap-4 py-12 md:min-h-[430px] md:gap-9 md:py-0"
                     >
                       <img
                         src={`/images/iconos3d/${f.icon}.png`}
                         alt=""
                         loading="lazy"
-                        className="pw-float w-32 shrink-0 mix-blend-multiply md:w-44"
+                        className="pw-float w-24 shrink-0 mix-blend-multiply md:w-44"
                         style={{ animationDelay: `${(i % 6) * 0.7}s` }}
                       />
-                      <h3 className="text-[1.65rem] font-medium tracking-[-0.01em] text-[#131834] md:text-[2rem]">
+                      <h3 className="text-[1.35rem] font-medium tracking-[-0.01em] text-[#131834] md:text-[2rem]">
                         {item.includes[i]}
                       </h3>
                     </li>
