@@ -94,7 +94,7 @@ function OtherServiceCard({
     <motion.div
       initial={reduceMotion ? false : { opacity: 0 }}
       whileInView={{ opacity: 1 }}
-      viewport={{ margin: "-10% 0px", once: true }}
+      viewport={{ margin: "0px", once: true }}
       transition={{ duration: 0.6, delay: 0.1 + index * 0.08, ease: "easeOut" }}
       className="w-[78vw] shrink-0 snap-start [scroll-snap-stop:always] md:w-[360px]"
       aria-hidden={clone || undefined}
@@ -105,7 +105,7 @@ function OtherServiceCard({
       <motion.div
         initial={reduceMotion ? false : { x: -48 }}
         whileInView={{ x: 0 }}
-        viewport={{ margin: "-10% 0px", once: true }}
+        viewport={{ margin: "0px", once: true }}
         transition={{ duration: 0.6, delay: 0.1 + index * 0.08, ease: "easeOut" }}
       >
       <Link href={href} tabIndex={clone ? -1 : undefined} className="group block overflow-hidden rounded-[1.5rem] bg-[#faf6ee]">
@@ -738,7 +738,7 @@ export default function ServiceDetail({
             <motion.span
               initial={reduceMotion ? false : { y: -160, opacity: 0 }}
               whileInView={{ y: 0, opacity: 1 }}
-              viewport={{ margin: "-25% 0px -25% 0px" }}
+              viewport={{ margin: "0px" }}
               transition={{ duration: 1, ease: [0.34, 1.56, 0.64, 1] }}
               className="inline-block"
             >
