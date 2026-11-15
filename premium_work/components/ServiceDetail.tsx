@@ -735,17 +735,11 @@ export default function ServiceDetail({
             por delante). En táctil y con movimiento reducido no hay telón. */}
         <section id="otros-servicios" className="scroll-mt-28 py-16 md:py-24">
           <h2 className="px-5 text-center font-serif text-[3.25rem] font-semibold uppercase leading-[0.95] tracking-[-0.01em] text-[#131834] md:text-[3.75rem] md:leading-[1.02]">
-            <motion.span
-              initial={reduceMotion ? false : { y: -160, opacity: 0 }}
-              whileInView={{ y: 0, opacity: 1 }}
-              viewport={{ margin: "0px" }}
-              transition={{ duration: 1, ease: [0.34, 1.56, 0.64, 1] }}
-              className="inline-block"
-            >
+            <span className="inline-block">
               {dict.serviceDetail.otherTitle.split(" ")[0]}
               <br className="md:hidden" />{" "}
               {dict.serviceDetail.otherTitle.split(" ").slice(1).join(" ")}
-            </motion.span>
+            </span>
           </h2>
           <div ref={rowRef} className="mt-10 flex snap-x snap-mandatory gap-4 overflow-x-auto px-5 pb-4 [scrollbar-width:none] scroll-pl-5 md:mt-14 md:gap-6 md:px-10 md:scroll-pl-10 [&::-webkit-scrollbar]:hidden">
             {[0, 1, 2].flatMap((set) =>
