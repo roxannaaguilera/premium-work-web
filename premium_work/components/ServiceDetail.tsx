@@ -260,8 +260,12 @@ export default function ServiceDetail({
         h = Math.min(h, (window.innerWidth * 0.86) / aspect);
       }
       const top = viewH - h / 2;
-      sticky.style.paddingBottom = `${h / 2 + gap}px`;
-      sticky.style.justifyContent = "flex-end";
+      // En móvil el titular va en el medio de la pantalla, no abajo: con
+      // justify-end quedaba al 80% de la altura y las letras no salían
+      // centradas. En escritorio el diseño aprobado no cambia.
+      const isMobile = window.innerWidth < 768;
+      sticky.style.paddingBottom = isMobile ? "0px" : `${h / 2 + gap}px`;
+      sticky.style.justifyContent = isMobile ? "center" : "flex-end";
       if (wrap) {
         wrap.style.top = `${top}px`;
         wrap.style.bottom = "auto";
