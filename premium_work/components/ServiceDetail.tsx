@@ -395,69 +395,6 @@ export default function ServiceDetail({
       window.removeEventListener("resize", place);
     };
   }, [slug]);
-  // Avance automático y lento de la fila: una tarjeta cada pocos segundos,
-  // para que la fila se mueva sola sin que nadie tenga que descubrir el
-  // scroll. Se pausa al pasar el cursor por encima, al enfocar una tarjeta
-  // y al desplazarla a mano; tampoco avanza con movimiento reducido, con la
-  // pestaña oculta o con la fila fuera de la pantalla.
-  useEffect(() => {
-    const row = rowRef.current;
-    if (!row || reduceMotion) return;
-    let next: number | undefined;
-    let settle: number | undefined;
-    let paused = false;
-    const stepOf = () => {
-      if (row.children.length < 2) return 0;
-      return (
-        (row.children[1] as HTMLElement).offsetLeft -
-        (row.children[0] as HTMLElement).offsetLeft
-      );
-    };
-    const inView = () => {
-      const r = row.getBoundingClientRect();
-      return r.bottom > 0 && r.top < window.innerHeight;
-    };
-    const schedule = (ms: number) => {
-      window.clearTimeout(next);
-      next = window.setTimeout(() => {
-        if (paused || document.hidden || !inView()) {
-          schedule(4000);
-          return;
-        }
-        const s = stepOf();
-        if (s > 0) row.scrollBy({ left: s, behavior: "smooth" });
-      }, ms);
-    };
-    const onScroll = () => {
-      // Tras cualquier desplazamiento (manual o automático), esperar a que
-      // la fila se asiente antes de programar el siguiente avance.
-      window.clearTimeout(settle);
-      settle = window.setTimeout(() => schedule(5000), 200);
-    };
-    const onEnter = () => {
-      paused = true;
-      window.clearTimeout(next);
-    };
-    const onLeave = () => {
-      paused = false;
-      schedule(3000);
-    };
-    row.addEventListener("pointerenter", onEnter);
-    row.addEventListener("pointerleave", onLeave);
-    row.addEventListener("focusin", onEnter);
-    row.addEventListener("focusout", onLeave);
-    row.addEventListener("scroll", onScroll, { passive: true });
-    schedule(4000);
-    return () => {
-      window.clearTimeout(next);
-      window.clearTimeout(settle);
-      row.removeEventListener("pointerenter", onEnter);
-      row.removeEventListener("pointerleave", onLeave);
-      row.removeEventListener("focusin", onEnter);
-      row.removeEventListener("focusout", onLeave);
-      row.removeEventListener("scroll", onScroll);
-    };
-  }, [slug, reduceMotion]);
   const [landed, setLanded] = useState(false);
   // El header se oculta en cuanto el detalle deja el reposo. Se deriva del
   // mismo progreso de scroll que sube el objeto (framer, con el contenedor
