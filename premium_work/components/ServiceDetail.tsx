@@ -406,6 +406,17 @@ export default function ServiceDetail({
   // a un tamaño proporcionado con la tipografía.
   const secRef = useRef<HTMLElement>(null);
   const rowRef = useRef<HTMLDivElement>(null);
+  // Flechas de escritorio para la fila de «Otros servicios»: avanzan
+  // exactamente una tarjeta (el mismo paso que usa el bucle infinito) y
+  // el snap con scroll-snap-stop:always asienta la fila en la siguiente.
+  const scrollRow = (dir: 1 | -1) => {
+    const row = rowRef.current;
+    if (!row || row.children.length < 2) return;
+    const step =
+      (row.children[1] as HTMLElement).offsetLeft -
+      (row.children[0] as HTMLElement).offsetLeft;
+    if (step > 0) row.scrollBy({ left: dir * step, behavior: "smooth" });
+  };
   const meshSlotRef = useRef<HTMLDivElement>(null);
   const splitHeadRef = useRef<HTMLParagraphElement>(null);
   const splitCtaRef = useRef<HTMLDivElement>(null);
@@ -744,7 +755,8 @@ export default function ServiceDetail({
               {dict.serviceDetail.otherTitle.split(" ").slice(1).join(" ")}
             </span>
           </h2>
-          <div ref={rowRef} className="mt-10 flex snap-x snap-mandatory gap-4 overflow-x-auto px-5 pb-4 [scrollbar-width:none] scroll-pl-5 md:mt-14 md:gap-6 md:px-10 md:scroll-pl-10 [&::-webkit-scrollbar]:hidden">
+          <div className="relative mt-10 md:mt-14">
+            <div ref={rowRef} className="flex snap-x snap-mandatory gap-4 overflow-x-auto px-5 pb-4 [scrollbar-width:none] scroll-pl-5 md:gap-6 md:px-10 md:scroll-pl-10 [&::-webkit-scrollbar]:hidden">
             {[0, 1, 2].flatMap((set) =>
               items
                 .filter((o) => o.slug !== slug)
@@ -763,6 +775,31 @@ export default function ServiceDetail({
                 );
               })
             )}
+          </div>
+            {/* Flechas solo en escritorio: en móvil el gesto es deslizar y
+                las flechas estorbarían; en escritorio la rueda del ratón no
+                mueve una fila horizontal y la barra está oculta, así que sin
+                ellas el scroll no se descubre. */}
+            <button
+              type="button"
+              onClick={() => scrollRow(-1)}
+              aria-label="Ver el servicio anterior"
+              className="absolute left-2 top-1/2 z-10 hidden h-12 w-12 -translate-y-1/2 items-center justify-center rounded-full bg-[#131834] text-[#faf6ee] shadow-lg transition-colors hover:bg-[#eab308] hover:text-[#131834] md:flex"
+            >
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" className="h-6 w-6" aria-hidden="true">
+                <path d="M15 18l-6-6 6-6" />
+              </svg>
+            </button>
+            <button
+              type="button"
+              onClick={() => scrollRow(1)}
+              aria-label="Ver el servicio siguiente"
+              className="absolute right-2 top-1/2 z-10 hidden h-12 w-12 -translate-y-1/2 items-center justify-center rounded-full bg-[#131834] text-[#faf6ee] shadow-lg transition-colors hover:bg-[#eab308] hover:text-[#131834] md:flex"
+            >
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" className="h-6 w-6" aria-hidden="true">
+                <path d="M9 18l6-6-6-6" />
+              </svg>
+            </button>
           </div>
         </section>
       </main>
