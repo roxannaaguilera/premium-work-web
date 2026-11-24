@@ -744,7 +744,26 @@ export default function ServiceDetail({
               {dict.serviceDetail.otherTitle.split(" ").slice(1).join(" ")}
             </span>
           </h2>
-          <div ref={rowRef} className="mt-10 flex snap-x snap-mandatory gap-4 overflow-x-auto px-5 pb-4 [scrollbar-width:none] scroll-pl-5 md:mt-14 md:gap-6 md:px-10 md:scroll-pl-10 [&::-webkit-scrollbar]:hidden">
+          <div
+            ref={rowRef}
+            tabIndex={0}
+            role="region"
+            aria-label={dict.serviceDetail.otherTitle}
+            onKeyDown={(e) => {
+              // Sin botones en pantalla, la fila se pasa con las flechas del
+              // teclado: una tarjeta por pulsación, con la fila o una de sus
+              // tarjetas enfocada.
+              if (e.key !== "ArrowLeft" && e.key !== "ArrowRight") return;
+              const row = rowRef.current;
+              if (!row || row.children.length < 2) return;
+              const step =
+                (row.children[1] as HTMLElement).offsetLeft -
+                (row.children[0] as HTMLElement).offsetLeft;
+              if (step <= 0) return;
+              e.preventDefault();
+              row.scrollBy({ left: e.key === "ArrowRight" ? step : -step, behavior: "smooth" });
+            }}
+            className="mt-10 flex snap-x snap-mandatory gap-4 overflow-x-auto px-5 pb-4 [scrollbar-width:none] scroll-pl-5 md:mt-14 md:gap-6 md:px-10 md:scroll-pl-10 [&::-webkit-scrollbar]:hidden">
             {[0, 1, 2].flatMap((set) =>
               items
                 .filter((o) => o.slug !== slug)
