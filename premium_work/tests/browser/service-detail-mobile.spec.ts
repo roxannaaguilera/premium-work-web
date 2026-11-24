@@ -14,7 +14,7 @@ test("otros servicios avanza una tarjeta por gesto y el objeto queda en el medio
   await page.evaluate(() => document.getElementById("otros-servicios")?.scrollIntoView({ behavior: "instant" as ScrollBehavior }));
   await page.waitForTimeout(1800);
 
-  const row = page.locator("#otros-servicios [class*='snap-x']");
+  const row = page.locator("#otros-servicios > div").last();
   await expect(row).toBeVisible();
 
   const read = () => row.evaluate((el) => ({
